@@ -116,15 +116,20 @@ The system shall prioritize user safety by implementing measures to prevent acci
   Node.js, a server-side JavaScript runtime, will be used for the backend development. Node.js provides a non-blocking I/O model, enabling efficient handling of concurrent requests and real-time interactions.
   MySQL, a popular open-source relational database, will be used for storing user data, event data, and other relevant information. MySQL provides robust data management capabilities and supports complex queries, making it suitable for the system's data storage requirements.
 
+## Part II. Task Decomposition & Planning
+
+![1710672662137](image/report1-34/1710672662137.png)
+![1710672722815](image/report1-34/1710672722815.png)
+
 ## Part III. AI Usage
 
 ### Have you used AI to propose features for the project?
 
 Yes. By leveraging various AI techniques such as ChatGPT, we can generate insightful recommendations for feature enhancements or new feature ideas. These AI-driven proposals can provide valuable insights to optimize project development and meet user needs effectively.
 
-### Have you used AI to conduct the preliminary requirement analysis? 
+### Have you used AI to conduct the preliminary requirement analysis?
 
-Yes. The functional requirements refer to the features. For nonfunctional requirements, we first ask ChatGPT “please write Non-functional requirements”, then it responses how to write nonfunctional requirements in several aspects. Then we ask, “how to write X”. (X for a specific aspect) Then it answers some description and methods. We use the answers with some correction. 
+Yes. The functional requirements refer to the features. For nonfunctional requirements, we first ask ChatGPT “please write Non-functional requirements”, then it responses how to write nonfunctional requirements in several aspects. Then we ask, “how to write X”. (X for a specific aspect) Then it answers some description and methods. We use the answers with some correction.
 
 ### Have you used AI to generate user stories?
 
