@@ -120,11 +120,15 @@ The system shall prioritize user safety by implementing measures to prevent acci
 
 ### Have you used AI to propose features for the project?
 
-Yes. By leveraging various AI techniques such as ChatGPT, I can generate insightful recommendations for feature enhancements or new feature ideas. These AI-driven proposals can provide valuable insights to optimize project development and meet user needs effectively.
+Yes. By leveraging various AI techniques such as ChatGPT, we can generate insightful recommendations for feature enhancements or new feature ideas. These AI-driven proposals can provide valuable insights to optimize project development and meet user needs effectively.
+
+### Have you used AI to conduct the preliminary requirement analysis? 
+
+Yes. The functional requirements refer to the features. For nonfunctional requirements, we first ask ChatGPT “please write Non-functional requirements”, then it responses how to write nonfunctional requirements in several aspects. Then we ask, “how to write X”. (X for a specific aspect) Then it answers some description and methods. We use the answers with some correction. 
 
 ### Have you used AI to generate user stories?
 
-One example is utilizing ChatGPT to generate responses for user stories. I provided the prompts with specific issues and requirements, and ChatGPT generated appropriate responses based on its training data. However, I always review and refine the responses to ensure accuracy, clarity, and alignment with our brand voice. While I directly use AI-generated responses for efficiency, I also draw inspiration from AI-generated insights and suggestions to inform decision-making and brainstorming processes.
+One example is utilizing ChatGPT to generate responses for user stories. We provided the prompts with specific issues and requirements, and ChatGPT generated appropriate responses based on its training data. However, we always review and refine the responses to ensure accuracy, clarity, and alignment with our brand voice. While we directly use AI-generated responses for efficiency, we also draw inspiration from AI-generated insights and suggestions to inform decision-making and brainstorming processes.
 
 ### Have you used AI to generate issues or tasks?
 
