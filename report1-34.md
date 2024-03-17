@@ -86,21 +86,18 @@
   The system should maintain an average response time of less than 500 milliseconds for all user interactions
 
 * **Usability:**
-  The system interface shall be intuitive and easy to navigate by providing a user-friendly interface reducing the learning curve, and minimizing errors during system interaction.
-
-* **Reliability:**
-  * Availability: Define the percentage of time the system should be operational and accessible to users.
-  * Fault tolerance: Specify how the system should handle errors, failures, and unexpected events without compromising its functionality.
-  * Mean Time Between Failures (MTBF): Define the average time interval between system failures.
+  The system interface shall be intuitive and easy to navigate by providing a user-friendly interface, reducing the learning curve and minimizing errors during system interaction.
 
 * **Security:**
-  * Authentication: Specify requirements for user authentication methods, such as password-based, biometric, or multi-factor authentication.
-  * Authorization: Define access control policies to restrict users' access to system resources based on their roles and permissions.
-  * Data encryption: Specify encryption algorithms and key management practices to protect sensitive data at rest and in transit.
+  * Authentication: Users should log in with correct password.
+  * Authorization: Participants and organizers should have different permissions of the system.
+  * Data encryption: Use encryption algorithms and key management practices to protect sensitive data at rest and in transit.
 
 * **Maintainability:**
-  * Code quality: Define coding standards, documentation requirements, and testing practices to ensure maintainability and readability of the codebase.
-  * Logging and monitoring: Specify requirements for logging system events, errors, and performance metrics to facilitate troubleshooting and system maintenance
+The system can be easy to modify or extend. Have a coding standard and develop documentation.
+
+* **Safety:**
+The system shall prioritize user safety by implementing measures to prevent accidents, mitigate risks, and ensure the safe operation of the system.
 
 ### Data requirements
 
