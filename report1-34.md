@@ -4,6 +4,8 @@
 
 ### Project Overview
 
+We plan to design and implement a "Campus Events and Entertainment Center" system.
+
 #### Who are the target users or clients of the proposed system?
 
 * **Casual Attendees:**
