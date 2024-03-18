@@ -101,7 +101,7 @@ The system can be easy to modify or extend. Have a coding standard and develop d
 * **Safety:**
 The system shall prioritize user safety by implementing measures to prevent accidents, mitigate risks, and ensure the safe operation of the system.
 
-### Data requirements
+#### Data requirements
 
 * **User Data:**
   The system should store user profiles, preferences, attendance history, and other relevant information to personalize the user experience and provide tailored recommendations.
@@ -109,7 +109,7 @@ The system shall prioritize user safety by implementing measures to prevent acci
 * **Event Data:**
   The system should maintain comprehensive event listings, including categories, schedules, venues, descriptions, and multimedia content. This data is essential for users to explore and book events.
 
-### Technical requirements
+#### Technical requirements
 
 * **Frontend:**
   React.js, a popular JavaScript library for building user interfaces, will be used for the frontend development. React.js provides a component-based architecture, enabling the creation of reusable UI components and a responsive user interface.
