@@ -118,8 +118,8 @@ The system shall prioritize user safety by implementing measures to prevent acci
 
 ## Part II. Task Decomposition & Planning
 
-![1710672662137](image/report1-34/1710672662137.png)
-![1710672722815](image/report1-34/1710672722815.png)
+![1710752709337](image/report1-34/1710752709337.png)
+![1710752754793](image/report1-34/1710752754793.png)
 
 ## Part III. AI Usage
 
