@@ -1,6 +1,6 @@
 # CS304 Project
 
-This is a brief description of your project.
+A "Campus Events and Entertainment Center" system.
 
 ## Getting Started
 
@@ -9,15 +9,15 @@ This is a brief description of your project.
 1. Create a database named `cs304_project` in MySQL, and run the SQL script `create_database.sql` to create the tables.
 2. Install the npm packages for the client and server.
 
-    ```bash
-    # Download the npm package
-    pushd client
-    npm install
-    popd
-    pushd server
-    npm install
-    popd
-    ```
+   ```bash
+   # Download the npm package
+   pushd client
+   pnpm install
+   popd
+   pushd server
+   pnpm install
+   popd
+   ```
 
 ### Running
 
@@ -28,5 +28,5 @@ node server.js
 
 # Run the client
 cd client
-npm start
+pnpm start
 ```
