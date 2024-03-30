@@ -3,29 +3,26 @@ const router = express.Router();
 const { User } = require("../models");
 
 /**
- * @swagger
+ * @openapi
  * /users/register:
  *   post:
  *     summary: Register a user
- *     consumes:
- *       - application/json
- *     parameters:
- *       - in: body
- *         name: body
- *         description: User object
- *         required: true
- *         schema:
- *           type: object
- *           required:
- *             - username
- *             - password
- *           properties:
- *             username:
- *               type: string
- *             password:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
- *       200:
+ *       '200':
  *         description: User created successfully
  */
 router.post("/register", async (req, res) => {
@@ -59,7 +56,7 @@ router.post("/register", async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: 'models/user'
+ *               $ref: '#/components/schemas/User'
  *       401:
  *         description: Invalid username or password
  */
