@@ -1,6 +1,5 @@
 {
-    "cSpell.words": [
-        "popd",
-        "pushd"
-    ]
+  "cSpell.words": ["popd", "pushd"],
+  "prettier.configPath": "",
+  "reactSnippets.settings.prettierEnabled": false
 }

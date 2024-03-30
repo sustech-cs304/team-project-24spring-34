@@ -13,6 +13,8 @@ A "Campus Events and Entertainment Center" system.
    # Download the npm package
    pushd client
    pnpm install
+   pnpm pkg set scripts.prepare="husky install"
+   npx husky add .husky/pre-commit "pnpm exec lint-staged"
    popd
    pushd server
    pnpm install
