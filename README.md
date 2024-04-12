@@ -27,7 +27,7 @@ A "Campus Events and Entertainment Center" system.
 ```bash
 # Run the server
 cd server
-node server.js
+node src/server.js
 
 # Run the client
 cd client
