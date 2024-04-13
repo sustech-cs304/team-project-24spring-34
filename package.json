@@ -11,7 +11,8 @@
   "lint-staged": {
     "*.js": [
       "eslint --cache --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add"
     ],
     "*.json": [
       "prettier --write"
