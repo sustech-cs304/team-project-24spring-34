@@ -7,6 +7,7 @@ import Login from "./Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ActivityDetails from "./Detial_page";
 import BookingPage from "./Booking_page";
+import Publish from "./publish/publish";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -18,6 +19,7 @@ root.render(
         <Route path="/login" element={<Login />} />
         <Route path="/details" element={<ActivityDetails />} />
         <Route path="/booking" element={<BookingPage />} />
+        <Route path="/publish" element={<Publish />} />
       </Routes>
     </Router>
   </React.StrictMode>,
