@@ -57,14 +57,6 @@ function DefaultInfoCard({
         color='text'
         pr={direction === 'left' ? 6 : 0}
         pl={direction === 'right' ? 6 : 0}>
-        {description}
-      </MKTypography>
-      <MKTypography
-        display='block'
-        variant={small ? 'button' : 'body2'}
-        color='text'
-        pr={direction === 'left' ? 6 : 0}
-        pl={direction === 'right' ? 6 : 0}>
         {date}
       </MKTypography>
       <MKTypography

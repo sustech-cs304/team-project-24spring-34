@@ -72,14 +72,16 @@ function DefaultNavbarDropdown({
           sx={{alignSelf: 'center', '& *': {verticalAlign: 'middle'}}}>
           {icon}
         </MKTypography>
-        <MKTypography
-          variant='button'
-          fontWeight='regular'
-          textTransform='capitalize'
-          color={light ? 'white' : 'dark'}
-          sx={{fontWeight: '100%', ml: 1, mr: 0.25}}>
-          {name}
-        </MKTypography>
+        <Link to={route}>
+          <MKTypography
+            variant='button'
+            fontWeight='regular'
+            textTransform='capitalize'
+            color={light ? 'white' : 'dark'}
+            sx={{fontWeight: '100%', ml: 1, mr: 0.25}}>
+            {name}
+          </MKTypography>
+        </Link>
         <MKTypography
           variant='body2'
           color={light ? 'white' : 'dark'}

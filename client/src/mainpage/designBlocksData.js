@@ -22,8 +22,8 @@ export default [
     description: '',
     items: [
       {
-        title: 'test',
-        description: 'test',
+        title: 'title1',
+        description: 'description1',
         date: '2022-12-02',
         time: '19:00',
         site: 'Park',
@@ -31,8 +31,8 @@ export default [
         route: '/sections/page-sections/page-headers',
       },
       {
-        title: 'test',
-        description: 'test',
+        title: 'title2',
+        description: 'description2',
         date: '2022-12-02',
         time: '19:00',
         site: 'Park',
@@ -43,6 +43,30 @@ export default [
   },
   {
     title: 'Entertainment',
+    description: '',
+    items: [
+      {
+        title: 'title1',
+        description: 'description1',
+        date: '2022-12-02',
+        time: '19:00',
+        site: 'Park',
+        host: 'WOC',
+        route: '/sections/page-sections/page-headers',
+      },
+      {
+        title: 'title2',
+        description: 'description2',
+        date: '2022-12-02',
+        time: '19:00',
+        site: 'Park',
+        host: 'WOC',
+        route: '/sections/page-sections/features',
+      },
+    ],
+  },
+  {
+    title: 'class1',
     description: '',
     items: [
       {
@@ -66,7 +90,7 @@ export default [
     ],
   },
   {
-    title: 'Entertainment',
+    title: 'class2',
     description: '',
     items: [
       {
@@ -90,31 +114,7 @@ export default [
     ],
   },
   {
-    title: 'Entertainment',
-    description: '',
-    items: [
-      {
-        title: 'test',
-        description: 'test',
-        date: '2022-12-02',
-        time: '19:00',
-        site: 'Park',
-        host: 'WOC',
-        route: '/sections/page-sections/page-headers',
-      },
-      {
-        title: 'test',
-        description: 'test',
-        date: '2022-12-02',
-        time: '19:00',
-        site: 'Park',
-        host: 'WOC',
-        route: '/sections/page-sections/features',
-      },
-    ],
-  },
-  {
-    title: 'Entertainment',
+    title: 'class3',
     description: '',
     items: [
       {

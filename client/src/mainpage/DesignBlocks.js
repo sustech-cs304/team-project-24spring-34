@@ -86,16 +86,15 @@ function DesignBlocks() {
           <MKBadge
             variant='contained'
             color='info'
-            badgeContent='Infinite combinations'
+            badgeContent='Notice Board'
             container
             sx={{mb: 2}}
           />
           <MKTypography variant='h2' fontWeight='bold'>
-            Huge collection of sections
+            Welcome to Campus Events and Entertainment Center!
           </MKTypography>
           <MKTypography variant='body1' color='text'>
-            We have created multiple options for you to put together and
-            customise into pixel perfect pages.
+            ......
           </MKTypography>
         </Grid>
       </Container>

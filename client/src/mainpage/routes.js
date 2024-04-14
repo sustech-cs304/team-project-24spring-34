@@ -38,6 +38,10 @@ Coded by www.creative-tim.com
 
 const routes = [
   {
+    name: 'Main page',
+    route: '/mainpage',
+  },
+  {
     name: 'Register',
     route: '/register',
   },
@@ -47,15 +51,15 @@ const routes = [
   },
   {
     name: 'Log out',
-    route: '',
+    route: '/logout',
   },
   {
     name: 'Release',
-    route: '',
+    route: '/release',
   },
   {
     name: 'Message',
-    route: '',
+    route: '/message',
   },
 ];
 
