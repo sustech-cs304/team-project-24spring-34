@@ -24,7 +24,7 @@
  *         password: "pass1"
  */
 module.exports = (sequelize, type) => {
-  return sequelize.define('user', {
+  return sequelize.define('User', {
     id: {
       type: type.INTEGER,
       primaryKey: true,
