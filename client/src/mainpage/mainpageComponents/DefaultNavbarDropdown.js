@@ -29,8 +29,8 @@ import React, {useState} from 'react';
 // import MKTypography from "components/MKTypography";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import MKTypography from '../components/MKTypography';
-import MKBox from '../components/MKBox';
+import MKTypography from '../../components/MKTypography';
+import MKBox from '../../components/MKBox';
 
 function DefaultNavbarDropdown({
   name,

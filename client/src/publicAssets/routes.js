@@ -54,8 +54,8 @@ const routes = [
     route: '/logout',
   },
   {
-    name: 'Release',
-    route: '/release',
+    name: 'Publish',
+    route: '/publish',
   },
   {
     name: 'Message',

@@ -23,8 +23,8 @@ import {Link} from 'react-router-dom';
 import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 
 // Material Kit 2 React components
-import MKBox from 'components/MKBox';
-import MKTypography from 'components/MKTypography';
+import MKBox from '../../components/MKBox';
+import MKTypography from '../../components/MKTypography';
 
 function Breadcrumbs({routes, ...rest}) {
   return (

@@ -21,12 +21,12 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
 // Material Kit 2 React components
-import MKBox from '../components/MKBox';
-import MKBadge from '../components/MKBadge';
-import MKTypography from '../components/MKTypography';
+import MKBox from '../../components/MKBox';
+import MKBadge from '../../components/MKBadge';
+import MKTypography from '../../components/MKTypography';
 
 // Presentation page components
-import DefaultInfoCard from './DefaultInfoCard';
+import DefaultInfoCard from '../../publicAssets/DefaultInfoCard';
 
 // Data
 import data from './designBlocksData';

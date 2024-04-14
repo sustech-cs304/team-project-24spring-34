@@ -17,7 +17,7 @@ Coded by www.creative-tim.com
 import {styled} from '@mui/material/styles';
 
 // Material Kit 2 React components
-import MKButton from 'components/MKButton';
+import MKButton from '../../components/MKButton';
 
 export default styled(MKButton)(({theme, ownerState}) => {
   const {borders, functions, typography, palette} = theme;
