@@ -47,7 +47,8 @@ export default [
     items: [
       {
         title: 'title1',
-        description: 'description1',
+        description:
+          'llllllllllllllllllllllloooooooooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnngggggggggggggggggggggggggggggggggggggggggggggggdescription1',
         date: '2022-12-02',
         time: '19:00',
         site: 'Park',

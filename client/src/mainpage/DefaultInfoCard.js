@@ -34,7 +34,15 @@ function DefaultInfoCard({
     <MKBox
       lineHeight={1}
       p={direction === 'center' ? 2 : 0}
-      textAlign={direction}>
+      textAlign={direction}
+      sx={{
+        width: '100%', // 设置容器宽度
+        wordWrap: 'break-word', // 允许文本在单词边界处换行
+        border: '2px solid #ccc', // 设置边框，这里的 #ccc 是边框颜色
+        borderRadius: '8px', // 设置边框的圆角
+        padding: '10px', // 设置内边距
+        boxSizing: 'border-box', // 确保内边距和边框不会增加容器的宽度
+      }}>
       <MKTypography
         display='block'
         variant='5'

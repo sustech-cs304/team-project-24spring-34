@@ -61,6 +61,10 @@ const routes = [
     name: 'Message',
     route: '/message',
   },
+  {
+    name: 'Profile',
+    route: '/profile',
+  },
 ];
 
 export default routes;

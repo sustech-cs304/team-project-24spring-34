@@ -22,6 +22,7 @@ import {Link} from 'react-router-dom';
 // @mui material components
 import Collapse from '@mui/material/Collapse';
 import Icon from '@mui/material/Icon';
+import React, {useState} from 'react';
 
 // // Material Kit 2 React components
 // import MKBox from "components/MKBox";
@@ -42,6 +43,7 @@ function DefaultNavbarDropdown({
   collapse,
   ...rest
 }) {
+  const [backgroundColor, setBackgroundColor] = useState('transparent');
   const linkComponent = {
     component: 'a',
     href,
@@ -78,7 +80,17 @@ function DefaultNavbarDropdown({
             fontWeight='regular'
             textTransform='capitalize'
             color={light ? 'white' : 'dark'}
-            sx={{fontWeight: '100%', ml: 1, mr: 0.25}}>
+            sx={{
+              fontWeight: '100%',
+              ml: 0.5,
+              mr: 0.25,
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              },
+            }}
+            onMouseLeave={() => {
+              setBackgroundColor('transparent');
+            }}>
             {name}
           </MKTypography>
         </Link>
