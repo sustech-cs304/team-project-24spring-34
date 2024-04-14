@@ -24,9 +24,9 @@ import Card from '@mui/material/Card';
 import MuiLink from '@mui/material/Link';
 
 // Material Kit 2 React components
-import MKBox from 'components/MKBox';
-import MKTypography from 'components/MKTypography';
-import MKButton from 'components/MKButton';
+import MKBox from '../../../../components/MKBox';
+import MKTypography from '../../../../components/MKTypography';
+import MKButton from '../../../../components/MKButton';
 
 function CenteredBlogCard({image, title, description, action}) {
   return (

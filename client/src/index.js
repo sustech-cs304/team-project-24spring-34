@@ -1,24 +1,26 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import Login from "./Login";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ActivityDetails from "./Detial_page";
-import BookingPage from "./Booking_page";
-import Publish from "./publish/publish";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import Login from './logIn/Login';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import ActivityDetails from './eventDetails/Detial_page';
+import BookingPage from './booking/Booking_page';
+import Publish from './publish/publish';
+import Mainpage from './mainpage/Mainpage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/details" element={<ActivityDetails />} />
-        <Route path="/booking" element={<BookingPage />} />
-        <Route path="/publish" element={<Publish />} />
+        <Route path='/' element={<Mainpage />} />
+        <Route path='/mainpage' element={<Mainpage />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/details' element={<ActivityDetails />} />
+        <Route path='/booking' element={<BookingPage />} />
+        <Route path='/publish' element={<Publish />} />
       </Routes>
     </Router>
   </React.StrictMode>,
