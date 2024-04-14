@@ -39,4 +39,5 @@ module.exports = (app) => {
     swaggerUi.serve,
     swaggerUi.setup(specs, {explorer: true}),
   );
+  console.log('API documentation available at http://localhost:5000/api-docs');
 };

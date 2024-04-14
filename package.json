@@ -11,7 +11,8 @@
   "lint-staged": {
     "*.js": [
       "eslint --cache --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add"
     ],
     "*.json": [
       "prettier --write"
@@ -28,12 +29,5 @@
     "jsxSingleQuote": true,
     "bracketSpacing": false,
     "endOfLine": "auto"
-  },
-  "name": "team-project-24spring-34",
-  "description": "A \"Campus Events and Entertainment Center\" system.",
-  "version": "1.0.0",
-  "main": ".eslintrc.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }
