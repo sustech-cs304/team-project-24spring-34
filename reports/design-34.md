@@ -31,9 +31,11 @@ On the main page, the backend continuously updates activity information in real-
 
 
 
-![image](./image/report2-34/2.jpg)
+![image](./image/report2-34/5.png)
 
 ![image](./image/report2-34/3.jpg)
 
 ![image](./image/report2-34/4.jpg)
+
+![image](./image/report2-34/6.jpg)
 
