@@ -1,5 +1,14 @@
-import TextInput from './components/textInput';
-import NumInput from './components/numInput';
+import FormInput from './components/formInput';
+
+import DesignBlocks from '../mainpage/mainpageComponents/DesignBlocks';
+import DefaultNavbar from '../mainpage/mainpageComponents/DefaultNavbar';
+import {ThemeProvider} from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import routes from '../publicAssets/routes';
+import theme from '../assets/theme';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import MKTypography from '../components/MKTypography';
 
 const Publish = () => {
   const handleClick = () => {
@@ -8,47 +17,39 @@ const Publish = () => {
 
   return (
     <div style={{display: 'flex', flexDirection: 'column'}}>
-      <div style={{flex: 1, backgroundColor: '#f0f0f0', height: '50vh'}}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '10vh',
-          }}>
-          <h1>发布页面</h1>
-        </div>
+      <div>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <DefaultNavbar routes={routes} sticky />
+          {/* <Container>
+          <Grid container item xs={12} lg={7} justifyContent='center' mx='auto'>
+            <MKTypography
+              variant='h1'
+              color='white'
+              mt={-6}
+              mb={1}
+              sx={({breakpoints, typography: {size}}) => ({
+                [breakpoints.down('md')]: {
+                  fontSize: size['3xl'],
+                },
+              })}>
+              Material Kit 2 React{' '}
+            </MKTypography>
+            <MKTypography
+              variant='body1'
+              color='white'
+              textAlign='center'
+              px={{xs: 100, lg: 1200}}
+              mt={1}></MKTypography>
+            
+          </Grid>
+        </Container> */}
+          {/*<TestForm />*/}
+
+          {/* <DesignBlocks /> */}
+        </ThemeProvider>
       </div>
-      <div style={{flex: 1, backgroundColor: '#f0f0f0'}}>
-        <div style={{display: 'flex'}}>
-          <div style={{flex: 1, backgroundColor: '#f0f0f0'}}>
-            <TextInput name='活动标题' width={300} height={100} />
-            <TextInput name='活动简介' width={300} height={100} />
-            <NumInput name='活动时间' text='MM/DD/YYYY' />
-            <NumInput name='活动开始时间' text='HH/MM' />
-            <NumInput name='活动结束时间' text='HH/MM' />
-            <NumInput name='活动地点' />
-          </div>
-          <div style={{flex: 1, backgroundColor: '#f0f0f0'}}>
-            <TextInput name='活动内容' width={500} height={400} />
-          </div>
-        </div>
-      </div>
-      <div style={{flex: 1, backgroundColor: '#f0f0f0', height: '50vh'}}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '10vh',
-          }}>
-          <button
-            style={{width: '150px', height: '50px'}}
-            onClick={handleClick}>
-            提交
-          </button>
-        </div>
-      </div>
+      <FormInput />
     </div>
   );
 };
