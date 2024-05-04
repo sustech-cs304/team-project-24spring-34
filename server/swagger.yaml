@@ -269,9 +269,9 @@ paths:
               type: object
               additionalProperties: false
               required:
-                - seat
+                - seat_id
               properties:
-                seat:
+                seat_id:
                   type: string
       responses:
         '200':
@@ -501,10 +501,6 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
-
-
-        
-
 components:
   parameters:
     path_username:
@@ -765,7 +761,7 @@ components:
         - name
         - address
         - status
-        - capacity
+        - seat_arrangement
       properties:
         id:
           type: integer
@@ -776,8 +772,8 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/LocationStatus'
-        capacity:
-          type: integer
+        seat_arrangement:
+          $ref: '#/components/schemas/SeatArrangement'
     LocationStatus:
       enum:
         - 1
@@ -786,6 +782,46 @@ components:
       type: integer
       description: >-
         1 = Available, 2 = Unavailable, 3 = Closed
+    SeatArrangement:
+      type: object
+      additionalProperties: false
+      required:
+        - columns
+        - rows
+        - seats
+      properties:
+        columns:
+          type: integer
+        rows:
+          type: integer
+        seats:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - id
+              - row
+              - column
+              - status
+            properties:
+              id:
+                type: integer
+                readOnly: true
+              row:
+                type: integer
+              column:
+                type: integer
+              status:
+                $ref: '#/components/schemas/SeatStatus'
+    SeatStatus:
+      enum:
+        - 1
+        - 2
+        - 3
+      type: integer
+      description: >-
+        1 = Available, 2 = Reserved, 3 = Unavailable
     ErrorDetail:
       title: ErrorDetail
       additionalProperties: false
