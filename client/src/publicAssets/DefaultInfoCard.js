@@ -20,6 +20,11 @@ import PropTypes from 'prop-types';
 import MKBox from '../components/MKBox';
 import MKTypography from '../components/MKTypography';
 
+import {AiOutlineHome} from 'react-icons/ai';
+import {BiAlarm, BiCalendar, BiHomeAlt2} from 'react-icons/bi';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
 function DefaultInfoCard({
   title,
   description,
@@ -36,60 +41,55 @@ function DefaultInfoCard({
       p={direction === 'center' ? 2 : 0}
       textAlign={direction}
       sx={{
-        width: '100%', // 设置容器宽度
-        wordWrap: 'break-word', // 允许文本在单词边界处换行
-        border: '2px solid #ccc', // 设置边框，这里的 #ccc 是边框颜色
-        borderRadius: '8px', // 设置边框的圆角
-        padding: '10px', // 设置内边距
-        boxSizing: 'border-box', // 确保内边距和边框不会增加容器的宽度
+        wordWrap: 'break-word',
+        border: '2px solid #ccc',
+        borderRadius: '8px',
+        padding: '10px',
+        boxSizing: 'border-box',
+        width: '300px',
+        height: '300px',
       }}>
-      <MKTypography
-        display='block'
-        variant='5'
-        fontWeight='bold'
-        mt={direction === 'center' ? 1 : 2}
-        mb={1.5}>
+      <MKBox display='flex' alignItems='center' pr={2}>
+        <BiAlarm style={{marginRight: 4}} />
+        <MKTypography
+          display='inline'
+          variant={small ? 'button' : 'body2'}
+          color='text'>
+          {time} {/* 格式化后的时间 */}
+        </MKTypography>
+        <div style={{width: '20px'}}></div>
+        <BiCalendar style={{marginRight: 4}} />
+        <MKTypography
+          display='inline'
+          variant={small ? 'button' : 'body2'}
+          color='text'>
+          {date} {/* 格式化后的日期 */}
+        </MKTypography>
+      </MKBox>
+      <MKBox display='flex' alignItems='center' pr={2}>
+        <AiOutlineHome style={{marginRight: 4}} />
+        <MKTypography
+          display='inline'
+          variant={small ? 'button' : 'body2'}
+          color='text'>
+          {site}
+        </MKTypography>
+      </MKBox>
+      <MKTypography display='block' variant='5' fontWeight='bold' mb={2.5}>
         {title}
       </MKTypography>
       <MKTypography
         display='block'
         variant={small ? 'button' : 'body2'}
         color='text'
-        pr={direction === 'left' ? 6 : 0}
-        pl={direction === 'right' ? 6 : 0}>
-        {description}
-      </MKTypography>
-      <MKTypography
-        display='block'
-        variant={small ? 'button' : 'body2'}
-        color='text'
-        pr={direction === 'left' ? 6 : 0}
-        pl={direction === 'right' ? 6 : 0}>
-        {date}
-      </MKTypography>
-      <MKTypography
-        display='block'
-        variant={small ? 'button' : 'body2'}
-        color='text'
-        pr={direction === 'left' ? 6 : 0}
-        pl={direction === 'right' ? 6 : 0}>
-        {time}
-      </MKTypography>
-      <MKTypography
-        display='block'
-        variant={small ? 'button' : 'body2'}
-        color='text'
-        pr={direction === 'left' ? 6 : 0}
-        pl={direction === 'right' ? 6 : 0}>
-        {site}
-      </MKTypography>
-      <MKTypography
-        display='block'
-        variant={small ? 'button' : 'body2'}
-        color='text'
-        pr={direction === 'left' ? 6 : 0}
-        pl={direction === 'right' ? 6 : 0}>
+        mb={2.5}>
         {host}
+      </MKTypography>
+      <MKTypography
+        display='block'
+        variant={small ? 'button' : 'body2'}
+        color='text'>
+        {description}
       </MKTypography>
     </MKBox>
   );
