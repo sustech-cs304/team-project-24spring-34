@@ -2,6 +2,7 @@ import React from 'react';
 
 import TextInput from './textInput';
 import NumInput from './numInput';
+import UploadPic from './uploadPic';
 function FormInput(props) {
   const handleClick = () => {
     window.location.href = '/';
@@ -41,11 +42,7 @@ function FormInput(props) {
           <div style={{flex: 1, backgroundColor: '#f0f0f0'}}>
             <TextInput name='活动内容' width={500} height={400} />
             <label>上传示例图片</label>
-            <button
-              style={{width: '50px', height: '50px', marginLeft: '20px'}}
-              onClick={handleUpload}>
-              上传
-            </button>
+            <UploadPic />
           </div>
         </div>
       </div>
