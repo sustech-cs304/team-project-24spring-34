@@ -15,7 +15,7 @@ function ActivityDetails() {
       // const data = await response.json();
 
       // 用于测试的假数据
-      const data = '示例标题';
+      const data = 'exapmle title';
       setActivityTitle(data);
     }
     fetchTitle();
