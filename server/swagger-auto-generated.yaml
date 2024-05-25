@@ -54,11 +54,74 @@ paths:
           description: Invalid username or password
 components:
   schemas:
+    Event:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - description
+        - poster
+        - organizer
+        - participants
+        - time
+        - location
+        - tags
+        - status
+        - comments
+        - ratings
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        poster:
+          type: string
+          description: The URL of the event's poster
+        organizer:
+          $ref: '#/components/schemas/User'
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventParticipant'
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventTag'
+        status:
+          $ref: '#/components/schemas/EventStatus'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    Gender:
+      enum:
+        - 1
+        - 2
+        - 3
+      type: integer
+      description: 1 = male, 2 = female, 3 = other
     User:
       type: object
+      additionalProperties: false
       required:
         - username
-        - password
+        - nickname
+        - user_group
+        - avatar
+        - user_intro
+        - user_email
       properties:
         id:
           type: integer
@@ -67,11 +130,55 @@ components:
         username:
           type: string
           description: The username of the user
-        password:
+        nickname:
           type: string
-          description: The password of the user
-      example:
-        id: 1
-        username: user1
-        password: pass1
+        user_group:
+          $ref: '#/components/schemas/UserGroup'
+        avatar:
+          type: string
+          description: The URL of the user's avatar
+        user_intro:
+          type: string
+        user_email:
+          type: string
+          format: email
+    UserGroup:
+      enum:
+        - 1
+        - 2
+        - 3
+      type: integer
+      description: 1 = Audience, 2 = Organizer, 3 = Admin
+    UserPrivacy:
+      type: object
+      additionalProperties: false
+      required:
+        - gender
+        - birthday
+        - event_history
+        - following
+        - followers
+        - published_events
+      properties:
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birthday:
+          type: string
+          format: date
+        event_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        following:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        followers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        published_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
 tags: []

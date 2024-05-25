@@ -589,7 +589,6 @@ components:
         avatar:
           type: string
           description: The URL of the user's avatar
-
         user_intro:
           type: string
         user_email:
@@ -676,7 +675,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EventParticipant'
-        time:
+        start_time:
+          type: string
+          format: date-time
+        end_time:
           type: string
           format: date-time
         location:

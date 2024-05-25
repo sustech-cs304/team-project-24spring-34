@@ -1,37 +1,60 @@
-require('dotenv').config();
-const Sequelize = require('sequelize');
-const UserModel = require('./user');
+const {Gender, init: GenderInit} = require('./gender');
+const {UserGroup, init: UserGroupInit} = require('./userGroup');
+const {User, init: UserInit} = require('./user');
+const {UserPrivacy, init: UserPrivacyInit} = require('./userPrivacy');
+const {Event, init: EventInit} = require('./event');
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-    logging: (msg) => {
-      if (msg.startsWith('Executing')) {
-        console.log(msg);
-      }
-    },
-  },
-);
-
-const initializeDatabase = async () => {
+const initializeTables = async () => {
   try {
-    await sequelize.authenticate();
-    console.log('Connection to database has been established successfully.');
-    await sequelize.sync({force: false});
-    console.log(`Database & tables created!`);
-  } catch (err) {
-    console.error('Unable to connect to the database:', err);
+    UserGroup.hasMany(User, {
+      foreignKey: 'user_group_id',
+      as: 'user_group',
+    });
+    User.belongsTo(UserGroup, {
+      foreignKey: 'user_group_id',
+      as: 'user_group',
+    });
+
+    Gender.hasMany(UserPrivacy, {
+      foreignKey: 'gender_id',
+      as: 'gender',
+    });
+    UserPrivacy.belongsTo(Gender, {
+      foreignKey: 'gender_id',
+      as: 'gender',
+    });
+
+    UserPrivacy.belongsToMany(Event, {
+      foreignKey: 'participant',
+      through: 'event_participant',
+      as: 'event_history',
+    });
+    Event.belongsToMany(UserPrivacy, {
+      foreignKey: 'event',
+      through: 'event_participant',
+      as: 'participant',
+    });
+  } catch (error) {
+    console.error('Error initializing tables:', error);
   }
 };
 
-initializeDatabase();
+const initializeModels = async () => {
+  await Promise.all([GenderInit(), UserGroupInit()]);
+  await Promise.all([UserInit(), UserPrivacyInit(), EventInit()]);
 
-const User = UserModel(sequelize, Sequelize);
+  const user1 = await UserPrivacy.findByPk(2);
+  const user2 = await UserPrivacy.findByPk(3);
+  const event = await Event.findByPk(1);
+  await event.addParticipant([user1, user2]);
+  console.log('Participant number:', await event.countParticipant());
+};
 
 module.exports = {
+  initializeTables,
+  initializeModels,
+  Gender,
+  UserGroup,
   User,
+  UserPrivacy,
 };

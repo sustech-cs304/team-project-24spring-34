@@ -1,3 +1,19 @@
+process.env.NODE_ENV = 'development';
+
+const chalk = require('chalk');
+const originalConsole = global.console;
+global.console = {
+  log: function (...args) {
+    originalConsole.log(chalk.green(...args));
+  },
+  error: function (...args) {
+    originalConsole.error(chalk.red(...args));
+  },
+  info: originalConsole.info,
+  warn: originalConsole.warn,
+  debug: originalConsole.debug,
+};
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
