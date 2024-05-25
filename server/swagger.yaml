@@ -605,6 +605,9 @@ components:
           - followers
           - published_events
         properties:
+          password:
+            type: string
+            description: The password after sha256 encryption with salt
           gender:
             $ref: '#/components/schemas/Gender'
           birthday:

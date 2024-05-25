@@ -16,6 +16,9 @@ const sequelize = require('../config/connection');
  *         - followers
  *         - published_events
  *       properties:
+ *         password:
+ *          type: string
+ *          description: The password after sha256 encryption with salt
  *         gender:
  *           $ref: '#/components/schemas/Gender'
  *         birthday:
@@ -45,6 +48,10 @@ const UserPrivacy = sequelize.define('user_privacy', {
     primaryKey: true,
     autoIncrement: true,
   },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   birthday: {
     type: DataTypes.DATEONLY,
     allowNull: true,
@@ -54,9 +61,24 @@ const UserPrivacy = sequelize.define('user_privacy', {
 const init = async () => {
   try {
     await UserPrivacy.bulkCreate([
-      {id: 1, birthday: '1990-01-01'},
-      {id: 2, birthday: '1991-01-01'},
-      {id: 3, birthday: '1992-01-01'},
+      {
+        id: 1,
+        password:
+          '0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e',
+        birthday: '1990-01-01',
+      },
+      {
+        id: 2,
+        password:
+          '6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4',
+        birthday: '1991-01-01',
+      },
+      {
+        id: 3,
+        password:
+          '5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764',
+        birthday: '1992-01-01',
+      },
     ]);
     console.log(
       'Entries have been successfully inserted into the user_privacy table',
