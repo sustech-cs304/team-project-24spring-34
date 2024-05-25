@@ -35,7 +35,7 @@ const initializeDatabase = async () => {
       await sequelize.query('CREATE SCHEMA public;');
       console.log('Database reset successfully');
     }
-    const {initializeTables, initializeModels} = require('../models/index');
+    const {initializeTables, initializeModels} = require('../models');
     await initializeTables();
     await sequelize.sync();
     console.log(`Database & tables created!`);
