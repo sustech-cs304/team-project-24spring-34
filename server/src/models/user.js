@@ -49,23 +49,25 @@ const User = sequelize.define(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       description: 'The username of the user',
     },
     nickname: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     avatar: {
       type: DataTypes.STRING,
+      allowNull: true,
       description: "The URL of the user's avatar",
     },
     userIntro: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     userEmail: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         isEmail: true,
       },
@@ -80,7 +82,6 @@ const init = async () => {
   try {
     await User.bulkCreate([
       {
-        id: 1,
         username: 'admin',
         nickname: 'admin',
         userGroup: 3,
@@ -89,7 +90,6 @@ const init = async () => {
         userEmail: 'admin@test.com',
       },
       {
-        id: 2,
         username: 'user1',
         nickname: 'user1',
         userGroup: 1,

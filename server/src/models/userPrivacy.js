@@ -62,19 +62,11 @@ const init = async () => {
   try {
     await UserPrivacy.bulkCreate([
       {
-        id: 1,
         password:
           '0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e',
         birthday: '1990-01-01',
       },
       {
-        id: 2,
-        password:
-          '6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4',
-        birthday: '1991-01-01',
-      },
-      {
-        id: 3,
         password:
           '5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764',
         birthday: '1992-01-01',

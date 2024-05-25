@@ -12,6 +12,7 @@ const sequelize = new Sequelize(
       underscored: true,
       timestamps: false,
     },
+    timezone: '+08:00',
     logging: (msg) => {
       if (msg.startsWith('Executing')) {
         console.debug(msg);

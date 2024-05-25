@@ -43,8 +43,8 @@ const initializeModels = async () => {
   await Promise.all([GenderInit(), UserGroupInit()]);
   await Promise.all([UserInit(), UserPrivacyInit(), EventInit()]);
 
-  const user1 = await UserPrivacy.findByPk(2);
-  const user2 = await UserPrivacy.findByPk(3);
+  const user1 = await UserPrivacy.findByPk(1);
+  const user2 = await UserPrivacy.findByPk(2);
   const event = await Event.findByPk(1);
   await event.addParticipant([user1, user2]);
   console.log('Participant number:', await event.countParticipant());
@@ -57,4 +57,5 @@ module.exports = {
   UserGroup,
   User,
   UserPrivacy,
+  Event,
 };
