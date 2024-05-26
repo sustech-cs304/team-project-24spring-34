@@ -9,7 +9,6 @@ import theme from '../assets/theme';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MKTypography from '../components/MKTypography';
-import UploadPic from './components/uploadPic';
 
 const Publish = () => {
   const handleClick = () => {
