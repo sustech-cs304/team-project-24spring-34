@@ -5,7 +5,7 @@ const yaml = require('js-yaml');
 
 const options = {
   swaggerDefinition: {
-    openapi: '3.0.0',
+    openapi: '3.0.2',
     info: {
       title: 'Campus Events and Entertainment Center API',
       version: '1.0.0',
@@ -14,6 +14,11 @@ const options = {
     servers: [
       {
         url: 'http://localhost:5000/api',
+      },
+    ],
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
