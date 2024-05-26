@@ -143,21 +143,21 @@ router.delete('/sessions', (req, res) => {
 /**
  * @swagger
  * /users/{username}:
- * get:
- *   tags:
- *     - Users
- *   summary: Get a user by username
- *   parameters:
- *     - $ref: '#/components/parameters/path_username'
- *   responses:
- *     '200':
- *       description: User found
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     '404':
- *       $ref: '#/components/responses/404'
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get a user by username
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     responses:
+ *       '200':
+ *         description: User found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  */
 router.get('/users/:username', async (req, res) => {
   const user = await User.findOne({where: {username: req.params.username}});
@@ -223,11 +223,20 @@ router.get('/me', async (req, res) => {
   }
 });
 router.put('/me', async (req, res) => {
-  await User.update(req.body, {where: {id: req.userId}});
+  try {
+    await User.update(req.body, {where: {id: req.userId}});
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json(getResponse(500, {description: 'Internal server error'}));
+    return;
+  }
   res.status(200).send();
 });
 router.delete('/me', async (req, res) => {
   await User.destroy({where: {id: req.userId}});
+  await UserPrivacy.destroy({where: {id: req.userId}});
   res.status(200).send();
 });
 

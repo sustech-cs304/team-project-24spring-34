@@ -1,37 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const app = express();
 const jwt = require('jsonwebtoken');
 const getResponse = require('../models/response');
-/**
- * @swagger
- * tags:
- *   - name: Users
- *     description: Operations about users
- *   - name: Events
- *     description: Operations about events
- *   - name: Comments
- *     description: Operations about comments
- *   - name: Locations
- *     description: Operations about locations
- */
-const usersRoutes = require('./users');
-router.use(usersRoutes);
-// router.use('/events', require('./events'));
-// router.use('/comments', require('./comments'));
-// router.use('/locations', require('./locations'));
 
-module.exports = router;
-
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *    bearerAuth:
- *      type: http
- *      scheme: bearer
- *      bearerFormat: JWT
- */
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -57,12 +28,42 @@ function verifyToken(req, res, next) {
   }
 }
 
-app.all('*', verifyToken);
-
-app.all('/users', (req, res, next) => {
-  next();
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *    bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
+ */
+router.use((req, res, next) => {
+  if (
+    (req.path === '/users' && req.method === 'POST') ||
+    (req.path === '/sessions' && req.method === 'POST')
+  ) {
+    next();
+  } else {
+    verifyToken(req, res, next);
+  }
 });
 
-app.all('/sessions', (req, res, next) => {
-  next();
-});
+/**
+ * @swagger
+ * tags:
+ *   - name: Users
+ *     description: Operations about users
+ *   - name: Events
+ *     description: Operations about events
+ *   - name: Comments
+ *     description: Operations about comments
+ *   - name: Locations
+ *     description: Operations about locations
+ */
+const usersRoutes = require('./users');
+router.use(usersRoutes);
+// router.use('/events', require('./events'));
+// router.use('/comments', require('./comments'));
+// router.use('/locations', require('./locations'));
+
+module.exports = router;

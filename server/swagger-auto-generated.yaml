@@ -88,22 +88,22 @@ paths:
           description: User logged out successfully
         '401':
           $ref: '#/components/responses/401'
-  /users/{username}: {}
-  get:
-    tags:
-      - Users
-    summary: Get a user by username
-    parameters:
-      - $ref: '#/components/parameters/path_username'
-    responses:
-      '200':
-        description: User found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      '404':
-        $ref: '#/components/responses/404'
+  /users/{username}:
+    get:
+      tags:
+        - Users
+      summary: Get a user by username
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/404'
   /me:
     get:
       tags:
