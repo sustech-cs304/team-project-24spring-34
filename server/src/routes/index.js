@@ -29,6 +29,71 @@ function verifyToken(req, res, next) {
 }
 
 /**
+ * @Swagger
+ * parameters:
+ *   path_username:
+ *     name: username
+ *     in: path
+ *     required: true
+ *     schema:
+ *       type: string
+ *       pattern: ^[a-zA-Z0-9]+$
+ *       maxLength: 15
+ *   path_event_id:
+ *     name: event_id
+ *     in: path
+ *     required: true
+ *     schema:
+ *       type: integer
+ *       minimum: 1
+ *   path_location_id:
+ *     name: location_id
+ *     in: path
+ *     required: true
+ *     schema:
+ *       type: integer
+ *       minimum: 1
+ *   path_tag_id:
+ *     name: tag_id
+ *     in: path
+ *     required: true
+ *     schema:
+ *       type: integer
+ *       minimum: 1
+ *   path_comment_id:
+ *     name: comment_id
+ *     in: path
+ *     required: true
+ *     schema:
+ *       type: integer
+ *       minimum: 1
+ *   query_limit:
+ *     name: limit
+ *     in: query
+ *     required: false
+ *     schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 100
+ *       default: 10
+ *   query_offset:
+ *     name: offset
+ *     in: query
+ *     required: false
+ *     schema:
+ *       type: integer
+ *       minimum: 0
+ *       default: 0
+ *   query_desc:
+ *     name: desc
+ *     in: query
+ *     required: false
+ *     schema:
+ *       type: boolean
+ *       default: true
+ */
+
+/**
  * @swagger
  * components:
  *   securitySchemes:
