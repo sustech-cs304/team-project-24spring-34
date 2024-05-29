@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Container,
   Box,
@@ -25,16 +25,43 @@ import {RxPerson} from 'react-icons/rx';
 import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminProfile from './adminProfile';
+import axios from 'axios';
 
-function ProfilePage(user) {
+function ProfilePage() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/me');
+        setData(response.data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <MKTypography variant='h6'>Loading...</MKTypography>;
+  }
+
+  if (error) {
+    return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
+  }
   const renderProfile = () => {
     switch ('crowd') {
       case 'crowd':
-        return <CrowdProfile user={user} />;
+        return <CrowdProfile user={data} />;
       case 'host':
-        return <HostProfile user={user} />;
+        return <HostProfile user={data} />;
       case 'admin':
-        return <AdminProfile user={user} />;
+        return <AdminProfile user={data} />;
       default:
         return null;
     }

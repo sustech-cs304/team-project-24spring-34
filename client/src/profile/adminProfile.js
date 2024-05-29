@@ -236,16 +236,20 @@ function AdminProfile(user) {
             sx={{width: 60, height: 60, marginRight: 2}}
           />
           <Box>
-            {/*<Typography variant="h6">{userName}</Typography>*/}
-            {/*<Typography variant="body2" color="textSecondary">{userType}</Typography>*/}
-            {/*<Typography variant="body2" color="textSecondary">{userId}</Typography>*/}
-            <Typography variant='h6'>哈哈</Typography>
+            <Typography variant='h6'>{user.username}</Typography>
             <Typography variant='body2' color='textSecondary'>
-              举办者
+              {user.user_group}
             </Typography>
             <Typography variant='body2' color='textSecondary'>
-              123
+              {user.id}
             </Typography>
+            {/*<Typography variant='h6'>哈哈</Typography>*/}
+            {/*<Typography variant='body2' color='textSecondary'>*/}
+            {/*  举办者*/}
+            {/*</Typography>*/}
+            {/*<Typography variant='body2' color='textSecondary'>*/}
+            {/*  123*/}
+            {/*</Typography>*/}
           </Box>
         </Box>
         {/* 菜单项 */}
