@@ -40,7 +40,9 @@ function verifyToken(req, res, next) {
 router.use((req, res, next) => {
   if (
     (req.path === '/users' && req.method === 'POST') ||
-    (req.path === '/sessions' && req.method === 'POST')
+    (req.path === '/sessions' && req.method === 'POST') ||
+    (req.path === '/locations' && req.method === 'GET') ||
+    (req.path.startsWith('/events') && req.method === 'GET')
   ) {
     next();
   } else {
@@ -62,6 +64,10 @@ router.use((req, res, next) => {
  */
 const usersRoutes = require('./users');
 router.use(usersRoutes);
+const locationsRoutes = require('./locations');
+router.use(locationsRoutes);
+const eventsRoutes = require('./events');
+router.use(eventsRoutes);
 // router.use('/events', require('./events'));
 // router.use('/comments', require('./comments'));
 // router.use('/locations', require('./locations'));
