@@ -13,12 +13,19 @@ body {
 .title {
     font-size: 40px;
     text-align: center;
-    margin: 20px 0;
+    margin: 120px 0;
+}
+
+.detailPage{
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    max-width: 1000px;
 }
 
 .details-container {
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     width: 80%;
     margin: 20px 0;
     border:none;
@@ -44,14 +51,20 @@ body {
 }
 
 .details-container > .organizer-info{
+    max-width: 400px;
+    /*max-height: 400px;*/
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 50%;
     padding: 20px;
-
+    cursor: pointer;
 }
+
+.details-container > .organizer-info:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
 
 .details-container > .organizer-info > .detail {
     display: flex;
@@ -60,16 +73,19 @@ body {
     align-items: center;
     width: 50%;
     padding: 20px;
+    font-size: medium;
 }
 .details-container > .organizer-info > .organizer-photo {
     width: 50%;
+    justify-content: center;
     border-radius: 8px;
-    margin-left: 20px;
+    margin: auto;
 }
 
 .details-container > .organizer-info > .organizer-photo img{
-    width: 100%;
-    
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
 }
 
 .introduction-container {
@@ -80,8 +96,7 @@ body {
     width: 80%;
     margin: 20px 0;
     padding: 20px;
-    background-color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
     border-radius: 8px;
     transform: translateX(10%);
 }
