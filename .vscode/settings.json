@@ -1,5 +1,7 @@
 {
   "cSpell.words": ["popd", "pushd"],
   "prettier.configPath": "",
-  "reactSnippets.settings.prettierEnabled": false
+  "reactSnippets.settings.prettierEnabled": false,
+  "editor.tabSize": 2,
+  "githubPullRequests.remotes": ["origin"]
 }
