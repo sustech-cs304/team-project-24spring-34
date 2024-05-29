@@ -29,7 +29,7 @@ function verifyToken(req, res, next) {
 }
 
 /**
- * @Swagger
+ * @swagger
  * parameters:
  *   path_username:
  *     name: username
