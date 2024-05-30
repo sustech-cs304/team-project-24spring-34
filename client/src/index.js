@@ -9,6 +9,7 @@ import ActivityDetails from './eventDetails/Detial_page';
 import BookingPage from './booking/Booking_page';
 import Publish from './publish/publish';
 import Mainpage from './mainpage/Mainpage';
+import ProfilePage from './profile/profile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,7 @@ root.render(
         <Route path='/details' element={<ActivityDetails />} />
         <Route path='/booking' element={<BookingPage />} />
         <Route path='/publish' element={<Publish />} />
+        <Route path='/profilePage' element={<ProfilePage />} />
       </Routes>
     </Router>
   </React.StrictMode>,
