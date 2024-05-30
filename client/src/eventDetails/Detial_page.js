@@ -36,21 +36,20 @@ function ActivityDetails() {
       <header className='frontLine'>
         <DefaultNavbar routes={routes} sticky />
       </header>
-
-      <main className='main-content'>
+      <Container>
         <section className='title'>
           <h1>{activityTitle}</h1>
         </section>
 
-        <div className='details-container'>
+        <section className='details-container'>
           <EventDetails />
           <OrganizerInfo />
-        </div>
+        </section>
 
         <Introduction />
         <Reserve />
         <div style={{marginTop: '20px'}}>{/* 评论区 */}</div>
-      </main>
+      </Container>
     </ThemeProvider>
   );
 }

@@ -441,12 +441,10 @@ function DefaultNavbar({
   return (
     <Container sx={sticky ? {position: 'sticky', top: 0, zIndex: 10} : null}>
       <MKBox
-        display='flex'
         py={1}
         px={{xs: 4, sm: transparent ? 2 : 3, lg: transparent ? 0 : 2}}
         my={relative ? 0 : 2}
         mx={relative ? 0 : 3}
-        maxW='100%'
         width={relative ? '100%' : 'calc(100% - 48px)'}
         borderRadius='xl'
         shadow={transparent ? 'none' : 'md'}
