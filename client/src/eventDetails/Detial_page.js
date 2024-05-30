@@ -33,19 +33,24 @@ function ActivityDetails() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <DefaultNavbar routes={routes} sticky />
-      <div className='detailPage'>
-        <div className='title'>
+      <header className='frontLine'>
+        <DefaultNavbar routes={routes} sticky />
+      </header>
+
+      <main className='main-content'>
+        <section className='title'>
           <h1>{activityTitle}</h1>
-        </div>
+        </section>
+
         <div className='details-container'>
           <EventDetails />
           <OrganizerInfo />
         </div>
+
         <Introduction />
         <Reserve />
         <div style={{marginTop: '20px'}}>{/* 评论区 */}</div>
-      </div>
+      </main>
     </ThemeProvider>
   );
 }
