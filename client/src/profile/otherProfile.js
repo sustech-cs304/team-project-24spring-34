@@ -12,7 +12,7 @@ function OtherProfilePage() {
   useEffect(() => {
     // 这里可以替换成实际的 API 调用
     const fetchUser = async () => {
-      const response = await fetch(`https://api.example.com/users/${userId}`);
+      const response = await fetch(`/api/users/${userId}`);
       const data = await response.json();
       setUser(data);
     };
