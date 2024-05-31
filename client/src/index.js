@@ -10,6 +10,7 @@ import BookingPage from './booking/Booking_page';
 import Publish from './publish/publish';
 import Mainpage from './mainpage/Mainpage';
 import ProfilePage from './profile/profile';
+import Notifications from './Notification/Notifications';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,6 +24,7 @@ root.render(
         <Route path='/booking' element={<BookingPage />} />
         <Route path='/publish' element={<Publish />} />
         <Route path='/profilePage' element={<ProfilePage />} />
+        <Route path='/notifications' element={<Notifications />} />
       </Routes>
     </Router>
   </React.StrictMode>,

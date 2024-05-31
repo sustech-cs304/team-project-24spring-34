@@ -104,7 +104,7 @@ const SingleComment = ({comment}) => {
                 })
               }
               onMouseClick={() => handleClickLike()}>
-              {hovered.like ? <AiFillLike color='blue' /> : <AiOutlineLike />}
+              {hovered.like ? <AiFillLike color='red' /> : <AiOutlineLike />}
               <Typography variant='caption' ml={1} style={{width: '30px'}}>
                 {dislikes}
               </Typography>
@@ -127,7 +127,7 @@ const SingleComment = ({comment}) => {
               }
               onMouseClick={() => handleClickDislike()}>
               {hovered.dislike ? (
-                <AiFillDislike color='red' />
+                <AiFillDislike color='blue' />
               ) : (
                 <AiOutlineDislike />
               )}

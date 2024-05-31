@@ -160,8 +160,10 @@ const CommentForm = ({onSubmit, onClose}) => {
         <Button
           type='submit'
           variant='contained'
-          color='primary'
-          style={{color: '#ffffff'}}
+          style={{
+            backgroundColor: '#9999ff',
+            color: '#ffffff',
+          }}
           fullWidth>
           Submit
         </Button>
