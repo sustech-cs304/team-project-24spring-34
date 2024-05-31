@@ -78,10 +78,7 @@ paths:
     get:
       tags:
         - Events
-      summary: Get a list of events according to status or tag
-      parameters:
-        - $ref: '#/components/parameters/query_event_status'
-        - $ref: '#/components/parameters/query_event_tag_list'
+      summary: Get a list of all events
       responses:
         '200':
           description: Event list found
@@ -109,6 +106,54 @@ paths:
                 $ref: '#/components/schemas/Event'
         '404':
           $ref: '#/components/responses/404'
+  /events/tags:
+    post:
+      tags:
+        - Events
+      summary: Create a new event tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - tag_name
+              properties:
+                tag_name:
+                  type: string
+                  description: The name of the tag
+                  example: Music
+                  minLength: 1
+                  maxLength: 50
+                  pattern: ^[a-zA-Z]+$
+                  unique: true
+                  readOnly: true
+      responses:
+        '201':
+          $ref: '#/components/responses/201'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      tags:
+        - Events
+      summary: Get all event tags
+      responses:
+        '200':
+          description: Event tag list found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/500'
   /locations:
     get:
       tags:
@@ -457,6 +502,18 @@ components:
           type: string
         avatar:
           type: string
+    EventStatus:
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+      type: integer
+      description: >-
+        1 = Draft,2 = Reviewing, 3 = Published, 4 = Ongoing, 5 = Finished, 6 =
+        Cancelled
     EventTag:
       type: object
       additionalProperties: false
