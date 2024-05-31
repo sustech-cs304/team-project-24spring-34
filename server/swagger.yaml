@@ -501,6 +501,22 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
+  /messages:
+    get:
+      tags:
+        - Users
+      summary: Get messages sent to the current user
+      responses:
+        '200':
+          description: Messages found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '401':
+          $ref: '#/components/responses/401'
 components:
   parameters:
     path_username:
@@ -579,7 +595,7 @@ components:
           type: integer
           description: The auto-generated id of the user
           readOnly: true
-        username: 
+        username:
           type: string
           description: The username of the user
         nickname:
@@ -595,40 +611,40 @@ components:
           type: string
           format: email
     UserPrivacy:
-        type: object
-        additionalProperties: false
-        required:
-          - gender
-          - birthday
-          - event_history
-          - following
-          - followers
-          - published_events
-        properties:
-          password:
-            type: string
-            description: The password after sha256 encryption with salt
-          gender:
-            $ref: '#/components/schemas/Gender'
-          birthday:
-            type: string
-            format: date
-          event_history:
-            type: array
-            items:
-              $ref: '#/components/schemas/Event'
-          following:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
-          followers:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
-          published_events:
-            type: array
-            items:
-              $ref: '#/components/schemas/Event'
+      type: object
+      additionalProperties: false
+      required:
+        - gender
+        - birthday
+        - event_history
+        - following
+        - followers
+        - published_events
+      properties:
+        password:
+          type: string
+          description: The password after sha256 encryption with salt
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birthday:
+          type: string
+          format: date
+        event_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        following:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        followers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        published_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
     Gender:
       enum:
         - 1
@@ -827,6 +843,27 @@ components:
       type: integer
       description: >-
         1 = Available, 2 = Reserved, 3 = Unavailable
+    Message:
+      type: object
+      additionalProperties: false
+      required:
+        - title
+        - content
+        - time
+        - sender
+        - receiver
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        time:
+          type: string
+          format: date-time
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
     ErrorDetail:
       title: ErrorDetail
       additionalProperties: false

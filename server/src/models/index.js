@@ -11,6 +11,7 @@ const {EventStatus, init: EventStatusInit} = require('./eventStatus');
 const {Location, init: LocationInit} = require('./location');
 const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
 const {Comment} = require('./comment');
+const {Message, init: MessageInit} = require('./message');
 
 const initializeTables = async () => {
   try {
@@ -73,6 +74,24 @@ const initializeTables = async () => {
 
     LocationStatus.hasMany(Location);
     Location.belongsTo(LocationStatus);
+
+    User.hasMany(Message, {
+      foreignKey: 'sender',
+      as: 'sender_id',
+    });
+    Message.belongsTo(User, {
+      foreignKey: 'sender',
+      as: 'sender_id',
+    });
+
+    User.hasMany(Message, {
+      foreignKey: 'receiver',
+      as: 'receiver_id',
+    });
+    Message.belongsTo(User, {
+      foreignKey: 'receiver',
+      as: 'receiver_id',
+    });
   } catch (error) {
     console.error('Error initializing tables:', error);
   }
@@ -87,7 +106,7 @@ const initializeModels = async () => {
     EventParticipantInit(),
     EventStatusInit(),
   ]);
-  await Promise.all([UserInit(), EventInit(), LocationInit()]);
+  await Promise.all([UserInit(), EventInit(), LocationInit(), MessageInit()]);
 
   const user1 = await User.findByPk(1);
   const user2 = await User.findByPk(2);
@@ -108,4 +127,5 @@ module.exports = {
   Location,
   LocationStatus,
   Comment,
+  Message,
 };

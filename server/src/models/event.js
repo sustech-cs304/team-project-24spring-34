@@ -33,7 +33,7 @@ const sequelize = require('../config/connection');
  *           type: string
  *           description: The URL of the event's poster
  *         organizer:
- *           $ref: '#/components/schemas/UserPrivacy'
+ *           $ref: '#/components/schemas/User'
  *         audience:
  *           type: array
  *           items:
