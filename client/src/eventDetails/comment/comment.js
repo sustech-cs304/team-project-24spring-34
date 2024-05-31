@@ -25,7 +25,7 @@ import {
   AiFillDislike,
 } from 'react-icons/ai';
 
-const SingleComment = ({comment}) => {
+const SingleComment = ({comment, authority}) => {
   const {
     id,
     userId,
@@ -50,6 +50,10 @@ const SingleComment = ({comment}) => {
 
   const handleClickDislike = () => {
     console.log('dislike');
+  };
+
+  const handleDelete = () => {
+    console.log('delete');
   };
 
   return (
@@ -84,7 +88,25 @@ const SingleComment = ({comment}) => {
         justifyContent='space-between'
         alignItems='center'
         mt={1}>
-        <Typography variant='caption'>{timestamp}</Typography>
+        <section>
+          <Typography variant='caption'>{timestamp}</Typography>
+          {authority && (
+            <Button
+              variant='contained'
+              onClick={handleDelete}
+              style={{
+                marginLeft: '10px',
+                maxHeight: '10px',
+                //lucency
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                color: 'red',
+                boxShadow: 'none',
+                fontSize: '10px',
+              }}>
+              Delete
+            </Button>
+          )}
+        </section>
         <Box display='flex' alignItems='center'>
           <Box display='flex' alignItems='center' mr={2}>
             <Box
@@ -143,7 +165,7 @@ const SingleComment = ({comment}) => {
   );
 };
 
-const CommentList = ({comments}) => {
+const CommentList = ({comments, authority}) => {
   const commentPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentComments, setCurrentComments] = useState([]);
@@ -167,7 +189,7 @@ const CommentList = ({comments}) => {
       <List className='comment-list'>
         {currentComments.map((comment) => (
           <ListItem key={comment.id}>
-            <SingleComment comment={comment} />
+            <SingleComment comment={comment} authority={authority} />
           </ListItem>
         ))}
       </List>
@@ -187,6 +209,7 @@ const CommentsSection = ({active_id}) => {
   const [comments, setComments] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const titletext = {zh: '评论', en: 'Comments'};
+  const [authority, setAuthority] = useState(true);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -334,6 +357,10 @@ const CommentsSection = ({active_id}) => {
     setShowForm(false);
   };
 
+  const handleAutority = () => {
+    setAuthority(true);
+  };
+
   return (
     <Box>
       <Box
@@ -374,7 +401,7 @@ const CommentsSection = ({active_id}) => {
           </Box>
         </Fade>
       </Modal>
-      <CommentList comments={comments} />
+      <CommentList comments={comments} authority={authority} />
     </Box>
   );
 };
