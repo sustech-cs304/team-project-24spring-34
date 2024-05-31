@@ -1,62 +1,65 @@
 import React from 'react';
+import {Typography, Box} from '@mui/material';
 import Rating from './Rating';
 
-const dateComponent = (date) => {
-  const dateEmoji = {en: '📅', zh: '📅'};
-  const dateTitle = {en: 'Date', zh: '日期'};
-
+const DateComponent = ({date}) => {
   return (
-    <p>
-      {dateEmoji.zh}
-      <strong>{dateTitle.zh}</strong>: {date}
-    </p>
+    <Typography variant='body1' gutterBottom>
+      📅 <strong>日期</strong>: {date}
+    </Typography>
   );
 };
 
-const timeComponent = (startTime, endTime) => {
-  const timeEmoji = {en: '⏰', zh: '⏰'};
-  const timeTitle = {en: 'Time', zh: '时间'};
-
+const TimeComponent = ({startTime, endTime}) => {
   return (
-    <p>
-      {timeEmoji.zh}
-      <strong>{timeTitle.zh}</strong>: {startTime} - {endTime}
-    </p>
+    <Typography variant='body1' gutterBottom>
+      ⏰ <strong>时间</strong>: {startTime} - {endTime}
+    </Typography>
   );
 };
 
-const locationComponent = (location) => {
-  const locationEmoji = {en: '📍', zh: '📍'};
-  const locationTitle = {en: 'Location', zh: '地点'};
+const LocationComponent = ({location}) => {
   return (
-    <p>
-      {locationEmoji.zh}
-      <strong>{locationTitle.zh}</strong>: {location}
-    </p>
+    <Typography variant='body1' gutterBottom>
+      📍 <strong>地点</strong>: {location}
+    </Typography>
   );
 };
 
-const classificationComponent = (classifications) => {
-  // classifications is an array of strings
-  const classificationEmoji = {en: '🏷️', zh: '🏷️'};
-  const classificationTitle = {en: 'Classification', zh: '分类'};
+const ClassificationComponent = ({classifications}) => {
   return (
-    <p>
-      {classificationEmoji.zh}
-      <strong>{classificationTitle.zh}</strong>: {classifications.join(', ')}
-    </p>
+    <Typography variant='body1' gutterBottom>
+      🏷️ <strong>分类</strong>: {classifications.join(', ')}
+    </Typography>
   );
 };
 
 const EventDetails = () => {
   return (
-    <div className='event-details'>
+    <Box
+      className='event-details'
+      mt={2}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        marginLeft: '40px',
+        marginTop: '30px',
+      }}>
       <Rating rating={4.0} rating_num={19} />
-      {dateComponent('2024-4-26')}
-      {timeComponent('10:00', '12:00')}
-      {locationComponent('格赫娜学院')}
-      {classificationComponent(['偷跑', '装甲'])}
-    </div>
+      <section
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          padding: '10px',
+          marginTop: '30px',
+        }}>
+        <DateComponent date='2024-4-26' />
+        <TimeComponent startTime='10:00' endTime='12:00' />
+        <LocationComponent location='格赫娜学院' />
+        <ClassificationComponent classifications={['偷跑', '装甲']} />
+      </section>
+    </Box>
   );
 };
 

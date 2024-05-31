@@ -84,6 +84,7 @@ const StarRating = ({handleRatingChange}) => {
   return (
     <div style={{display: 'flex'}}>
       {[1, 2, 3, 4, 5].map((index) => renderStar(index))}
+      <Typography sx={{marginLeft: 2}}>{rating.toFixed(1)}</Typography>
     </div>
   );
 };
@@ -153,7 +154,7 @@ const CommentForm = ({onSubmit, onClose}) => {
           fullWidth
           value={content}
           onChange={handleContentChange}
-          rows={4}
+          rows={7}
           sx={{marginBottom: 2}}
         />
         <Button
@@ -165,7 +166,6 @@ const CommentForm = ({onSubmit, onClose}) => {
           Submit
         </Button>
       </form>
-      <Divider sx={{marginTop: 2}} />
     </Box>
   );
 };

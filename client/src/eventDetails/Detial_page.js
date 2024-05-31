@@ -25,7 +25,7 @@ function ActivityDetails() {
       // const data = await response.json();
 
       // 用于测试的假数据
-      const data = 'exapmle title';
+      const data = '基窝托斯偷跑大赛';
       setActivityTitle(data);
     }
     fetchTitle();
@@ -49,7 +49,15 @@ function ActivityDetails() {
 
         <Introduction />
         <Reserve />
-        <section>
+        <hr />
+        <section
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            padding: '10px',
+            marginTop: '30px',
+          }}>
           <CommentsSection active_id={0} />
         </section>
       </Container>
