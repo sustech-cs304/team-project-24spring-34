@@ -28,8 +28,8 @@ import Typography from '@mui/material/Typography';
 function DefaultInfoCard({
   title,
   description,
-  date,
-  time,
+  start_time,
+  end_time,
   site,
   host,
   direction,
@@ -55,16 +55,18 @@ function DefaultInfoCard({
           display='inline'
           variant={small ? 'button' : 'body2'}
           color='text'>
-          {time} {/* 格式化后的时间 */}
+          {start_time} {/* 格式化后的时间 */}
+          --
+          {end_time}
         </MKTypography>
-        <div style={{width: '20px'}}></div>
-        <BiCalendar style={{marginRight: 4}} />
-        <MKTypography
-          display='inline'
-          variant={small ? 'button' : 'body2'}
-          color='text'>
-          {date} {/* 格式化后的日期 */}
-        </MKTypography>
+        {/*<div style={{width: '20px'}}></div>*/}
+        {/*<BiCalendar style={{marginRight: 4}} />*/}
+        {/*<MKTypography*/}
+        {/*  display='inline'*/}
+        {/*  variant={small ? 'button' : 'body2'}*/}
+        {/*  color='text'>*/}
+        {/*  {date} /!* 格式化后的日期 *!/*/}
+        {/*</MKTypography>*/}
       </MKBox>
       <MKBox display='flex' alignItems='center' pr={2}>
         <AiOutlineHome style={{marginRight: 4}} />
@@ -105,8 +107,8 @@ DefaultInfoCard.defaultProps = {
 DefaultInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
-  time: PropTypes.string.isRequired,
+  start_time: PropTypes.string.isRequired,
+  end_time: PropTypes.string.isRequired,
   site: PropTypes.string.isRequired,
   host: PropTypes.string.isRequired,
   direction: PropTypes.oneOf(['left', 'right', 'center']),

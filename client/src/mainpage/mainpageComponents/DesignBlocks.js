@@ -64,14 +64,15 @@ function DesignBlocks() {
   }
   const renderData = data.map((event) => (
     <Grid item xs={12} md={4} sx={{mb: 2}} key={event.title}>
-      <Link to={event.route}>
+      <Link to={`/event/${event.id}`}>
         <DefaultInfoCard
           title={event.title}
           description={event.description}
-          date={event.date}
-          time={event.time}
-          site={event.location}
-          host={event.organizer}
+          // date={event.date}
+          start_time={event.start_time}
+          end_time={event.end_time}
+          site={event.location.name}
+          host={event.organizer.nickname}
         />
       </Link>
     </Grid>

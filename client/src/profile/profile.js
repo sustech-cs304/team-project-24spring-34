@@ -55,12 +55,12 @@ function ProfilePage() {
     return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
   }
   const renderProfile = () => {
-    switch ('crowd') {
-      case 'crowd':
+    switch (data.user_group) {
+      case 1:
         return <CrowdProfile user={data} />;
-      case 'host':
+      case 2:
         return <HostProfile user={data} />;
-      case 'admin':
+      case 3:
         return <AdminProfile user={data} />;
       default:
         return null;
