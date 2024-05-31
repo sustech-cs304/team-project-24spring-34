@@ -23,7 +23,7 @@ const TagEnum = {
 };
 
 const NotificationBriefBlock = ({Notification}) => {
-  const {id, activateid, senderid, reciverid, title, content, tag, time} =
+  const {id, activateid, senderid, reciverid, title, content, tag, time, read} =
     Notification;
   const navigate = useNavigate();
   const handelClickOnNotification = () => {
@@ -31,18 +31,22 @@ const NotificationBriefBlock = ({Notification}) => {
   };
 
   let bgColor;
-  switch (tag) {
-    case '0':
-      bgColor = '#e0f7fa'; // normal
-      break;
-    case '1':
-      bgColor = '#fff3e0'; // important
-      break;
-    case '2':
-      bgColor = '#ffebee'; // urgent
-      break;
-    default:
-      bgColor = '#ffffff'; // default
+  if (read == false) {
+    switch (tag) {
+      case '0':
+        bgColor = '#e0f7fa'; // normal
+        break;
+      case '1':
+        bgColor = '#fff3e0'; // important
+        break;
+      case '2':
+        bgColor = '#ffebee'; // urgent
+        break;
+      default:
+        bgColor = '#ffffff'; // default
+    }
+  } else {
+    bgColor = '#f0f0f0'; // read
   }
 
   return (
@@ -98,6 +102,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: false,
       },
       {
         id: '2',
@@ -108,6 +113,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-11 10:10:10',
+        read: false,
       },
       {
         id: '3',
@@ -118,6 +124,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       // Add more Notifications as needed...
       {
@@ -129,6 +136,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: false,
       },
       {
         id: '5',
@@ -139,6 +147,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-12-11 10:10:10',
+        read: false,
       },
       {
         id: '6',
@@ -149,6 +158,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '7',
@@ -159,6 +169,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: false,
       },
       {
         id: '8',
@@ -169,6 +180,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-12 10:10:10',
+        read: false,
       },
       {
         id: '9',
@@ -179,6 +191,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '10',
@@ -189,6 +202,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: false,
       },
       {
         id: '11',
@@ -199,6 +213,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-11 10:10:10',
+        read: false,
       },
       {
         id: '12',
@@ -209,6 +224,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '13',
@@ -219,6 +235,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '14',
@@ -229,6 +246,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-11 10:10:10',
+        read: false,
       },
       {
         id: '15',
@@ -239,6 +257,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '16',
@@ -249,6 +268,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: false,
       },
       {
         id: '17',
@@ -259,6 +279,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-11 10:10:10',
+        read: false,
       },
       {
         id: '18',
@@ -269,6 +290,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '19',
@@ -279,6 +301,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: false,
       },
       {
         id: '20',
@@ -289,6 +312,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '21',
@@ -299,6 +323,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '22',
@@ -309,6 +334,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: true,
       },
       {
         id: '23',
@@ -319,6 +345,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2024-10-11 10:10:10',
+        read: false,
       },
       {
         id: '24',
@@ -329,6 +356,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: false,
       },
       {
         id: '25',
@@ -339,6 +367,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: true,
       },
       {
         id: '26',
@@ -349,6 +378,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-11 10:10:10',
+        read: true,
       },
       {
         id: '27',
@@ -359,6 +389,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: true,
       },
       {
         id: '28',
@@ -369,6 +400,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: true,
       },
       {
         id: '29',
@@ -379,6 +411,7 @@ const Notifications = () => {
         content: 'world!!',
         tag: '1',
         time: '2021-10-16 10:10:10',
+        read: true,
       },
       {
         id: '30',
@@ -389,6 +422,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '2',
         time: '2021-10-13 10:10:10',
+        read: true,
       },
       {
         id: '31',
@@ -399,6 +433,7 @@ const Notifications = () => {
         content: 'hello',
         tag: '0',
         time: '2021-10-10 10:10:10',
+        read: true,
       },
     ];
     const sortedNotifications = testData.sort((a, b) => {

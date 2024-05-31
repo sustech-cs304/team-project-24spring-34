@@ -17,7 +17,7 @@ const StarRating = ({handleRatingChange}) => {
   const handleMouseMove = (index, event) => {
     const {left, width} = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - left;
-    const hoverValue = x < width / 2 ? index - 0.5 : index;
+    const hoverValue = (x < width / 2 ? index - 0.5 : index) * 2;
     setHoverRating(hoverValue);
   };
 
@@ -32,13 +32,17 @@ const StarRating = ({handleRatingChange}) => {
 
   const renderStar = (index) => {
     const fill =
-      hoverRating >= index
+      hoverRating / 2 >= index
         ? 'full'
-        : hoverRating + 0.5 === index
+        : hoverRating / 2 + 0.5 === index
           ? 'half'
           : 'none';
     const isFilled =
-      rating >= index ? 'full' : rating + 0.5 === index ? 'half' : 'none';
+      rating / 2 >= index
+        ? 'full'
+        : rating / 2 + 0.5 === index
+          ? 'half'
+          : 'none';
 
     return (
       <svg
