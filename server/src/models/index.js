@@ -4,6 +4,10 @@ const {User, init: UserInit} = require('./user');
 const {UserPrivacy, init: UserPrivacyInit} = require('./userPrivacy');
 const {Event, init: EventInit} = require('./event');
 const {EventTag, init: EventTagInit} = require('./eventTag');
+const {
+  EventParticipant,
+  init: EventParticipantInit,
+} = require('./eventParticipant');
 const {Location, init: LocationInit} = require('./location');
 const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
 
@@ -28,14 +32,25 @@ const initializeTables = async () => {
     });
 
     UserPrivacy.belongsToMany(Event, {
-      foreignKey: 'participant',
-      through: 'event_participant',
+      foreignKey: 'audience',
+      through: 'event_audience',
       as: 'event_history',
     });
     Event.belongsToMany(UserPrivacy, {
       foreignKey: 'event',
+      through: 'event_audience',
+      as: 'audience',
+    });
+
+    Event.belongsToMany(EventParticipant, {
+      foreignKey: 'event',
       through: 'event_participant',
-      as: 'participant',
+      as: 'participants',
+    });
+    EventParticipant.belongsToMany(Event, {
+      foreignKey: 'participant',
+      through: 'event_participant',
+      as: 'events',
     });
 
     LocationStatus.hasMany(Location, {
@@ -57,6 +72,7 @@ const initializeModels = async () => {
     UserGroupInit(),
     LocationStatusInit(),
     EventTagInit(),
+    EventParticipantInit(),
   ]);
   await Promise.all([
     UserInit(),
@@ -68,8 +84,7 @@ const initializeModels = async () => {
   const user1 = await UserPrivacy.findByPk(1);
   const user2 = await UserPrivacy.findByPk(2);
   const event = await Event.findByPk(1);
-  await event.addParticipant([user1, user2]);
-  console.log('Participant number:', await event.countParticipant());
+  await event.addAudience([user1, user2]);
 };
 
 module.exports = {

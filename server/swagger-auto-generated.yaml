@@ -396,7 +396,11 @@ components:
           type: string
           description: The URL of the event's poster
         organizer:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserPrivacy'
+        audience:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
         participants:
           type: array
           items:
@@ -419,6 +423,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Comment'
+<<<<<<< HEAD
     EventTag:
       type: object
       additionalProperties: false
@@ -433,6 +438,26 @@ components:
         tag_name:
           type: string
           description: The name of the tag
+=======
+    EventParticipant:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - description
+        - avatar
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        avatar:
+          type: string
+>>>>>>> 96fad383044ed96df5b2b89cf6b7c23572ebca89
     Gender:
       enum:
         - 1
