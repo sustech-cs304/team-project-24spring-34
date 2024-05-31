@@ -24,38 +24,39 @@ import {PiEnvelopeSimpleLight} from 'react-icons/pi';
 import {RxPerson} from 'react-icons/rx';
 import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import CssBaseline from '@mui/material/CssBaseline';
+import {IoIosSearch} from 'react-icons/io';
 import AdminProfile from './adminProfile';
 import axios from 'axios';
 
 function ProfilePage() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/me');
-        setData(response.data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <MKTypography variant='h6'>Loading...</MKTypography>;
-  }
-
-  if (error) {
-    return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
-  }
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  //
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/me');
+  //       setData(response.data);
+  //     } catch (error) {
+  //       setError(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //
+  //   fetchData();
+  // }, []);
+  //
+  // if (loading) {
+  //   return <MKTypography variant='h6'>Loading...</MKTypography>;
+  // }
+  //
+  // if (error) {
+  //   return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
+  // }
   const renderProfile = () => {
-    switch (data.user_group) {
+    switch (3) {
       case 1:
         return <CrowdProfile user={data} />;
       case 2:
@@ -92,6 +93,23 @@ function ProfilePage() {
             </MKTypography>
           </MKBox>
           <MKBox display='flex' alignItems='center' marginLeft='auto'>
+            <MKBox
+              component={Link}
+              to='/search'
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                color: 'black',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+                ml: 1,
+              }}>
+              <IoIosSearch />
+            </MKBox>
             <MKBox
               component={Link}
               to='/'

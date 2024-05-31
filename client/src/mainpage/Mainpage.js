@@ -17,7 +17,7 @@ function Mainpage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <DefaultNavbar routes={routes} sticky />
+      <DefaultNavbar sticky />
       {/*<MKInput>asdsaa</MKInput>*/}
       <Box
         sx={{

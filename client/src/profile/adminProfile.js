@@ -8,11 +8,73 @@ import {
   ListItemText,
   IconButton,
 } from '@mui/material';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import MKButton from '../components/MKButton';
+import {Delete as DeleteIcon} from '@mui/icons-material';
+
+const mockEvents = [
+  {
+    id: 1,
+    title: 'Event 1',
+    time: '2024-06-01 10:00',
+    location: 'Location 1',
+    organizer: 'Organizer 1',
+  },
+  {
+    id: 2,
+    title: 'Event 2',
+    time: '2024-06-02 11:00',
+    location: 'Location 2',
+    organizer: 'Organizer 2',
+  },
+  {
+    id: 3,
+    title: 'Event 3',
+    time: '2024-06-03 12:00',
+    location: 'Location 3',
+    organizer: 'Organizer 3',
+  },
+  // 添加更多模拟事件数据
+];
 function AdminProfile(user) {
   const [selectedItem, setSelectedItem] = useState('profile');
+  const [events, setEvents] = useState([]);
+
+  // useEffect(() => {
+  // 获取事件数据的函数
+  //   const fetchEvents = async () => {
+  //     try {
+  //       const response = await fetch('https://api.example.com/events');
+  //       const data = await response.json();
+  //       setEvents(data);
+  //     } catch (error) {
+  //       console.error('Error fetching events:', error);
+  //     }
+  //   };
+  //
+  //   fetchEvents();
+  // }, []);
+  // const handleDelete = async (id) => {
+  //   try {
+  //     await fetch(`https://api.example.com/events/${id}`, {
+  //       method: 'DELETE',
+  //     });
+  //     setEvents(events.filter(event => event.id !== id));
+  //   } catch (error) {
+  //     console.error('Error deleting event:', error);
+  //   }
+  // };
+
+  useEffect(() => {
+    // 使用模拟数据
+    setEvents(mockEvents);
+  }, []);
+
+  const handleDelete = (id) => {
+    // 模拟删除事件
+    setEvents(events.filter((event) => event.id !== id));
+  };
   const renderContent = () => {
     switch (selectedItem) {
       case 'profile':
@@ -168,50 +230,26 @@ function AdminProfile(user) {
         );
       case 'manageEvents':
         return (
-          <Box>
-            <Typography variant='h6'>活动管理</Typography>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
+          <Box p={3}>
+            <Typography variant='h6' gutterBottom>
+              活动管理
+            </Typography>
+            <List>
+              {events.map((event) => (
+                <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
+                  <ListItemText
+                    primary={event.title}
+                    secondary={`${event.time} | ${event.location} | ${event.organizer}`}
+                  />
+                  <IconButton
+                    edge='end'
+                    aria-label='delete'
+                    onClick={() => handleDelete(event.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
           </Box>
         );
       default:
