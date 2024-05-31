@@ -7,7 +7,7 @@ const RatingMini = ({rating}) => {
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
   return (
-    <div style={{display: 'flex', alignItems: 'center'}}>
+    <div style={{display: 'flex', alignItems: 'center', marginLeft: '20px'}}>
       {/* 渲染整颗星星 */}
       {Array(fullStars)
         .fill()

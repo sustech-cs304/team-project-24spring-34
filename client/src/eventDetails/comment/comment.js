@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import RatingMini from './RatingMini';
+import CommentForm from './CommentForm';
+import ReactDOM from 'react-dom';
 import './comment.css';
 import {
   Box,
@@ -12,7 +14,16 @@ import {
   TextField,
   Divider,
   Pagination,
+  Modal,
+  Backdrop,
+  Fade,
 } from '@mui/material';
+import {
+  AiOutlineLike,
+  AiOutlineDislike,
+  AiFillLike,
+  AiFillDislike,
+} from 'react-icons/ai';
 
 const SingleComment = ({comment}) => {
   const {
@@ -28,18 +39,27 @@ const SingleComment = ({comment}) => {
   } = comment;
 
   const navigate = useNavigate();
+  const [hovered, setHovered] = useState({like: false, dislike: false});
 
   const handleClickOnUserInfo = () => {
     navigate('/profilePage');
   };
+  const handleClickLike = () => {
+    console.log('like');
+  };
+
+  const handleClickDislike = () => {
+    console.log('dislike');
+  };
 
   return (
-    <Box className='single-comment' mb={2}>
+    <Box className='single-comment' mb={2} width={'100%'}>
       <Box
         className='comment-header'
         display='flex'
         justifyContent='space-between'
-        alignItems='center'>
+        alignItems='center'
+        width={'100%'}>
         <Box
           className='user-info'
           onClick={handleClickOnUserInfo}
@@ -55,7 +75,7 @@ const SingleComment = ({comment}) => {
         </Box>
         <RatingMini rating={rating} />
       </Box>
-      <Typography variant='body1' mt={1}>
+      <Typography variant='body1' mt={1} style={{wordBreak: 'break-all'}}>
         {content}
       </Typography>
       <Box
@@ -64,14 +84,58 @@ const SingleComment = ({comment}) => {
         justifyContent='space-between'
         alignItems='center'
         mt={1}>
-        <Typography variant='caption'>
-          {new Date(timestamp).toLocaleString()}
-        </Typography>
-        <Box>
-          <Typography variant='caption' mr={2}>
-            {likes} likes
-          </Typography>
-          <Typography variant='caption'>{dislikes} dislikes</Typography>
+        <Typography variant='caption'>{timestamp}</Typography>
+        <Box display='flex' alignItems='center'>
+          <Box display='flex' alignItems='center' mr={2}>
+            <Box
+              display='flex'
+              alignItems='center'
+              mr={1}
+              onMouseEnter={() =>
+                setHovered({
+                  like: true,
+                  dislike: false,
+                })
+              }
+              onMouseLeave={() =>
+                setHovered({
+                  like: false,
+                  dislike: false,
+                })
+              }
+              onMouseClick={() => handleClickLike()}>
+              {hovered.like ? <AiFillLike color='blue' /> : <AiOutlineLike />}
+              <Typography variant='caption' ml={1} style={{width: '30px'}}>
+                {dislikes}
+              </Typography>
+            </Box>
+            <Box
+              display='flex'
+              alignItems='center'
+              ml={1}
+              onMouseEnter={() =>
+                setHovered({
+                  like: false,
+                  dislike: true,
+                })
+              }
+              onMouseLeave={() =>
+                setHovered({
+                  like: false,
+                  dislike: false,
+                })
+              }
+              onMouseClick={() => handleClickDislike()}>
+              {hovered.dislike ? (
+                <AiFillDislike color='red' />
+              ) : (
+                <AiOutlineDislike />
+              )}
+              <Typography variant='caption' ml={1} style={{width: '30px'}}>
+                {likes}
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
       <Divider sx={{my: 2}} />
@@ -118,69 +182,6 @@ const CommentList = ({comments}) => {
   );
 };
 
-const CommentForm = ({onSubmit}) => {
-  const [rating, setRating] = useState(0);
-  const [content, setContent] = useState('');
-
-  const handleRatingChange = (e) => {
-    setRating(e.target.value);
-  };
-
-  const handleContentChange = (e) => {
-    setContent(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newComment = {
-      id: Math.random().toString(36).substr(2, 9),
-      userId: 0,
-      userName: 'user',
-      avatar: null,
-      rating: rating,
-      content: content,
-      timestamp: new Date().toISOString(),
-      likes: 0,
-      dislikes: 0,
-    };
-    onSubmit(newComment);
-  };
-
-  return (
-    <Box
-      component='form'
-      className='comment-form'
-      onSubmit={handleSubmit}
-      mt={2}>
-      <TextField
-        type='number'
-        id='rating'
-        name='rating'
-        label='Rating'
-        inputProps={{min: 0, max: 5}}
-        value={rating}
-        onChange={handleRatingChange}
-        fullWidth
-        margin='normal'
-      />
-      <TextField
-        id='content'
-        name='content'
-        label='Content'
-        value={content}
-        onChange={handleContentChange}
-        fullWidth
-        margin='normal'
-        multiline
-        rows={4}
-      />
-      <Button type='submit' variant='contained' color='primary' fullWidth>
-        Submit
-      </Button>
-    </Box>
-  );
-};
-
 // 主组件
 const CommentsSection = ({active_id}) => {
   const [comments, setComments] = useState([]);
@@ -205,7 +206,8 @@ const CommentsSection = ({active_id}) => {
         {
           id: 2,
           userId: 2,
-          userName: 'user2',
+          userName:
+            'user2user2user2user2user2user2user2user2user2user2user2user2',
           avatar: null,
           rating: 3,
           content: 'comment2',
@@ -230,7 +232,8 @@ const CommentsSection = ({active_id}) => {
           userName: 'user4',
           avatar: null,
           rating: 5,
-          content: 'comment4',
+          content:
+            'comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4',
           timestamp: '2021-08-04',
           likes: 30,
           dislikes: 0,
@@ -341,13 +344,36 @@ const CommentsSection = ({active_id}) => {
         <Typography variant='h4'>{titletext.en}</Typography>
         <Button
           variant='contained'
-          color='primary'
-          onClick={() => setShowForm(!showForm)}>
+          color='inherit'
+          onClick={() => setShowForm(true)}>
           Add Comment
         </Button>
       </Box>
       <Divider sx={{my: 2}} />
-      {showForm && <CommentForm onSubmit={handleCommentSubmit} />}
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        closeAfterTransition>
+        <Fade in={showForm}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '10%',
+              left: '50%',
+              transform: 'translate(-50%, 0)',
+              width: 400,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+            }}>
+            <CommentForm
+              onSubmit={handleCommentSubmit}
+              onClose={() => setShowForm(false)}
+            />
+          </Box>
+        </Fade>
+      </Modal>
       <CommentList comments={comments} />
     </Box>
   );
