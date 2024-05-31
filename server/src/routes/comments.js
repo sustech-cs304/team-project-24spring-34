@@ -112,13 +112,19 @@ router.post('/comments/:event_id', async (req, res) => {
   res.status(201).json(comment);
 });
 router.get('/comments/:event_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
   const target_event = await Event.findOne({where: {id: req.params.event_id}});
   if (!target_event) {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
     return;
   }
-
-  let comments = await Comment.findAll({where: {event: target_event}});
+  let comments = await Comment.findAll({
+    where: {event_id: req.params.event_id},
+  });
   const total = comments.length;
   comments = comments.slice(
     req.query.offset,
@@ -127,3 +133,5 @@ router.get('/comments/:event_id', async (req, res) => {
 
   res.json({comments, total});
 });
+
+module.exports = router;

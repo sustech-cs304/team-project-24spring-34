@@ -24,10 +24,11 @@ const sequelize = require('../config/connection');
  *         content:
  *           type: string
  *           description: The content of the comment
- *         user:
- *           $ref: '#/components/schemas/User'
- *         event:
- *           $ref: '#/components/schemas/Event'
+ *         user_id:
+ *           type: integer
+ *           description: The id of the user who created the comment
+ *         event_id:
+ *           type: integer
  *         likes:
  *           type: integer
  *           default: 0
@@ -70,4 +71,32 @@ const Comment = sequelize.define(
   },
 );
 
-module.exports = Comment;
+const init = async () => {
+  try {
+    await Comment.bulkCreate([
+      {
+        content: 'This is a comment',
+        user_id: 1,
+        event_id: 1,
+        likes: 0,
+        dislikes: 0,
+        rating: 5,
+      },
+      {
+        content: 'This is another comment',
+        user_id: 1,
+        event_id: 1,
+        likes: 0,
+        dislikes: 0,
+        rating: 5,
+      },
+    ]);
+    console.log(
+      'Entries have been successfully inserted into the comment table',
+    );
+  } catch (err) {
+    console.error('Error inserting entries into the comment table:', err);
+  }
+};
+
+module.exports = {Comment, init};

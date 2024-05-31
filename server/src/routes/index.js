@@ -152,12 +152,11 @@ router.use((req, res, next) => {
  */
 const usersRoutes = require('./users');
 router.use(usersRoutes);
-const locationsRoutes = require('./locations');
-router.use(locationsRoutes);
 const eventsRoutes = require('./events');
 router.use(eventsRoutes);
-// router.use('/events', require('./events'));
-// router.use('/comments', require('./comments'));
-// router.use('/locations', require('./locations'));
+const commentsRoutes = require('./comments');
+router.use(commentsRoutes);
+const locationsRoutes = require('./locations');
+router.use(locationsRoutes);
 
 module.exports = router;

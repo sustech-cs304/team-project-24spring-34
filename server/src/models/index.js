@@ -10,7 +10,7 @@ const {
 const {EventStatus, init: EventStatusInit} = require('./eventStatus');
 const {Location, init: LocationInit} = require('./location');
 const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
-const {Comment} = require('./comment');
+const {Comment, init: CommentInit} = require('./comment');
 const {Message, init: MessageInit} = require('./message');
 
 const initializeTables = async () => {
@@ -55,8 +55,12 @@ const initializeTables = async () => {
       as: 'events',
     });
 
-    Event.hasMany(Comment);
-    User.hasMany(Comment);
+    Event.hasMany(Comment, {
+      foreignKey: 'event_id',
+    });
+    User.hasMany(Comment, {
+      foreignKey: 'user_id',
+    });
 
     //Event.belongsToMany(EventTag, {
     //  foreignKey: 'event',
@@ -105,8 +109,15 @@ const initializeModels = async () => {
     EventTagInit(),
     EventParticipantInit(),
     EventStatusInit(),
+    CommentInit(),
   ]);
-  await Promise.all([UserInit(), EventInit(), LocationInit(), MessageInit()]);
+  await Promise.all([
+    UserInit(),
+    EventInit(),
+    LocationInit(),
+    MessageInit(),
+    CommentInit(),
+  ]);
 
   const user1 = await User.findByPk(1);
   const user2 = await User.findByPk(2);
