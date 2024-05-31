@@ -77,8 +77,8 @@ function FormInput(props) {
           <div style={{flex: 1}}>
             <ThemeInput
               name='Edit Detailed Event Content'
-              width='500px'
-              height='400px'
+              width='600px'
+              height='600px'
               msg='Type your detailed event description here...'
             />
             <ThemeUpload />
@@ -92,13 +92,7 @@ function FormInput(props) {
             justifyContent: 'center',
             alignItems: 'center',
             height: '10vh',
-          }}>
-          <button
-            style={{width: '150px', height: '50px'}}
-            onClick={handleClick}>
-            提交
-          </button>
-        </div>
+          }}></div>
       </div>
     </div>
   );
