@@ -115,7 +115,7 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /events/{id}:
+ * /events/{event_id}:
  *   get:
  *     tags:
  *       - Events
@@ -132,8 +132,8 @@ router.post('/', async (req, res) => {
  *       '404':
  *         $ref: '#/components/responses/404'
  */
-router.get('/events/:id', async (req, res) => {
-  const event = await Event.findOne({where: {id: req.params.id}});
+router.get('/events/:event_id', async (req, res) => {
+  const event = await Event.findOne({where: {id: req.params.event_id}});
   if (event) {
     res.json(event);
   } else {

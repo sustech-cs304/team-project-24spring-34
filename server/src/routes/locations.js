@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {Location /*, locationStatus*/} = require('../models');
+const {Location /*, LocationStatus*/} = require('../models');
 const getResponse = require('../models/response');
 
 /**
@@ -48,7 +48,10 @@ router.get('/locations', async (req, res) => {
       // where: {status: locationStatus.available},
       where: {status: 1},
     });
-    res.status(200).json(locations);
+    // The returned locations should be locations[offset, offset + limit)
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 10;
+    res.status(200).json(locations.slice(offset, offset + limit));
   } catch (error) {
     res.status(500).json(getResponse(500, error));
   }

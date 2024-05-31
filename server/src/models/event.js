@@ -79,11 +79,11 @@ const Event = sequelize.define(
       allowNull: false,
       description: "The URL of the event's poster",
     },
-    startTime: {
+    start_time: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    endTime: {
+    end_time: {
       type: DataTypes.DATE,
       allowNull: false,
     },
@@ -101,24 +101,24 @@ const init = async () => {
         title: 'Event 1',
         description: 'This is event 1',
         poster: 'https://www.google.com',
-        startTime: new Date('2024-10-10T10:00:00.000Z'),
-        endTime: new Date('2024-10-10T12:00:00.000Z'),
+        start_time: new Date('2024-10-10T10:00:00.000Z'),
+        end_time: new Date('2024-10-10T12:00:00.000Z'),
       },
       {
         id: 2,
         title: 'Event 2',
         description: 'This is event 2',
         poster: 'https://www.google.com',
-        startTime: new Date('2024-10-11T10:00:00.000Z'),
-        endTime: new Date('2024-10-11T12:00:00.000Z'),
+        start_time: new Date('2024-10-11T10:00:00.000Z'),
+        end_time: new Date('2024-10-11T12:00:00.000Z'),
       },
       {
         id: 3,
         title: 'Event 3',
         description: 'This is event 3',
         poster: 'https://www.google.com',
-        startTime: new Date('2024-10-10T10:30:00.000Z'),
-        endTime: new Date('2024-10-10T12:50:00.000Z'),
+        start_time: new Date('2024-10-10T10:30:00.000Z'),
+        end_time: new Date('2024-10-10T12:50:00.000Z'),
       },
     ]);
     console.log('Entries have been successfully inserted into the event table');
