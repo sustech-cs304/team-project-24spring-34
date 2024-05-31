@@ -47,11 +47,6 @@ const Location = sequelize.define('locations', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  status: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    description: 'The status of the location',
-  },
   seat_arrangement: {
     type: DataTypes.INTEGER,
     allowNull: false,

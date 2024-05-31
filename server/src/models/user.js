@@ -61,11 +61,11 @@ const User = sequelize.define(
       allowNull: true,
       description: "The URL of the user's avatar",
     },
-    userIntro: {
+    user_intro: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    userEmail: {
+    user_email: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
@@ -84,18 +84,18 @@ const init = async () => {
       {
         username: 'admin',
         nickname: 'admin',
-        userGroup: 3,
+        user_group: 3,
         avatar: 'https://example.com/avatar.jpg',
-        userIntro: 'I am the admin',
-        userEmail: 'admin@test.com',
+        user_intro: 'I am the admin',
+        user_email: 'admin@test.com',
       },
       {
         username: 'user1',
         nickname: 'user1',
-        userGroup: 1,
+        user_group: 1,
         avatar: 'https://example.com/avatar.jpg',
-        userIntro: 'I am user1',
-        userEmail: 'user1@test.com',
+        user_intro: 'I am user1',
+        user_email: 'user1@test.com',
       },
     ]);
     console.log('Entries have been successfully inserted into the user table');

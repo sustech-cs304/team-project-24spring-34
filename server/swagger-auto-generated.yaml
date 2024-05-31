@@ -8,6 +8,124 @@ servers:
 security:
   - bearerAuth: []
 paths:
+  /events:
+    post:
+      tags:
+        - Events
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - title
+                - description
+                - poster
+                - organizer
+                - participants
+                - start_time
+                - end_time
+                - location
+                - tags
+                - status
+                - comments
+                - ratings
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                poster:
+                  type: string
+                  description: The URL of the event's poster
+                organizer:
+                  $ref: '#/components/schemas/User'
+                participants:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EventParticipant'
+                start_time:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                location:
+                  $ref: '#/components/schemas/Location'
+                tags:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EventTag'
+                status:
+                  $ref: '#/components/schemas/EventStatus'
+                comments:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Event created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      security: []
+  /events/{event_id}:
+    get:
+      tags:
+        - Events
+      summary: Get an event by id
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/404'
+  /locations:
+    get:
+      tags:
+        - Locations
+      summary: Get a list of locations
+      description: Only available locations are returned
+      parameters:
+        - $ref: '#/components/parameters/query_limit'
+        - $ref: '#/components/parameters/query_offset'
+      responses:
+        '200':
+          description: Locations found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      tags:
+        - Locations
+      summary: Create a location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '200':
+          description: Location created successfully
+        '401':
+          $ref: '#/components/responses/401'
   /users:
     post:
       tags:
@@ -143,6 +261,67 @@ paths:
         '401':
           $ref: '#/components/responses/401'
 components:
+  parameters:
+    path_username:
+      name: username
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9]+$
+        maxLength: 15
+    path_event_id:
+      name: event_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    path_location_id:
+      name: location_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    path_tag_id:
+      name: tag_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    path_comment_id:
+      name: comment_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    query_limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    query_offset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    query_desc:
+      name: desc
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
   securitySchemes:
     bearerAuth:
       type: http
@@ -207,6 +386,35 @@ components:
         - 3
       type: integer
       description: 1 = male, 2 = female, 3 = other
+    Location:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - address
+        - status
+        - seat arrangement
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        address:
+          type: string
+        status:
+          $ref: '#/components/schemas/LocationStatus'
+        seat arrangement:
+          type: integer
+          description: The number of seats in the location
+    LocationStatus:
+      enum:
+        - 1
+        - 2
+        - 3
+      type: integer
+      description: 1 = Available, 2 = Unavailable, 3 = Closed
     ErrorDetail:
       title: ErrorDetail
       additionalProperties: false
