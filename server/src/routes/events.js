@@ -73,8 +73,26 @@ const getResponse = require('../models/response');
  *       '500':
  *         description: Internal server error
  *     security: []
+ *   get:
+ *     tags:
+ *       - Events
+ *     summary: Get a list of events according to status or tag
+ *     parameters:
+ *     - $ref: '#/components/parameters/query_event_status'
+ *     - $ref: '#/components/parameters/query_event_tag_list'
+ *     responses:
+ *       '200':
+ *         description: Event list found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Event'
+ *       '500':
+ *         $ref: '#/components/responses/500'
  */
-router.post('/', async (req, res) => {
+router.post('/events', async (req, res) => {
   try {
     const {
       title,
@@ -111,6 +129,11 @@ router.post('/', async (req, res) => {
       .status(500)
       .json(getResponse(500, {description: 'Internal server error'}));
   }
+});
+router.get('/events', async (req, res) => {
+  const eventList = await Event.findAll();
+  // TODO: Add query parameters to filter the event list
+  res.json(eventList);
 });
 
 /**

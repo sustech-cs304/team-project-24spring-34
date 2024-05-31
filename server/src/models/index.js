@@ -3,6 +3,7 @@ const {UserGroup, init: UserGroupInit} = require('./userGroup');
 const {User, init: UserInit} = require('./user');
 const {UserPrivacy, init: UserPrivacyInit} = require('./userPrivacy');
 const {Event, init: EventInit} = require('./event');
+const {EventTag, init: EventTagInit} = require('./eventTag');
 const {Location, init: LocationInit} = require('./location');
 const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
 
@@ -51,7 +52,12 @@ const initializeTables = async () => {
 };
 
 const initializeModels = async () => {
-  await Promise.all([GenderInit(), UserGroupInit(), LocationStatusInit()]);
+  await Promise.all([
+    GenderInit(),
+    UserGroupInit(),
+    LocationStatusInit(),
+    EventTagInit(),
+  ]);
   await Promise.all([
     UserInit(),
     UserPrivacyInit(),
@@ -74,6 +80,7 @@ module.exports = {
   User,
   UserPrivacy,
   Event,
+  EventTag,
   Location,
   LocationStatus,
 };
