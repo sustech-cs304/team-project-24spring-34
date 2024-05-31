@@ -75,6 +75,24 @@ paths:
         '500':
           description: Internal server error
       security: []
+    get:
+      tags:
+        - Events
+      summary: Get a list of events according to status or tag
+      parameters:
+        - $ref: '#/components/parameters/query_event_status'
+        - $ref: '#/components/parameters/query_event_tag_list'
+      responses:
+        '200':
+          description: Event list found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/500'
   /events/{event_id}:
     get:
       tags:
@@ -322,6 +340,28 @@ components:
       schema:
         type: boolean
         default: true
+    query_event_status:
+      name: event_status
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 6
+        default: 1
+    query_event_tag_list:
+      name: event_tag_list
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          minimum: 1
+          uniqueItems: true
+        style: form
+        explode: false
+        default: []
   securitySchemes:
     bearerAuth:
       type: http
@@ -383,6 +423,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Comment'
+<<<<<<< HEAD
+    EventTag:
+      type: object
+      additionalProperties: false
+      required:
+        - tag_id
+        - tag_name
+      properties:
+        tag_id:
+          type: integer
+          description: The auto-generated id of the tag
+          readOnly: true
+        tag_name:
+          type: string
+          description: The name of the tag
+=======
     EventParticipant:
       type: object
       additionalProperties: false
@@ -401,6 +457,7 @@ components:
           type: string
         avatar:
           type: string
+>>>>>>> 96fad383044ed96df5b2b89cf6b7c23572ebca89
     Gender:
       enum:
         - 1

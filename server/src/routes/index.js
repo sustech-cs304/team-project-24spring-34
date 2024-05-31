@@ -92,6 +92,28 @@ function verifyToken(req, res, next) {
  *       schema:
  *         type: boolean
  *         default: true
+ *     query_event_status:
+ *       name: event_status
+ *       in: query
+ *       required: false
+ *       schema:
+ *         type: integer
+ *         minimum: 1
+ *         maximum: 6
+ *         default: 1
+ *     query_event_tag_list:
+ *       name: event_tag_list
+ *       in: query
+ *       required: false
+ *       schema:
+ *         type: array
+ *         items:
+ *           type: integer
+ *           minimum: 1
+ *           uniqueItems: true
+ *         style: form
+ *         explode: false
+ *         default: []
  */
 
 /**

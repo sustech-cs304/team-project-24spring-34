@@ -2,6 +2,7 @@ const {Gender, init: GenderInit} = require('./gender');
 const {UserGroup, init: UserGroupInit} = require('./userGroup');
 const {User, init: UserInit} = require('./user');
 const {Event, init: EventInit} = require('./event');
+const {EventTag, init: EventTagInit} = require('./eventTag');
 const {
   EventParticipant,
   init: EventParticipantInit,
@@ -69,6 +70,7 @@ const initializeModels = async () => {
     GenderInit(),
     UserGroupInit(),
     LocationStatusInit(),
+    EventTagInit(),
     EventParticipantInit(),
   ]);
   await Promise.all([UserInit(), EventInit(), LocationInit()]);
@@ -86,6 +88,7 @@ module.exports = {
   UserGroup,
   User,
   Event,
+  EventTag,
   Location,
   LocationStatus,
 };
