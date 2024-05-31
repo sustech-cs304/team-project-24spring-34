@@ -10,6 +10,7 @@ const {
 const {EventStatus, init: EventStatusInit} = require('./eventStatus');
 const {Location, init: LocationInit} = require('./location');
 const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
+const {Comment} = require('./comment');
 
 const initializeTables = async () => {
   try {
@@ -52,6 +53,9 @@ const initializeTables = async () => {
       through: 'event_participant',
       as: 'events',
     });
+
+    Event.hasMany(Comment);
+    User.hasMany(Comment);
 
     //Event.belongsToMany(EventTag, {
     //  foreignKey: 'event',
@@ -103,4 +107,5 @@ module.exports = {
   EventStatus,
   Location,
   LocationStatus,
+  Comment,
 };
