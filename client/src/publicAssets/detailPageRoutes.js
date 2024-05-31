@@ -42,7 +42,7 @@ const routes = [
     route: '/mainpage',
   },
   {
-    name: 'Detail',
+    name: 'Details',
     route: '/details',
   },
   {

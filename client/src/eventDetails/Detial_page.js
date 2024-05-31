@@ -14,6 +14,7 @@ import theme from '../assets/theme';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MKTypography from '../components/MKTypography';
+import CommentsSection from './comment/comment';
 
 function ActivityDetails() {
   const [activityTitle, setActivityTitle] = React.useState(''); //活动标题
@@ -48,7 +49,9 @@ function ActivityDetails() {
 
         <Introduction />
         <Reserve />
-        <div style={{marginTop: '20px'}}>{/* 评论区 */}</div>
+        <section>
+          <CommentsSection active_id={0} />
+        </section>
       </Container>
     </ThemeProvider>
   );
