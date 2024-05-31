@@ -13,7 +13,6 @@ const sequelize = require('../config/connection');
  *         - content
  *         - user
  *         - event
- *         - time
  *         - likes
  *         - dislikes
  *         - rating
@@ -29,9 +28,6 @@ const sequelize = require('../config/connection');
  *           $ref: '#/components/schemas/User'
  *         event:
  *           $ref: '#/components/schemas/Event'
- *         time:
- *           type: integer
- *           description: The time when the comment was created
  *         likes:
  *           type: integer
  *           default: 0
@@ -54,10 +50,6 @@ const Comment = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    time: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     likes: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -74,7 +66,7 @@ const Comment = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   },
 );
 
