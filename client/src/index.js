@@ -11,6 +11,7 @@ import Publish from './publish/publish';
 import Mainpage from './mainpage/Mainpage';
 import ProfilePage from './profile/profile';
 import OtherProfilePage from './profile/otherProfile';
+import SearchPage from './search/search';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -25,6 +26,7 @@ root.render(
         <Route path='/publish' element={<Publish />} />
         <Route path='/profilePage' element={<ProfilePage />} />
         <Route path='/user/:userId' element={<OtherProfilePage />} />
+        <Route path='/search' element={<SearchPage />} />
       </Routes>
     </Router>
   </React.StrictMode>,
