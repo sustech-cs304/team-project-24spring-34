@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {Event} = require('../models');
+const {Event, EventTag} = require('../models');
 const getResponse = require('../models/response');
 
 /**
@@ -76,10 +76,7 @@ const getResponse = require('../models/response');
  *   get:
  *     tags:
  *       - Events
- *     summary: Get a list of events according to status or tag
- *     parameters:
- *     - $ref: '#/components/parameters/query_event_status'
- *     - $ref: '#/components/parameters/query_event_tag_list'
+ *     summary: Get a list of all events
  *     responses:
  *       '200':
  *         description: Event list found
@@ -132,7 +129,6 @@ router.post('/events', async (req, res) => {
 });
 router.get('/events', async (req, res) => {
   const eventList = await Event.findAll();
-  // TODO: Add query parameters to filter the event list
   res.json(eventList);
 });
 
@@ -162,6 +158,82 @@ router.get('/events/:event_id', async (req, res) => {
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }
+});
+
+/**
+ * @swagger
+ * /events-tags:
+ *   post:
+ *     tags:
+ *       - Events
+ *     summary: Create a new event tag
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             additionalProperties: false
+ *             required:
+ *               - tag_name
+ *             properties:
+ *               tag_name:
+ *                 type: string
+ *                 description: The name of the tag
+ *                 example: Music
+ *                 minLength: 1
+ *                 maxLength: 50
+ *                 pattern: ^[a-zA-Z]+$
+ *                 unique: true
+ *                 readOnly: true
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/201'
+ *       '400':
+ *         $ref: '#/components/responses/400'
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '429':
+ *         $ref: '#/components/responses/429'
+ *       '500':
+ *         $ref: '#/components/responses/500'
+ *   get:
+ *     tags:
+ *       - Events
+ *     summary: Get all event tags
+ *     responses:
+ *       '200':
+ *         description: Event tag list found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Event'
+ *       '500':
+ *         $ref: '#/components/responses/500'
+ */
+router.post('/events-tags', async (req, res) => {
+  try {
+    const {new_tag_name} = req.body;
+    const eventTag = await EventTag.findOne({where: {tag_name: new_tag_name}});
+    if (eventTag) {
+      res
+        .status(429)
+        .json(getResponse(429, {description: 'Tag already exists'}));
+      return;
+    }
+    await EventTag.create({name: new_tag_name});
+    res.status(201).send();
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json(getResponse(500, {description: 'Internal server error'}));
+  }
+});
+router.get('/events-tags', async (req, res) => {
+  console.log('Getting tags');
+  const tagList = await EventTag.findAll();
+  res.json(tagList);
 });
 
 module.exports = router;
