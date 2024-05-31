@@ -3,6 +3,8 @@ const {UserGroup, init: UserGroupInit} = require('./userGroup');
 const {User, init: UserInit} = require('./user');
 const {UserPrivacy, init: UserPrivacyInit} = require('./userPrivacy');
 const {Event, init: EventInit} = require('./event');
+const {Location, init: LocationInit} = require('./location');
+const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
 
 const initializeTables = async () => {
   try {
@@ -34,6 +36,15 @@ const initializeTables = async () => {
       through: 'event_participant',
       as: 'participant',
     });
+
+    Location.belongsTo(LocationStatus, {
+      foreignKey: 'status_id',
+      as: 'status',
+    });
+    LocationStatus.hasMany(Location, {
+      foreignKey: 'status_id',
+      as: 'status',
+    });
   } catch (error) {
     console.error('Error initializing tables:', error);
   }
@@ -42,6 +53,7 @@ const initializeTables = async () => {
 const initializeModels = async () => {
   await Promise.all([GenderInit(), UserGroupInit()]);
   await Promise.all([UserInit(), UserPrivacyInit(), EventInit()]);
+  await Promise.all([LocationInit(), LocationStatusInit()]);
 
   const user1 = await UserPrivacy.findByPk(1);
   const user2 = await UserPrivacy.findByPk(2);
@@ -58,4 +70,6 @@ module.exports = {
   User,
   UserPrivacy,
   Event,
+  Location,
+  LocationStatus,
 };

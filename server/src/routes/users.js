@@ -52,6 +52,7 @@ router.post('/users', async (req, res) => {
       return;
     }
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+    console.log(await bcrypt.compare(req.body.password, hashedPassword));
     user = await User.create({
       username: req.body.username,
       userGroup: 1,
@@ -126,6 +127,7 @@ router.post('/sessions', async (req, res) => {
     return;
   }
   const userPrivacy = await UserPrivacy.findOne({where: {id: user.id}});
+  console.log(await bcrypt.compare(req.body.password, userPrivacy.password));
   if (user && (await bcrypt.compare(req.body.password, userPrivacy.password))) {
     const token = jwt.sign({id: user.id}, '42', {expiresIn: 86400});
     res.status(200).json({token});
