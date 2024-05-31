@@ -1,7 +1,6 @@
 const {Gender, init: GenderInit} = require('./gender');
 const {UserGroup, init: UserGroupInit} = require('./userGroup');
 const {User, init: UserInit} = require('./user');
-const {UserPrivacy, init: UserPrivacyInit} = require('./userPrivacy');
 const {Event, init: EventInit} = require('./event');
 const {EventTag, init: EventTagInit} = require('./eventTag');
 const {
@@ -23,21 +22,21 @@ const initializeTables = async () => {
       as: 'user_group_id',
     });
 
-    Gender.hasMany(UserPrivacy, {
+    Gender.hasMany(User, {
       foreignKey: 'gender',
       as: 'gender_id',
     });
-    UserPrivacy.belongsTo(Gender, {
+    User.belongsTo(Gender, {
       foreignKey: 'gender',
       as: 'gender_id',
     });
 
-    UserPrivacy.belongsToMany(Event, {
+    User.belongsToMany(Event, {
       foreignKey: 'audience',
       through: 'event_audience',
       as: 'event_history',
     });
-    Event.belongsToMany(UserPrivacy, {
+    Event.belongsToMany(User, {
       foreignKey: 'event',
       through: 'event_audience',
       as: 'audience',
@@ -84,15 +83,10 @@ const initializeModels = async () => {
     EventParticipantInit(),
     EventStatusInit(),
   ]);
-  await Promise.all([
-    UserInit(),
-    UserPrivacyInit(),
-    EventInit(),
-    LocationInit(),
-  ]);
+  await Promise.all([UserInit(), EventInit(), LocationInit()]);
 
-  const user1 = await UserPrivacy.findByPk(1);
-  const user2 = await UserPrivacy.findByPk(2);
+  const user1 = await User.findByPk(1);
+  const user2 = await User.findByPk(2);
   const event = await Event.findByPk(1);
   await event.addAudience([user1, user2]);
 };
@@ -103,7 +97,6 @@ module.exports = {
   Gender,
   UserGroup,
   User,
-  UserPrivacy,
   Event,
   EventTag,
   EventParticipant,

@@ -5,36 +5,66 @@ const sequelize = require('../config/connection');
  * @swagger
  * components:
  *   schemas:
- *      User:
- *        type: object
- *        additionalProperties: false
- *        required:
- *          - username
- *          - nickname
- *          - user_group
- *          - avatar
- *          - user_intro
- *          - user_email
- *        properties:
- *          id:
- *            type: integer
- *            description: The auto-generated id of the user
- *            readOnly: true
- *          username:
- *            type: string
- *            description: The username of the user
- *          nickname:
- *            type: string
- *          user_group:
- *            $ref: '#/components/schemas/UserGroup'
- *          avatar:
- *            type: string
- *            description: The URL of the user's avatar
- *          user_intro:
- *            type: string
- *          user_email:
- *            type: string
- *            format: email
+ *     User:
+ *       type: object
+ *       additionalProperties: false
+ *       required:
+ *         - username
+ *         - nickname
+ *         - user_group
+ *         - avatar
+ *         - user_intro
+ *         - user_email
+ *         - gender
+ *         - birthday
+ *         - event_history
+ *         - following
+ *         - followers
+ *         - published_events
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the user
+ *           readOnly: true
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         nickname:
+ *           type: string
+ *         user_group:
+ *           $ref: '#/components/schemas/UserGroup'
+ *         avatar:
+ *           type: string
+ *           description: The URL of the user's avatar
+ *         user_intro:
+ *           type: string
+ *         user_email:
+ *           type: string
+ *           format: email
+ *         password:
+ *          type: string
+ *          description: The password after sha256 encryption with salt
+ *         gender:
+ *           $ref: '#/components/schemas/Gender'
+ *         birthday:
+ *           type: string
+ *           format: date
+ *         event_history:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Event'
+ *         following:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/User'
+ *         followers:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/User'
+ *         published_events:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Event'
  */
 const User = sequelize.define(
   'users',
@@ -72,6 +102,14 @@ const User = sequelize.define(
         isEmail: true,
       },
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    birthday: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,
@@ -88,6 +126,9 @@ const init = async () => {
         avatar: 'https://example.com/avatar.jpg',
         user_intro: 'I am the admin',
         user_email: 'admin@test.com',
+        password:
+          '0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e',
+        birthday: '1990-01-01',
       },
       {
         username: 'user1',
@@ -96,6 +137,9 @@ const init = async () => {
         avatar: 'https://example.com/avatar.jpg',
         user_intro: 'I am user1',
         user_email: 'user1@test.com',
+        password:
+          '5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764',
+        birthday: '1992-01-01',
       },
     ]);
     console.log('Entries have been successfully inserted into the user table');

@@ -572,6 +572,12 @@ components:
         - avatar
         - user_intro
         - user_email
+        - gender
+        - birthday
+        - event_history
+        - following
+        - followers
+        - published_events
       properties:
         id:
           type: integer
@@ -592,6 +598,30 @@ components:
         user_email:
           type: string
           format: email
+        password:
+          type: string
+          description: The password after sha256 encryption with salt
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birthday:
+          type: string
+          format: date
+        event_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        following:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        followers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        published_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
     UserGroup:
       enum:
         - 1
