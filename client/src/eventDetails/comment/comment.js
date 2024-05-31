@@ -165,7 +165,7 @@ const SingleComment = ({comment, authority}) => {
   );
 };
 
-const CommentList = ({comments, authority}) => {
+const CommentList = ({comments, authority, user}) => {
   const commentPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentComments, setCurrentComments] = useState([]);
@@ -189,7 +189,10 @@ const CommentList = ({comments, authority}) => {
       <List className='comment-list'>
         {currentComments.map((comment) => (
           <ListItem key={comment.id}>
-            <SingleComment comment={comment} authority={authority} />
+            <SingleComment
+              comment={comment}
+              authority={authority || comment.userId == user.id}
+            />
           </ListItem>
         ))}
       </List>
@@ -209,7 +212,9 @@ const CommentsSection = ({active_id}) => {
   const [comments, setComments] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const titletext = {zh: '评论', en: 'Comments'};
-  const [authority, setAuthority] = useState(true);
+  const [authority, setAuthority] = useState(false);
+  const [user, setUser] = useState({id: 4, name: 'user4'});
+  const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -357,7 +362,9 @@ const CommentsSection = ({active_id}) => {
     setShowForm(false);
   };
 
-  const handleAutority = () => {
+  const handleLogin = async () => {
+    setIsLogin(true);
+    setUser({id: 1, name: 'user'});
     setAuthority(true);
   };
 
@@ -401,7 +408,7 @@ const CommentsSection = ({active_id}) => {
           </Box>
         </Fade>
       </Modal>
-      <CommentList comments={comments} authority={authority} />
+      <CommentList comments={comments} authority={authority} user={user} />
     </Box>
   );
 };
