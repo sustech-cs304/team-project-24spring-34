@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
-const {User, UserPrivacy} = require('../models');
+const {User, Message} = require('../models');
 const getResponse = require('../models/response');
 
 /**
@@ -52,12 +52,12 @@ router.post('/users', async (req, res) => {
       return;
     }
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    console.log(await bcrypt.compare(req.body.password, hashedPassword));
+    console.log('hashedPassword:', hashedPassword);
     user = await User.create({
       username: req.body.username,
       userGroup: 1,
+      password: hashedPassword,
     });
-    await UserPrivacy.create({password: hashedPassword});
     res.status(201).send();
   } catch (error) {
     console.error(error);
@@ -126,11 +126,9 @@ router.post('/sessions', async (req, res) => {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
     return;
   }
-  const userPrivacy = await UserPrivacy.findOne({where: {id: user.id}});
-  console.log(await bcrypt.compare(req.body.password, userPrivacy.password));
-  if (user && (await bcrypt.compare(req.body.password, userPrivacy.password))) {
+  if (await bcrypt.compare(req.body.password, user.password)) {
     const token = jwt.sign({id: user.id}, '42', {expiresIn: 86400});
-    res.status(200).json({token});
+    res.json({token});
   } else {
     res
       .status(400)
@@ -139,7 +137,7 @@ router.post('/sessions', async (req, res) => {
 });
 router.delete('/sessions', (req, res) => {
   //TODO: Implement logout
-  res.status(200).send();
+  res.send();
 });
 
 /**
@@ -234,12 +232,11 @@ router.put('/me', async (req, res) => {
       .json(getResponse(500, {description: 'Internal server error'}));
     return;
   }
-  res.status(200).send();
+  res.send();
 });
 router.delete('/me', async (req, res) => {
   await User.destroy({where: {id: req.userId}});
-  await UserPrivacy.destroy({where: {id: req.userId}});
-  res.status(200).send();
+  res.send();
 });
 
 function getUidFromJwt(req) {
@@ -260,3 +257,36 @@ function getUidFromJwt(req) {
 }
 
 module.exports = router;
+
+/**
+ * @swagger
+ * /messages:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get messages sent to the current user
+ *     responses:
+ *       '200':
+ *         description: Messages found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Message'
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ */
+router.get('/messages', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  if (!userId) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const messages = await Message.findAll({where: {receiver: userId}});
+  for (const message of messages) {
+    message.sender = await User.findOne({where: {id: message.sender}});
+    message.receiver = await User.findOne({where: {id: message.receiver}});
+  }
+  res.json(messages);
+});

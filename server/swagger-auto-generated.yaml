@@ -278,6 +278,22 @@ paths:
           description: User deleted successfully
         '401':
           $ref: '#/components/responses/401'
+  /messages:
+    get:
+      tags:
+        - Users
+      summary: Get messages sent to the current user
+      responses:
+        '200':
+          description: Messages found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '401':
+          $ref: '#/components/responses/401'
 components:
   parameters:
     path_username:
@@ -396,7 +412,7 @@ components:
           type: string
           description: The URL of the event's poster
         organizer:
-          $ref: '#/components/schemas/UserPrivacy'
+          $ref: '#/components/schemas/User'
         audience:
           type: array
           items:
@@ -423,22 +439,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Comment'
-<<<<<<< HEAD
-    EventTag:
-      type: object
-      additionalProperties: false
-      required:
-        - tag_id
-        - tag_name
-      properties:
-        tag_id:
-          type: integer
-          description: The auto-generated id of the tag
-          readOnly: true
-        tag_name:
-          type: string
-          description: The name of the tag
-=======
     EventParticipant:
       type: object
       additionalProperties: false
@@ -457,7 +457,20 @@ components:
           type: string
         avatar:
           type: string
->>>>>>> 96fad383044ed96df5b2b89cf6b7c23572ebca89
+    EventTag:
+      type: object
+      additionalProperties: false
+      required:
+        - tag_id
+        - tag_name
+      properties:
+        tag_id:
+          type: integer
+          description: The auto-generated id of the tag
+          readOnly: true
+        tag_name:
+          type: string
+          description: The name of the tag
     Gender:
       enum:
         - 1
@@ -494,6 +507,27 @@ components:
         - 3
       type: integer
       description: 1 = Available, 2 = Unavailable, 3 = Closed
+    Message:
+      type: object
+      additionalProperties: false
+      required:
+        - title
+        - content
+        - time
+        - sender
+        - receiver
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        time:
+          type: string
+          format: date-time
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
     ErrorDetail:
       title: ErrorDetail
       additionalProperties: false
@@ -575,41 +609,6 @@ components:
         - 3
       type: integer
       description: 1 = Audience, 2 = Organizer, 3 = Admin
-    UserPrivacy:
-      type: object
-      additionalProperties: false
-      required:
-        - gender
-        - birthday
-        - event_history
-        - following
-        - followers
-        - published_events
-      properties:
-        password:
-          type: string
-          description: The password after sha256 encryption with salt
-        gender:
-          $ref: '#/components/schemas/Gender'
-        birthday:
-          type: string
-          format: date
-        event_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
-        following:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        followers:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        published_events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
   responses:
     '400':
       description: Bad Request
