@@ -29,9 +29,5 @@
     "jsxSingleQuote": true,
     "bracketSpacing": false,
     "endOfLine": "auto"
-  },
-  "dependencies": {
-    "react-icons": "^5.2.1",
-    "eslint-config-react-app": "7.0.1"
   }
 }

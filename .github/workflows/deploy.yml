@@ -10,9 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
+    - name: Checkout
+      uses: actions/checkout@v4
     - name: Deploy to server
       uses: appleboy/ssh-action@master
       with:
@@ -20,7 +19,10 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
+          /bin/bash
+          source ~/.bashrc
           cd ~/team-project-24spring-34/server/
           git pull
-          pnpm install
-          pnpm run build
+          /home/ubuntu/.local/share/pnpm/pnpm install
+          pkill -f "node src/server.js" || true
+          nohup node src/server.js > nohup.out 2> nohup.err < /dev/null &

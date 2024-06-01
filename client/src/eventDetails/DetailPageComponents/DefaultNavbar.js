@@ -44,6 +44,7 @@ import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import {PiEnvelopeSimpleLight} from 'react-icons/pi';
 import {MdOutlinePublish} from 'react-icons/md';
 import {AiOutlineHome} from 'react-icons/ai';
+import {BiDetail} from 'react-icons/bi';
 
 import DefaultInfoCard from '../../publicAssets/DefaultInfoCard';
 
@@ -51,6 +52,7 @@ import DefaultInfoCard from '../../publicAssets/DefaultInfoCard';
 
 function DefaultNavbar({
   brand,
+  routes,
   transparent,
   light,
   action,
@@ -152,6 +154,23 @@ function DefaultNavbar({
             </MKBox>
             <MKBox
               component={Link}
+              to='/details'
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                color: 'black',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+                ml: 1,
+              }}>
+              <BiDetail />
+            </MKBox>
+            <MKBox
+              component={Link}
               to='/profilePage'
               sx={{
                 display: 'flex',
@@ -222,6 +241,7 @@ DefaultNavbar.defaultProps = {
 // Typechecking props for the DefaultNavbar
 DefaultNavbar.propTypes = {
   brand: PropTypes.string,
+  routes: PropTypes.arrayOf(PropTypes.shape).isRequired,
   transparent: PropTypes.bool,
   light: PropTypes.bool,
   action: PropTypes.oneOfType([

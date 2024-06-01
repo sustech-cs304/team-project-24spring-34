@@ -21,9 +21,8 @@ const Publish = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <DefaultNavbar routes={routes} sticky />
-          <Container>
-            <FormInput />
-            {/*<Grid container item xs={12} lg={7} justifyContent='center' mx='auto'>
+          {/* <Container>
+          <Grid container item xs={12} lg={7} justifyContent='center' mx='auto'>
             <MKTypography
               variant='h1'
               color='white'
@@ -43,13 +42,14 @@ const Publish = () => {
               px={{xs: 100, lg: 1200}}
               mt={1}></MKTypography>
             
-            </Grid>*/}
-          </Container>
+          </Grid>
+        </Container> */}
           {/*<TestForm />*/}
 
           {/* <DesignBlocks /> */}
         </ThemeProvider>
       </div>
+      <FormInput />
     </div>
   );
 };

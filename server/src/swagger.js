@@ -14,7 +14,10 @@ const options = {
     },
     servers: [
       {
-        url: ['http://217.142.229.202:5000/api', 'http://localhost:5000/api'],
+        url: 'http://localhost:5000/api',
+      },
+      {
+        url: 'http://217.142.229.202/api',
       },
     ],
     security: [
