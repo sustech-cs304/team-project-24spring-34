@@ -60,16 +60,16 @@ const initializeTables = async () => {
       foreignKey: 'user_id',
     });
 
-    //Event.belongsToMany(EventTag, {
-    //  foreignKey: 'event',
-    //  through: 'event_tag',
-    //  as: 'tags',
-    //});
-    //EventTag.belongsToMany(Event, {
-    //  foreignKey: 'tag',
-    //  through: 'event_tag',
-    //  as: 'events',
-    //});
+    Event.belongsToMany(EventTag, {
+      foreignKey: 'event',
+      through: 'event_tag',
+      as: 'tags',
+    });
+    EventTag.belongsToMany(Event, {
+      foreignKey: 'tag',
+      through: 'event_tag',
+      as: 'events',
+    });
 
     EventStatus.hasMany(Event);
     Event.belongsTo(EventStatus);
@@ -103,7 +103,6 @@ const initializeModels = async () => {
     EventTagInit(),
     EventParticipantInit(),
     EventStatusInit(),
-    CommentInit(),
   ]);
   await Promise.all([UserInit(), EventInit(), MessageInit(), CommentInit()]);
 

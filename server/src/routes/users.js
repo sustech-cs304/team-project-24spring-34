@@ -275,11 +275,6 @@ router.get('/messages', async (req, res) => {
 function getUidFromJwt(req) {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('Invalid or missing Authorization header');
-      return null;
-    }
-
     const token = authHeader.slice(7);
     const decoded = jwt.verify(token, '42');
     return decoded.id;
