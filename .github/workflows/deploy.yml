@@ -24,5 +24,5 @@ jobs:
           cd ~/team-project-24spring-34/server/
           git pull
           /home/ubuntu/.local/share/pnpm/pnpm install
-          pkill -f "/home/ubuntu/.local/share/pnpm/pnpm run start" || true
-          nohup /home/ubuntu/.local/share/pnpm/pnpm run start > nohup.out 2> nohup.err < /dev/null &
+          pkill -f "node src/server.js" || true
+          nohup node src/server.js > nohup.out 2> nohup.err < /dev/null &
