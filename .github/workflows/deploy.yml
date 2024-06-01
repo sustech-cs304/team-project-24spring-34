@@ -24,4 +24,4 @@ jobs:
           cd ~/team-project-24spring-34/server/
           git pull
           /home/ubuntu/.local/share/pnpm/pnpm install
-          /home/ubuntu/.local/share/pnpm/pnpm run build
+          nohup /home/ubuntu/.local/share/pnpm/pnpm run start &
