@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: Deploy to server
       uses: appleboy/ssh-action@master
       with:
@@ -22,5 +19,6 @@ jobs:
         script: |
           cd ~/team-project-24spring-34/server/
           git pull
+          source ~/.bashrc
           pnpm install
           pnpm run build
