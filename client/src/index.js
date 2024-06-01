@@ -12,6 +12,8 @@ import Mainpage from './mainpage/Mainpage';
 import ProfilePage from './profile/profile';
 import OtherProfilePage from './profile/otherProfile';
 import SearchPage from './search/search';
+import ChangePasswordPage from './logIn/changePassword';
+import HistoryPage from './profile/historyPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -27,6 +29,9 @@ root.render(
         <Route path='/profilePage' element={<ProfilePage />} />
         <Route path='/user/:userId' element={<OtherProfilePage />} />
         <Route path='/search' element={<SearchPage />} />
+        <Route path='/others' element={<OtherProfilePage />} />
+        <Route path='/change' element={<ChangePasswordPage />} />
+        <Route path='/history' element={<HistoryPage />} />
       </Routes>
     </Router>
   </React.StrictMode>,

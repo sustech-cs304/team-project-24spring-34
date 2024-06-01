@@ -122,6 +122,18 @@ function AdminProfile({user}) {
     setSelectedItem('following');
   };
 
+  const isFollowing = (follower, followingList) => {
+    // 遍历关注列表
+    for (const followedUser of followingList) {
+      // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
+      if (followedUser.id === follower.id) {
+        return true;
+      }
+    }
+    // 如果未找到匹配项，则返回 false
+    return false;
+  };
+
   const renderContent = () => {
     if (showAvatarUpload) {
       return <AvatarUpload onBack={() => setShowAvatarUpload(false)} />;
@@ -291,23 +303,43 @@ function AdminProfile({user}) {
                     sx={{width: 40, height: 40, marginRight: 2}}
                   />
                   <ListItemText primary={follower.name} />
-                  <IconButton
-                    edge='end'
-                    aria-label='follow'
-                    onClick={() => handleFollow(follower)}>
-                    <MKButton
-                      variant='contained'
-                      sx={{
-                        backgroundColor: 'white',
-                        color: 'white',
-                        fontWeight: 'bold',
-                        '&:hover': {
-                          backgroundColor: '#F5F5F5',
-                        },
-                      }}>
-                      关注
-                    </MKButton>
-                  </IconButton>
+                  {isFollowing(follower) ? (
+                    <IconButton
+                      edge='end'
+                      aria-label='unfollow'
+                      onClick={() => handleUnfollow(following.id)}>
+                      <MKButton
+                        variant='contained'
+                        sx={{
+                          backgroundColor: 'red',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: '#d32f2f',
+                          },
+                        }}>
+                        取消关注
+                      </MKButton>
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      edge='end'
+                      aria-label='follow'
+                      onClick={() => handleFollow(follower)}>
+                      <MKButton
+                        variant='contained'
+                        sx={{
+                          backgroundColor: 'white',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: '#F5F5F5',
+                          },
+                        }}>
+                        关注
+                      </MKButton>
+                    </IconButton>
+                  )}
                 </ListItem>
               ))}
             </List>

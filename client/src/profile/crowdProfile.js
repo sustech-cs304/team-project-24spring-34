@@ -15,10 +15,12 @@ import MKButton from '../components/MKButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
+import {Delete as DeleteIcon} from '@mui/icons-material';
 function CrowdProfile(user) {
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
   const [formData, setFormData] = useState({});
+  const [events, setEvents] = useState({});
 
   setFormData({
     username: user.username,
@@ -53,6 +55,8 @@ function CrowdProfile(user) {
     const {name, value} = e.target;
     setFormData((prev) => ({...prev, [name]: value}));
   };
+
+  function handleDelete(id) {}
 
   const renderContent = () => {
     switch (selectedItem) {
@@ -358,48 +362,22 @@ function CrowdProfile(user) {
         return (
           <Box>
             <Typography variant='h6'>预约的活动</Typography>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
+            <List>
+              {events.map((event) => (
+                <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
+                  <ListItemText
+                    primary={event.title}
+                    secondary={`${event.time} | ${event.location} | ${event.organizer}`}
+                  />
+                  <IconButton
+                    edge='end'
+                    aria-label='delete'
+                    onClick={() => handleDelete(event.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
           </Box>
         );
       default:
