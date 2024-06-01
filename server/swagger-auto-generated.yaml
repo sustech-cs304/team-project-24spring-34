@@ -10,6 +10,69 @@ servers:
 security:
   - bearerAuth: []
 paths:
+  /comments/{event_id}:
+    post:
+      tags:
+        - Comments
+      summary: Create a comment
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - content
+                - rating
+              properties:
+                content:
+                  type: string
+                  description: The content of the comment
+                  minLength: 1
+                  maxLength: 500
+                rating:
+                  type: integer
+                  description: The rating of the event
+                  minimum: 1
+                  maximum: 10
+      responses:
+        '201':
+          description: Comment created successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      tags:
+        - Comments
+      summary: Get all comments of an event
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+        - $ref: '#/components/parameters/query_limit'
+        - $ref: '#/components/parameters/query_offset'
+      responses:
+        '200':
+          description: Comments found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+                properties:
+                  total:
+                    type: integer
+                    description: The total number of comments
+        '404':
+          $ref: '#/components/responses/404'
+          description: Event not found
+        '500':
+          $ref: '#/components/responses/500'
   /events:
     post:
       tags:
@@ -134,7 +197,7 @@ paths:
                   readOnly: true
       responses:
         '201':
-          $ref: '#/components/responses/201'
+          description: Event tag created successfully
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -439,7 +502,6 @@ components:
         - content
         - user
         - event
-        - time
         - likes
         - dislikes
         - rating
@@ -451,13 +513,11 @@ components:
         content:
           type: string
           description: The content of the comment
-        user:
-          $ref: '#/components/schemas/User'
-        event:
-          $ref: '#/components/schemas/Event'
-        time:
+        user_id:
           type: integer
-          description: The time when the comment was created
+          description: The id of the user who created the comment
+        event_id:
+          type: integer
         likes:
           type: integer
           default: 0

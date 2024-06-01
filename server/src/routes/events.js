@@ -188,7 +188,7 @@ router.get('/events/:event_id', async (req, res) => {
  *                 readOnly: true
  *     responses:
  *       '201':
- *         $ref: '#/components/responses/201'
+ *         description: Event tag created successfully
  *       '400':
  *         $ref: '#/components/responses/400'
  *       '401':
