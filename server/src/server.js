@@ -1,3 +1,19 @@
+require('dotenv').config();
+const chalk = require('chalk');
+
+const originalConsole = global.console;
+global.console = {
+  log: function (...args) {
+    originalConsole.log(chalk.green(...args));
+  },
+  error: function (...args) {
+    originalConsole.error(chalk.red(...args));
+  },
+  info: originalConsole.info,
+  warn: originalConsole.warn,
+  debug: originalConsole.debug,
+};
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
@@ -11,6 +27,8 @@ setupSwagger(app);
 
 app.use(express.json());
 
-app.listen(5000, () => {
-  console.log('Server is running on port 5000');
+app.listen(process.env.LISTEN_PORT, process.env.LISTEN_HOST, () => {
+  console.log(
+    `Server listening on http://${process.env.LISTEN_HOST}:${process.env.LISTEN_PORT}`,
+  );
 });

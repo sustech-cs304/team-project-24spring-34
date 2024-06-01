@@ -1,10 +1,17 @@
 const {Gender, init: GenderInit} = require('./gender');
 const {UserGroup, init: UserGroupInit} = require('./userGroup');
 const {User, init: UserInit} = require('./user');
-const {UserPrivacy, init: UserPrivacyInit} = require('./userPrivacy');
 const {Event, init: EventInit} = require('./event');
+const {EventTag, init: EventTagInit} = require('./eventTag');
+const {
+  EventParticipant,
+  init: EventParticipantInit,
+} = require('./eventParticipant');
+const {EventStatus, init: EventStatusInit} = require('./eventStatus');
 const {Location, init: LocationInit} = require('./location');
 const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
+const {Comment, init: CommentInit} = require('./comment');
+const {Message, init: MessageInit} = require('./message');
 
 const initializeTables = async () => {
   try {
@@ -17,33 +24,77 @@ const initializeTables = async () => {
       as: 'user_group_id',
     });
 
-    Gender.hasMany(UserPrivacy, {
+    Gender.hasMany(User, {
       foreignKey: 'gender',
       as: 'gender_id',
     });
-    UserPrivacy.belongsTo(Gender, {
+    User.belongsTo(Gender, {
       foreignKey: 'gender',
       as: 'gender_id',
     });
 
-    UserPrivacy.belongsToMany(Event, {
-      foreignKey: 'participant',
-      through: 'event_participant',
+    User.belongsToMany(Event, {
+      foreignKey: 'audience',
+      through: 'event_audience',
       as: 'event_history',
     });
-    Event.belongsToMany(UserPrivacy, {
+    Event.belongsToMany(User, {
       foreignKey: 'event',
-      through: 'event_participant',
-      as: 'participant',
+      through: 'event_audience',
+      as: 'audience',
     });
 
-    LocationStatus.hasMany(Location, {
-      foreignKey: 'status',
-      as: 'status_id',
+    Event.belongsToMany(EventParticipant, {
+      foreignKey: 'event',
+      through: 'event_participant',
+      as: 'participants',
     });
-    Location.belongsTo(LocationStatus, {
-      foreignKey: 'status',
-      as: 'status_id',
+    EventParticipant.belongsToMany(Event, {
+      foreignKey: 'participant',
+      through: 'event_participant',
+      as: 'events',
+    });
+
+    Event.hasMany(Comment, {
+      foreignKey: 'event_id',
+    });
+    User.hasMany(Comment, {
+      foreignKey: 'user_id',
+    });
+
+    //Event.belongsToMany(EventTag, {
+    //  foreignKey: 'event',
+    //  through: 'event_tag',
+    //  as: 'tags',
+    //});
+    //EventTag.belongsToMany(Event, {
+    //  foreignKey: 'tag',
+    //  through: 'event_tag',
+    //  as: 'events',
+    //});
+
+    EventStatus.hasMany(Event);
+    Event.belongsTo(EventStatus);
+
+    LocationStatus.hasMany(Location);
+    Location.belongsTo(LocationStatus);
+
+    User.hasMany(Message, {
+      foreignKey: 'sender',
+      as: 'sender_id',
+    });
+    Message.belongsTo(User, {
+      foreignKey: 'sender',
+      as: 'sender_id',
+    });
+
+    User.hasMany(Message, {
+      foreignKey: 'receiver',
+      as: 'receiver_id',
+    });
+    Message.belongsTo(User, {
+      foreignKey: 'receiver',
+      as: 'receiver_id',
     });
   } catch (error) {
     console.error('Error initializing tables:', error);
@@ -51,19 +102,27 @@ const initializeTables = async () => {
 };
 
 const initializeModels = async () => {
-  await Promise.all([GenderInit(), UserGroupInit(), LocationStatusInit()]);
+  await Promise.all([
+    GenderInit(),
+    UserGroupInit(),
+    LocationStatusInit(),
+    EventTagInit(),
+    EventParticipantInit(),
+    EventStatusInit(),
+    CommentInit(),
+  ]);
   await Promise.all([
     UserInit(),
-    UserPrivacyInit(),
     EventInit(),
     LocationInit(),
+    MessageInit(),
+    CommentInit(),
   ]);
 
-  const user1 = await UserPrivacy.findByPk(1);
-  const user2 = await UserPrivacy.findByPk(2);
+  const user1 = await User.findByPk(1);
+  const user2 = await User.findByPk(2);
   const event = await Event.findByPk(1);
-  await event.addParticipant([user1, user2]);
-  console.log('Participant number:', await event.countParticipant());
+  await event.addAudience([user1, user2]);
 };
 
 module.exports = {
@@ -72,8 +131,12 @@ module.exports = {
   Gender,
   UserGroup,
   User,
-  UserPrivacy,
   Event,
+  EventTag,
+  EventParticipant,
+  EventStatus,
   Location,
   LocationStatus,
+  Comment,
+  Message,
 };
