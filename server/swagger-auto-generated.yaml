@@ -4,9 +4,8 @@ info:
   version: 1.0.0
   description: API for managing campus events and entertainment
 servers:
-  - url:
-      - http://217.142.229.202:5000/api
-      - http://localhost:5000/api
+  - url: http://localhost:5000/api
+  - url: http://217.142.229.202/api
 security:
   - bearerAuth: []
 paths:
