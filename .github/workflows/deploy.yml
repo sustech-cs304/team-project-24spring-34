@@ -23,5 +23,5 @@ jobs:
           source ~/.bashrc
           cd ~/team-project-24spring-34/server/
           git pull
-          pnpm install
-          pnpm run build
+          /home/ubuntu/.local/share/pnpm/pnpm install
+          /home/ubuntu/.local/share/pnpm/pnpm run build
