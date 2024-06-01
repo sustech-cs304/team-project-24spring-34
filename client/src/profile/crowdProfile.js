@@ -16,19 +16,21 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
 import {Delete as DeleteIcon} from '@mui/icons-material';
+import {Link} from 'react-router-dom';
 function CrowdProfile(user) {
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
   const [formData, setFormData] = useState({});
-  const [events, setEvents] = useState({});
+  const [event_history, setEvents] = useState({});
+  const [error, setError] = useState(null);
 
   setFormData({
-    username: user.username,
-    gender: user.gender || '男',
-    age: user.age || 23,
-    phone: user.phone || '131212344231',
+    username: user.nickname,
+    gender: user.gender,
+    age: user.age,
+    phone: user.phone,
     email: user.email,
-    intro: user.intro || '',
+    intro: user.intro,
   });
 
   const handleEditClick = (field) => {
@@ -38,9 +40,26 @@ function CrowdProfile(user) {
   const handleSaveClick = async (field) => {
     setEditMode((prev) => ({...prev, [field]: false}));
     try {
+      // Email format validation
+      if (field === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+          setError('Invalid email format');
+          setEditMode((prev) => ({...prev, [field]: true}));
+          return;
+        }
+      }
       await axios.put('/api/me', {[field]: formData[field]});
       // Update the user state to reflect the new data
-      user[field] = formData[field];
+      // user[field] = formData[field];
+      setFormData({
+        username: user.nickname,
+        gender: user.gender,
+        age: user.age,
+        phone: user.phone,
+        email: user.email,
+        intro: user.intro,
+      });
     } catch (error) {
       console.error('Error saving user data:', error);
     }
@@ -65,7 +84,7 @@ function CrowdProfile(user) {
           <Box>
             <Box>
               <Typography variant='h6' gutterBottom>
-                个人资料
+                Personal Profile
               </Typography>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
@@ -73,23 +92,23 @@ function CrowdProfile(user) {
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
-                {editMode.username ? (
+                {editMode.nickname ? (
                   <>
                     <TextField
-                      name='username'
-                      value={formData.username}
+                      name='nickname'
+                      value={formData.nickname}
                       onChange={handleChange}
                       size='small'
                     />
                     <IconButton
                       size='small'
-                      onClick={() => handleSaveClick('username')}
+                      onClick={() => handleSaveClick('nickname')}
                       sx={{ml: 1}}>
                       <SaveIcon fontSize='small' />
                     </IconButton>
                     <IconButton
                       size='small'
-                      onClick={() => handleCancelClick('username')}
+                      onClick={() => handleCancelClick('nickname')}
                       sx={{ml: 1}}>
                       <CancelIcon fontSize='small' />
                     </IconButton>
@@ -97,11 +116,11 @@ function CrowdProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>用户名:</strong> {user.username}
+                      <strong>Username:</strong> {user.nickname}
                     </Typography>
                     <IconButton
                       size='small'
-                      onClick={() => handleEditClick('username')}
+                      onClick={() => handleEditClick('nickname')}
                       sx={{ml: 1}}>
                       <EditIcon fontSize='small' />
                     </IconButton>
@@ -133,7 +152,7 @@ function CrowdProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>性别:</strong> {user.gender || '男'}
+                      <strong>Gender:</strong> {user.gender}
                     </Typography>
                     <IconButton
                       size='small'
@@ -169,7 +188,7 @@ function CrowdProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>年龄:</strong> {user.age || 23}
+                      <strong>Age:</strong> {user.age}
                     </Typography>
                     <IconButton
                       size='small'
@@ -205,7 +224,7 @@ function CrowdProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>电话:</strong> {user.phone || '131212344231'}
+                      <strong>Phone:</strong> {user.phone}
                     </Typography>
                     <IconButton
                       size='small'
@@ -241,7 +260,7 @@ function CrowdProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>邮箱:</strong> {user.email}
+                      <strong>Email:</strong> {user.email}
                     </Typography>
                     <IconButton
                       size='small'
@@ -254,7 +273,7 @@ function CrowdProfile(user) {
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>个人介绍:</strong>
+                  <strong>Introduction:</strong>
                 </Typography>
                 <IconButton
                   size='small'
@@ -297,73 +316,51 @@ function CrowdProfile(user) {
       case 'security':
         return (
           <Box>
-            <Typography variant='h6'>安全设置</Typography>
+            <Typography variant='h6'>Security</Typography>
             <MKButton
+              component={Link}
+              to='/changePassword'
               variant='contained'
               sx={{
                 backgroundColor: 'red',
+                color: 'white',
+                fontWeight: 'bold',
                 '&:hover': {
                   backgroundColor: '#d32f2f',
                 },
               }}>
-              修改密码
+              Password Modification
             </MKButton>
           </Box>
         );
       case 'history':
         return (
           <Box>
-            <Typography variant='h6'>历史记录</Typography>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
+            <Typography variant='h6'>history</Typography>
+            <List>
+              {user.event_history.map((event) => (
+                <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
+                  <ListItemText
+                    primary={event.title}
+                    secondary={`${event.time} | ${event.location} | ${event.organizer}`}
+                  />
+                  <IconButton
+                    edge='end'
+                    aria-label='delete'
+                    onClick={() => handleDelete(event.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
           </Box>
         );
       case 'reserve':
         return (
           <Box>
-            <Typography variant='h6'>预约的活动</Typography>
+            <Typography variant='h6'>Reserved Events</Typography>
             <List>
-              {events.map((event) => (
+              {user.event_history.map((event) => (
                 <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
                   <ListItemText
                     primary={event.title}

@@ -16,6 +16,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
 import {Delete as DeleteIcon} from '@mui/icons-material';
+import {Link} from 'react-router-dom';
 function HostProfile(user) {
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
@@ -299,14 +300,18 @@ function HostProfile(user) {
           <Box>
             <Typography variant='h6'>安全设置</Typography>
             <MKButton
+              component={Link}
+              to='/changePassword'
               variant='contained'
               sx={{
                 backgroundColor: 'red',
+                color: 'white',
+                fontWeight: 'bold',
                 '&:hover': {
                   backgroundColor: '#d32f2f',
                 },
               }}>
-              修改密码
+              Password Modification
             </MKButton>
           </Box>
         );

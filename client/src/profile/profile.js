@@ -31,9 +31,9 @@ import DefaultNavbar_1 from '../mainpage/mainpageComponents/DefaultNavbar_1';
 
 function ProfilePage() {
   const [data, setData] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  //
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {

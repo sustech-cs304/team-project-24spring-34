@@ -16,7 +16,8 @@ import {
   Delete as DeleteIcon,
   PersonOutline as PersonIcon,
   DeleteOutline as DeleteOutlineIcon,
-} from '@mui/icons-material'; // 导入需要的图标组件
+} from '@mui/icons-material';
+import {Link} from 'react-router-dom'; // 导入需要的图标组件
 
 const mockEvents = [
   {
@@ -65,7 +66,7 @@ const mockUsers = [
 ];
 
 function AdminProfile({user}) {
-  const [selectedItem, setSelectedItem] = useState('profile');
+  const [selectedItem, setSelectedItem] = useState('security');
   const [events, setEvents] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null); // 用于存储选中的用户
   const [followers, setFollowers] = useState([]);
@@ -221,6 +222,8 @@ function AdminProfile({user}) {
           <Box>
             <Typography variant='h6'>安全设置</Typography>
             <MKButton
+              component={Link}
+              to='/changePassword'
               variant='contained'
               sx={{
                 backgroundColor: 'red',
@@ -230,7 +233,7 @@ function AdminProfile({user}) {
                   backgroundColor: '#d32f2f',
                 },
               }}>
-              修改密码
+              Password Modification
             </MKButton>
           </Box>
         );

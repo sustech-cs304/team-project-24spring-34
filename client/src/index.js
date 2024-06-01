@@ -30,7 +30,7 @@ root.render(
         <Route path='/user/:userId' element={<OtherProfilePage />} />
         <Route path='/search' element={<SearchPage />} />
         <Route path='/others' element={<OtherProfilePage />} />
-        <Route path='/change' element={<ChangePasswordPage />} />
+        <Route path='/changePassword' element={<ChangePasswordPage />} />
         <Route path='/history' element={<HistoryPage />} />
       </Routes>
     </Router>
