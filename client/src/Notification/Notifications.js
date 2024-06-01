@@ -23,11 +23,12 @@ const TagEnum = {
 };
 
 const NotificationBriefBlock = ({Notification}) => {
+  const navigate = useNavigate();
   const {id, activateid, senderid, reciverid, title, content, tag, time, read} =
     Notification;
-  const navigate = useNavigate();
   const handelClickOnNotification = () => {
-    navigate('/details');
+    console.log('Notification id:', id);
+    navigate(`/details/${id}`);
   };
 
   let bgColor;
