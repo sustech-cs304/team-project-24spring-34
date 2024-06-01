@@ -27,7 +27,7 @@ setupSwagger(app);
 
 app.use(express.json());
 
-app.listen(process.env.LiSTEN_PORT, process.env.LISTEN_HOST, () => {
+app.listen(process.env.LISTEN_PORT, process.env.LISTEN_HOST, () => {
   console.log(
     `Server listening on http://${process.env.LISTEN_HOST}:${process.env.LISTEN_PORT}`,
   );
