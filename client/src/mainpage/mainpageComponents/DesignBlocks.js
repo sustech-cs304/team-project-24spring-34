@@ -43,7 +43,9 @@ function DesignBlocks() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/events');
+        const response = await axios.get(
+          'http://217.142.229.202:5000/api/Events',
+        );
         setData(response.data);
       } catch (error) {
         setError(error);

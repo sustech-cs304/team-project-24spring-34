@@ -11,7 +11,12 @@ import {
 import React, {useEffect, useState} from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import MKButton from '../components/MKButton';
-import {Delete as DeleteIcon} from '@mui/icons-material';
+import AvatarUpload from './AvatarUpload'; // 引入头像上传组件
+import {
+  Delete as DeleteIcon,
+  PersonOutline as PersonIcon,
+  DeleteOutline as DeleteOutlineIcon,
+} from '@mui/icons-material'; // 导入需要的图标组件
 
 const mockEvents = [
   {
@@ -37,45 +42,91 @@ const mockEvents = [
   },
   // 添加更多模拟事件数据
 ];
-function AdminProfile(user) {
+
+const mockFollowers = [
+  {id: 1, name: '粉丝1', avatar: '/path-to-avatar1.jpg'},
+  {id: 2, name: '粉丝2', avatar: '/path-to-avatar2.jpg'},
+  {id: 3, name: '粉丝3', avatar: '/path-to-avatar3.jpg'},
+  // 更多粉丝数据
+];
+
+const mockFollowing = [
+  {id: 1, name: '关注1', avatar: '/path-to-avatar4.jpg'},
+  {id: 2, name: '关注2', avatar: '/path-to-avatar5.jpg'},
+  {id: 3, name: '关注3', avatar: '/path-to-avatar6.jpg'},
+  // 更多关注数据
+];
+
+const mockUsers = [
+  {id: 1, name: '关注1', avatar: '/path-to-avatar4.jpg'},
+  {id: 2, name: '关注2', avatar: '/path-to-avatar5.jpg'},
+  {id: 3, name: '关注3', avatar: '/path-to-avatar6.jpg'},
+  // 更多关注数据
+];
+
+function AdminProfile({user}) {
   const [selectedItem, setSelectedItem] = useState('profile');
   const [events, setEvents] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null); // 用于存储选中的用户
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false);
+  const [users, setUsers] = useState([]); // 定义用户数据状态
 
-  // useEffect(() => {
-  // 获取事件数据的函数
-  //   const fetchEvents = async () => {
-  //     try {
-  //       const response = await fetch('https://api.example.com/events');
-  //       const data = await response.json();
-  //       setEvents(data);
-  //     } catch (error) {
-  //       console.error('Error fetching events:', error);
-  //     }
-  //   };
-  //
-  //   fetchEvents();
-  // }, []);
-  // const handleDelete = async (id) => {
-  //   try {
-  //     await fetch(`https://api.example.com/events/${id}`, {
-  //       method: 'DELETE',
-  //     });
-  //     setEvents(events.filter(event => event.id !== id));
-  //   } catch (error) {
-  //     console.error('Error deleting event:', error);
-  //   }
-  // };
+  // 定义更改用户类别函数
+  const handleChangeUserType = (userId) => {
+    // 执行更改用户类别的逻辑操作
+  };
+
+  // 定义删除用户函数
+  const handleDeleteUser = (id) => {
+    // 执行删除用户的逻辑操作
+    setEvents(events.filter((user) => user.id !== id));
+  };
 
   useEffect(() => {
     // 使用模拟数据
     setEvents(mockEvents);
+    setFollowers(mockFollowers);
+    setFollowing(mockFollowing);
+    setUsers(mockUsers);
   }, []);
 
   const handleDelete = (id) => {
     // 模拟删除事件
     setEvents(events.filter((event) => event.id !== id));
   };
+
+  //显示粉丝
+  const handleUserClick = (user) => {
+    setSelectedUser(user); // 将选中的用户信息存储在 selectedUser 状态中
+  };
+
+  // 关注用户
+  const handleFollow = (user) => {
+    setFollowing([...following, user]);
+  };
+
+  // 取消关注用户
+  const handleUnfollow = (id) => {
+    setFollowing(following.filter((user) => user.id !== id));
+  };
+
+  // 显示粉丝
+  const handleFollowersClick = () => {
+    setSelectedItem('followers');
+  };
+
+  //显示关注的用户
+  const handleFollowingClick = () => {
+    setSelectedItem('following');
+  };
+
   const renderContent = () => {
+    if (showAvatarUpload) {
+      return <AvatarUpload onBack={() => setShowAvatarUpload(false)} />;
+    }
+
     switch (selectedItem) {
       case 'profile':
         return (
@@ -151,17 +202,6 @@ function AdminProfile(user) {
                 <Typography variant='body1'>好</Typography>
               </Box>
             </Box>
-
-            {/*<Typography variant="h6" gutterBottom>个人资料</Typography>*/}
-            {/*<Typography variant="body1"><strong>ID:</strong> 12123</Typography>*/}
-            {/*<Typography variant="body1"><strong>用户名:</strong> 廖辰益</Typography>*/}
-            {/*<Typography variant="body1"><strong>用户类别:</strong> 观众</Typography>*/}
-            {/*<Typography variant="body1"><strong>性别:</strong> 男</Typography>*/}
-            {/*<Typography variant="body1"><strong>年龄:</strong> 23</Typography>*/}
-            {/*<Typography variant="body1"><strong>创建日期:</strong> {user.creationDate}</Typography>*/}
-            {/*<Typography variant="body1"><strong>电话:</strong> 131212344231</Typography>*/}
-            {/*<Typography variant="body1"><strong>邮箱:</strong> 1211111@example.com</Typography>*/}
-            {/*<Typography variant="body1"><strong>个人介绍:</strong> 好</Typography>*/}
           </Box>
         );
       case 'security':
@@ -172,6 +212,8 @@ function AdminProfile(user) {
               variant='contained'
               sx={{
                 backgroundColor: 'red',
+                color: 'white',
+                fontWeight: 'bold',
                 '&:hover': {
                   backgroundColor: '#d32f2f',
                 },
@@ -184,48 +226,28 @@ function AdminProfile(user) {
         return (
           <Box>
             <Typography variant='h6'>用户管理</Typography>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
+            <List>
+              {mockUsers.map((user) => (
+                <ListItem key={user.id} sx={{borderBottom: '1px solid #ddd'}}>
+                  <ListItemText
+                    primary={user.username}
+                    secondary={user.user_group}
+                  />
+                  <IconButton
+                    edge='end'
+                    aria-label='change-user-type'
+                    onClick={() => handleChangeUserType(user.id)}>
+                    <PersonIcon /> {/* 更改用户类别图标按钮 */}
+                  </IconButton>
+                  <IconButton
+                    edge='end'
+                    aria-label='delete-user'
+                    onClick={() => handleDeleteUser(user.id)}>
+                    <DeleteIcon /> {/* 删除用户图标按钮 */}
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
           </Box>
         );
       case 'manageEvents':
@@ -252,6 +274,84 @@ function AdminProfile(user) {
             </List>
           </Box>
         );
+      case 'followers':
+        return (
+          <Box>
+            <Typography variant='h6'>所有粉丝</Typography>
+            <List>
+              {followers.map((follower) => (
+                <ListItem
+                  key={follower.id}
+                  button
+                  onClick={() => handleUserClick(follower)}
+                  sx={{display: 'flex', alignItems: 'center'}}>
+                  <Avatar
+                    alt={follower.name}
+                    src={follower.avatar}
+                    sx={{width: 40, height: 40, marginRight: 2}}
+                  />
+                  <ListItemText primary={follower.name} />
+                  <IconButton
+                    edge='end'
+                    aria-label='follow'
+                    onClick={() => handleFollow(follower)}>
+                    <MKButton
+                      variant='contained'
+                      sx={{
+                        backgroundColor: 'white',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        '&:hover': {
+                          backgroundColor: '#F5F5F5',
+                        },
+                      }}>
+                      关注
+                    </MKButton>
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      case 'following':
+        return (
+          <Box>
+            <Typography variant='h6'>所有关注</Typography>
+            <List>
+              {following.map((followed) => (
+                <ListItem
+                  key={followed.id}
+                  button
+                  onClick={() => handleUserClick(followed)}
+                  sx={{display: 'flex', alignItems: 'center'}}>
+                  <Avatar
+                    alt={followed.name}
+                    src={followed.avatar}
+                    sx={{width: 40, height: 40, marginRight: 2}}
+                  />
+                  <ListItemText primary={followed.name} />
+                  <IconButton
+                    edge='end'
+                    aria-label='unfollow'
+                    onClick={() => handleUnfollow(followed.id)}>
+                    <MKButton
+                      variant='contained'
+                      sx={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        '&:hover': {
+                          backgroundColor: '#d32f2f',
+                        },
+                      }}>
+                      取消关注
+                    </MKButton>
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
       default:
         return null;
     }
@@ -272,6 +372,7 @@ function AdminProfile(user) {
             alt='User Avatar'
             src='/path-to-avatar.jpg' // 替换成实际的头像路径
             sx={{width: 60, height: 60, marginRight: 2}}
+            onClick={() => setShowAvatarUpload(true)} // 添加点击事件
           />
           <Box>
             <Typography variant='h6'>{user.username}</Typography>
@@ -281,13 +382,18 @@ function AdminProfile(user) {
             <Typography variant='body2' color='textSecondary'>
               {user.id}
             </Typography>
-            {/*<Typography variant='h6'>哈哈</Typography>*/}
-            {/*<Typography variant='body2' color='textSecondary'>*/}
-            {/*  举办者*/}
-            {/*</Typography>*/}
-            {/*<Typography variant='body2' color='textSecondary'>*/}
-            {/*  123*/}
-            {/*</Typography>*/}
+            <Typography
+              variant='body2'
+              color='textSecondary'
+              onClick={handleFollowersClick}>
+              粉丝数: {followers.length}
+            </Typography>
+            <Typography
+              variant='body2'
+              color='textSecondary'
+              onClick={handleFollowingClick}>
+              关注数: {following.length}
+            </Typography>
           </Box>
         </Box>
         {/* 菜单项 */}

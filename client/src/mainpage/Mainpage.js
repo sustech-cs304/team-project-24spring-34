@@ -49,7 +49,7 @@ function Mainpage() {
           </MKTypography>
         </Grid>
       </Container>
-      {/*<DesignBlocks />*/}
+      <DesignBlocks />
     </ThemeProvider>
   );
 }
