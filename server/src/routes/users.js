@@ -239,25 +239,6 @@ router.delete('/me', async (req, res) => {
   res.send();
 });
 
-function getUidFromJwt(req) {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('Invalid or missing Authorization header');
-      return null;
-    }
-
-    const token = authHeader.slice(7);
-    const decoded = jwt.verify(token, '42');
-    return decoded.id;
-  } catch (error) {
-    console.log('Invalid token:', error);
-    return null;
-  }
-}
-
-module.exports = router;
-
 /**
  * @swagger
  * /messages:
@@ -290,3 +271,22 @@ router.get('/messages', async (req, res) => {
   }
   res.json(messages);
 });
+
+function getUidFromJwt(req) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('Invalid or missing Authorization header');
+      return null;
+    }
+
+    const token = authHeader.slice(7);
+    const decoded = jwt.verify(token, '42');
+    return decoded.id;
+  } catch (error) {
+    console.log('Invalid token:', error);
+    return null;
+  }
+}
+
+module.exports = router;

@@ -1,6 +1,6 @@
-process.env.NODE_ENV = 'development';
-
+require('dotenv').config();
 const chalk = require('chalk');
+
 const originalConsole = global.console;
 global.console = {
   log: function (...args) {
@@ -27,6 +27,8 @@ setupSwagger(app);
 
 app.use(express.json());
 
-app.listen(5000, () => {
-  console.log('Server is running on port 5000');
+app.listen(process.env.LiSTEN_PORT, process.env.LISTEN_HOST, () => {
+  console.log(
+    `Server listening on http://${process.env.LISTEN_HOST}:${process.env.LISTEN_PORT}`,
+  );
 });
