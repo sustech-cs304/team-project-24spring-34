@@ -17,8 +17,9 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
+          /bin/bash
+          source ~/.bashrc
           cd ~/team-project-24spring-34/server/
           git pull
-          source ~/.bashrc
           pnpm install
           pnpm run build
