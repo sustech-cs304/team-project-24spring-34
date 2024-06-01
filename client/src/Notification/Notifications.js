@@ -73,9 +73,10 @@ const NotificationBriefBlock = ({Notification}) => {
 };
 
 const Notifications = () => {
-  const [Notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [userid, setUserid] = useState('');
-  const [visibleCount, setVisibleCount] = useState(15);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const getUserid = async () => {
     // const response = await fetch('/api/userid');
@@ -86,12 +87,12 @@ const Notifications = () => {
     setUserid('88');
   };
 
-  const getNotifications = async (userid) => {
-    // const response = await fetch('/api/Notifications/'+userid);
+  const getNotifications = async (userid, page) => {
+    setLoading(true);
+    // const response = await fetch(`/api/Notifications/${userid}?page=${page}&limit=15`);
     // const data = await response.json();
-    // setNotifications(data);
 
-    // test data
+    // For now, using test data
 
     const testData = [
       {
@@ -127,7 +128,6 @@ const Notifications = () => {
         time: '2021-10-13 10:10:10',
         read: false,
       },
-      // Add more Notifications as needed...
       {
         id: '4',
         activateid: '1',
@@ -260,197 +260,25 @@ const Notifications = () => {
         time: '2021-10-13 10:10:10',
         read: false,
       },
-      {
-        id: '16',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: false,
-      },
-      {
-        id: '17',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-11 10:10:10',
-        read: false,
-      },
-      {
-        id: '18',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '19',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: false,
-      },
-      {
-        id: '20',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '21',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '22',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: true,
-      },
-      {
-        id: '23',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2024-10-11 10:10:10',
-        read: false,
-      },
-      {
-        id: '24',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '25',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: true,
-      },
-      {
-        id: '26',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-11 10:10:10',
-        read: true,
-      },
-      {
-        id: '27',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: true,
-      },
-      {
-        id: '28',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: true,
-      },
-      {
-        id: '29',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-16 10:10:10',
-        read: true,
-      },
-      {
-        id: '30',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: true,
-      },
-      {
-        id: '31',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: true,
-      },
     ];
-    const sortedNotifications = testData.sort((a, b) => {
-      return new Date(b.time) - new Date(a.time);
-    });
-    setNotifications(sortedNotifications);
+    setNotifications((prevNotifications) => [
+      ...prevNotifications,
+      ...testData,
+    ]);
+    setLoading(false);
   };
 
   useEffect(() => {
     getUserid().then(() => {
-      getNotifications(userid);
+      setCurrentPage(1);
+      setNotifications([]);
+      getNotifications(userid, currentPage);
     });
   }, [userid]);
 
   const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 15);
+    setCurrentPage((prevPage) => prevPage + 1);
+    getNotifications(userid, currentPage + 1);
   };
 
   return (
@@ -469,13 +297,13 @@ const Notifications = () => {
           </Typography>
           <Divider />
           <Grid container spacing={2}>
-            {Notifications.slice(0, visibleCount).map((Notification) => (
-              <Grid item xs={12} key={Notification.id}>
-                <NotificationBriefBlock Notification={Notification} />
+            {notifications.map((notification) => (
+              <Grid item xs={12} key={notification.id}>
+                <NotificationBriefBlock Notification={notification} />
               </Grid>
             ))}
           </Grid>
-          {visibleCount < Notifications.length && (
+          {!loading && notifications.length % 15 === 0 && (
             <Box mt={2} textAlign='center'>
               <Button
                 variant='contained'
@@ -486,6 +314,11 @@ const Notifications = () => {
                 }}>
                 Load More
               </Button>
+            </Box>
+          )}
+          {loading && (
+            <Box mt={2} textAlign='center'>
+              <Typography variant='body1'>Loading...</Typography>
             </Box>
           )}
         </main>
