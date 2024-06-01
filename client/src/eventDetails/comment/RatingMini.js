@@ -2,8 +2,8 @@ import React from 'react';
 import {FaStar, FaStarHalfAlt, FaRegStar} from 'react-icons/fa';
 
 const RatingMini = ({rating}) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating - fullStars >= 0.5;
+  const fullStars = Math.floor(rating / 2);
+  const hasHalfStar = rating / 2 - fullStars >= 0.5;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
   return (
