@@ -17,6 +17,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Link as RouterLink} from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {set} from 'date-fns';
+import {useNavigate} from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -40,7 +43,12 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
+  const navigate = useNavigate();
   const [retrieveOpen, setRetrieveOpen] = React.useState(false);
+  const [accountInfo, setAccountInfo] = useState({
+    username: '',
+    password: '',
+  });
 
   const handleClickRetrieveOpen = () => {
     setRetrieveOpen(true);
@@ -50,13 +58,35 @@ export default function SignInSide() {
     setRetrieveOpen(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    setAccountInfo({
+      username: event.target.email.value,
+      password: event.target.password.value,
     });
+
+    try {
+      const response = await fetch('http://10.27.41.93:5000/api/sessions', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: accountInfo.username,
+          password: accountInfo.password,
+        }),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      });
+      localStorage.setItem('authToken', response.token);
+      navigate('/mainpage');
+    } catch (error) {
+      console.error('Error fetching activity details:', error);
+    }
   };
 
   return (
