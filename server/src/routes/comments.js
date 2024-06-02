@@ -102,7 +102,6 @@ router.post('/comments/:event_id', async (req, res) => {
       res.status(404).json(getResponse(404, {description: 'Event not found'}));
       return;
     }
-
     const comment = await Comment.create({
       content: req.body.content,
       user: uid,
@@ -111,7 +110,6 @@ router.post('/comments/:event_id', async (req, res) => {
       dislikes: 0,
       rating: req.body.rating,
     });
-
     res.status(201).json(comment);
   } catch (error) {
     console.error(error);

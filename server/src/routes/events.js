@@ -165,6 +165,7 @@ router.post('/events', async (req, res) => {
     });
     for (let i = 0; i < tags.length; i++) {
       await EventToTag.create({event_id: new_event.id, tag_id: tags[i].id});
+      await EventToTag.create({event_id: new_event.id, tag_id: tags[i].id});
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
@@ -211,8 +212,24 @@ router.get('/events', async (req, res) => {
       event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
       rating_num /
       2; // convert from 1-10 to 0.5-5
+    // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
+    const organizer = await User.findOne({
+      where: {id: eventList[i].organizer_id},
+    });
     eventList[i] = {
-      ...eventList[i].dataValues,
+      id: eventList[i].id,
+      title: eventList[i].title,
+      description: eventList[i].description,
+      poster: eventList[i].poster,
+      publish_organization: eventList[i].publish_organization,
+      start_time: eventList[i].start_time,
+      end_time: eventList[i].end_time,
+      status: eventList[i].status,
+      location: eventList[i].location,
+      capacity: eventList[i].capacity,
+      createdAt: eventList[i].createdAt,
+      updatedAt: eventList[i].updatedAt,
+      organizer_name: organizer.username,
       remaining_capacity,
       tags,
       rating_num,
@@ -312,6 +329,47 @@ router.get('/events/:event_id', async (req, res) => {
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }
+});
+router.delete('/events/:event_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const event = await Event.findOne({where: {id: req.params.event_id}});
+  if (!event) {
+    res.status(404).json(getResponse(404, {description: 'Event not found'}));
+    return;
+  }
+  if (
+    User.findOne({where: {id: uid}}).user_group === 2 &&
+    event.organizer_id !== uid
+  ) {
+    res
+      .status(401)
+      .json(getResponse(401, {description: 'Unauthorized to delete event'}));
+    return;
+  }
+  // event_participants = await EventToParticipant.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_participants.length; i++) {
+  //   await EventToParticipant.destroy({where: {id: event_participants[i].id}});
+  // }
+  // event_audiences = await EventToAudience.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_audiences.length; i++) {
+  //   await EventToAudience.destroy({where: {id: event_audiences[i].id}});
+  // }
+  // event_tags = await EventToTag.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_tags.length; i++) {
+  //   await EventToTag.destroy({where: {id: event_tags[i].id}});
+  // }
+  await Event.destroy({where: {id: req.params.event_id}});
+  res.status(204).send();
 });
 router.delete('/events/:event_id', async (req, res) => {
   const uid = getUidFromJwt(req);
