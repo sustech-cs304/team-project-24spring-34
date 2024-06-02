@@ -148,6 +148,8 @@ router.use((req, res, next) => {
  *     description: Operations about comments
  *   - name: Locations
  *     description: Operations about locations
+ *   - name: Images
+ *     description: Operations about images
  */
 const usersRoutes = require('./users');
 router.use(usersRoutes);
@@ -155,5 +157,7 @@ const eventsRoutes = require('./events');
 router.use(eventsRoutes);
 const commentsRoutes = require('./comments');
 router.use(commentsRoutes);
+const imagesRoutes = require('./images');
+router.use(imagesRoutes);
 
 module.exports = router;
