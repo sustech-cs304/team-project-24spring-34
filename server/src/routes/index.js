@@ -111,8 +111,6 @@ function verifyToken(req, res, next) {
  *           type: integer
  *           minimum: 1
  *           uniqueItems: true
- *         style: form
- *         explode: false
  *         default: []
  */
 
