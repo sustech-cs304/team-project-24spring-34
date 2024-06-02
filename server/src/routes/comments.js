@@ -180,6 +180,11 @@ router.get('/comments/:event_id', async (req, res) => {
         ? liked_or_disliked_by_me.like
         : null;
     }
+    for (let i = 0; i < comments.length; i++) {
+      const {user_id, ...rest} = comments[i].dataValues;
+      const user = await User.findOne({where: {id: user_id}});
+      comments[i] = {username: user.username, ...rest};
+    }
     res.json({comments, total});
   } catch (error) {
     console.error(error);
