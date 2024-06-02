@@ -15,6 +15,7 @@ import ThemeUpload from './themeUpload';
 import ThemeNumInput from './themeNumInput';
 import ThemeButton from './themeButton';
 import Tags from './tags';
+import ParticipatorComponent from './Participator';
 
 const ErrorMessage = styled.p`
   color: red;
@@ -161,6 +162,7 @@ function FormInput(props) {
             marginTop: '0px',
           }}>
           <Tags onTagsChange={updateTags} />
+          <ParticipatorComponent />
         </div>
         {error && <ErrorMessage>{error}</ErrorMessage>}
       </div>

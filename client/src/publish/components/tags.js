@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import styled, {ThemeProvider} from 'styled-components';
+import {MdOutlineDeleteForever} from 'react-icons/md';
 
 const Button = styled.button`
   width: 20px;
@@ -47,7 +48,9 @@ const Tags = ({onTagsChange}) => {
       {tags.map((tag, index) => (
         <div key={index} style={{marginBottom: '5px'}}>
           <span style={{marginRight: '5px'}}>{tag}</span>
-          <Button onClick={() => handleTagRemove(index)}>x</Button>
+          <Button onClick={() => handleTagRemove(index)}>
+            <MdOutlineDeleteForever />
+          </Button>
         </div>
       ))}
       <div style={{marginTop: '0px'}}>
