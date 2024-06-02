@@ -108,8 +108,17 @@ const StyledDatePicker = styled(DatePicker)`
 `;
 
 function ThemeTimePicker(props) {
-  const [time, setTime] = useState('10:00');
-  const [date, setDate] = useState(new Date());
+  const [startTime, setStartTime] = useState('00:00:00');
+  const [endTime, setEndTime] = useState('00:00:00');
+
+  const handleStartChange = (startTime) => {
+    setStartTime(startTime);
+    props.changeStart(startTime);
+  };
+  const handleEndChange = (endTime) => {
+    setEndTime(endTime);
+    props.changeEnd(endTime);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -123,20 +132,20 @@ function ThemeTimePicker(props) {
             <div style={{flex: 1, backgroundColor: '#FFFFFF'}}>
               <Paragraph>Starting Time</Paragraph>
               <TimePicker
-                onChange={setTime}
-                value={time}
+                onChange={handleStartChange}
+                value={startTime}
                 disableClock={true}
-                format='HH:mm'
+                format='HH:mm:ss'
                 clearIcon={null}
               />
             </div>
             <div style={{flex: 1, backgroundColor: '#FFFFFF'}}>
               <Paragraph>Ending Time</Paragraph>
               <TimePicker
-                onChange={setTime}
-                value={time}
+                onChange={handleEndChange}
+                value={endTime}
                 disableClock={true}
-                format='HH:mm'
+                format='HH:mm:ss'
                 clearIcon={null}
               />
             </div>

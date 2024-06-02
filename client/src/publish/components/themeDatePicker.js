@@ -107,20 +107,40 @@ const StyledDatePicker = styled(DatePicker)`
   }
 `;
 
-function ThemeDatePicker() {
+function ThemeDatePicker(props) {
   const [time, setTime] = useState('10:00');
-  const [date, setDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
+  const handleStartChange = (startDate) => {
+    setStartDate(startDate);
+    props.changeStart(startDate);
+  };
+  const handleEndChange = (endDate) => {
+    setEndDate(endDate);
+    props.changeEnd(endDate);
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container>
         <Card>
-          <h2>Please Fill in the Event Time.</h2>
-          <Paragraph>Date</Paragraph>
-          <StyledDatePicker
-            selected={date}
-            onChange={(date) => setDate(date)}
-          />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}>
+            <div style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+              <Paragraph>Starting Date</Paragraph>
+              <StyledDatePicker
+                selected={startDate}
+                onChange={handleStartChange}
+              />
+            </div>
+            <div style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+              <Paragraph>Ending Date</Paragraph>
+              <StyledDatePicker selected={endDate} onChange={handleEndChange} />
+            </div>
+          </div>
         </Card>
       </Container>
     </ThemeProvider>
