@@ -43,7 +43,7 @@ function DesignBlocks() {
   }
 
   const renderData = data.events.map((event) => (
-    <Grid item xs={10} md={4} sx={{mb: 2}} key={event.title}>
+    <Grid item xs={12} sm={6} md={4} sx={{mb: 4}} key={event.title}>
       <Link to={`/event/${event.id}`}>
         <DefaultInfoCard
           title={event.title}
@@ -59,10 +59,10 @@ function DesignBlocks() {
 
   return (
     <MKBox component='section' my={6} py={6}>
-      <Container sx={{mt: 6}}>
-        <Grid container spacing={3} sx={{mb: 10}}>
-          <Grid item xs={12} lg={9}>
-            <Grid container spacing={3}>
+      <Container sx={{mt: 6, px: 4}}>
+        <Grid container spacing={4} sx={{mb: 10}}>
+          <Grid item xs={12}>
+            <Grid container spacing={4}>
               {renderData}
             </Grid>
           </Grid>
