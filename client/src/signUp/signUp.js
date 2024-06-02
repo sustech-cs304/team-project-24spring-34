@@ -103,9 +103,9 @@ const SignUp = () => {
       <Background>
         <Container>
           <Card>
-            <Title>注册</Title>
+            <Title>Sign Up</Title>
             <Form onSubmit={handleSubmit}>
-              <Label htmlFor='email'>邮箱号</Label>
+              <Label htmlFor='email'>Email Address</Label>
               <Input
                 type='email'
                 id='email'
@@ -115,7 +115,7 @@ const SignUp = () => {
                 required
               />
 
-              <Label htmlFor='password'>密码</Label>
+              <Label htmlFor='password'>Password</Label>
               <Input
                 type='password'
                 id='password'
@@ -125,7 +125,7 @@ const SignUp = () => {
                 required
               />
 
-              <Label htmlFor='confirm-password'>确认密码</Label>
+              <Label htmlFor='confirm-password'>Confirm Password</Label>
               <Input
                 type='password'
                 id='confirm-password'
@@ -137,7 +137,7 @@ const SignUp = () => {
 
               {error && <ErrorMessage>{error}</ErrorMessage>}
 
-              <Button type='submit'>注册</Button>
+              <Button type='submit'>Sign Up</Button>
             </Form>
           </Card>
         </Container>
