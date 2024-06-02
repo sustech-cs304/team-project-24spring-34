@@ -129,7 +129,6 @@ router.use((req, res, next) => {
   if (
     (req.path === '/users' && req.method === 'POST') ||
     (req.path === '/sessions' && req.method === 'POST') ||
-    (req.path === '/locations' && req.method === 'GET') ||
     (req.path.startsWith('/events') && req.method === 'GET')
   ) {
     next();
@@ -156,7 +155,5 @@ const eventsRoutes = require('./events');
 router.use(eventsRoutes);
 const commentsRoutes = require('./comments');
 router.use(commentsRoutes);
-const locationsRoutes = require('./locations');
-router.use(locationsRoutes);
 
 module.exports = router;

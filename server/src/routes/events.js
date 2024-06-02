@@ -27,10 +27,7 @@ const getResponse = require('../models/response');
  *               - start_time
  *               - end_time
  *               - location
- *               - tags
  *               - status
- *               - comments
- *               - ratings
  *             properties:
  *               title:
  *                 type: string
@@ -51,18 +48,16 @@ const getResponse = require('../models/response');
  *               end_time:
  *                 type: string
  *                 format: date-time
- *               location:
- *                 $ref: '#/components/schemas/Location'
  *               tags:
  *                 type: array
  *                 items:
  *                   $ref: '#/components/schemas/EventTag'
  *               status:
  *                 $ref: '#/components/schemas/EventStatus'
- *               comments:
- *                 type: array
- *                 items:
- *                   $ref: '#/components/schemas/Comment'
+ *               location:
+ *                 type: string
+ *               capacity:
+ *                 type: integer
  *     responses:
  *       '201':
  *         description: Event created successfully
@@ -99,11 +94,10 @@ router.post('/events', async (req, res) => {
       participants,
       start_time,
       end_time,
-      location,
       tags,
       status,
-      comments,
-      ratings,
+      location,
+      capacity,
     } = req.body;
     await Event.create({
       title,
@@ -113,11 +107,10 @@ router.post('/events', async (req, res) => {
       participants,
       start_time,
       end_time,
-      location,
       tags,
       status,
-      comments,
-      ratings,
+      location,
+      capacity,
     });
     res.status(201).send();
   } catch (error) {
