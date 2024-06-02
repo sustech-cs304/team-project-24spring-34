@@ -10,6 +10,10 @@ import BookingPage from './booking/Booking_page';
 import Publish from './publish/publish';
 import Mainpage from './mainpage/Mainpage';
 import ProfilePage from './profile/profile';
+import OtherProfilePage from './profile/otherProfile';
+import SearchPage from './search/search';
+import ChangePasswordPage from './logIn/changePassword';
+import HistoryPage from './profile/historyPage';
 import Notifications from './Notification/Notifications';
 import PasswordRecovery from './PasswordRecovery/PasswordRecovery';
 import SignUp from './signUp/signUp';
@@ -19,13 +23,18 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path='/' element={<Mainpage />} />
+        <Route path='/' element={<App />} />
         <Route path='/mainpage' element={<Mainpage />} />
         <Route path='/login' element={<Login />} />
         <Route path='/details' element={<ActivityDetails />} />
         <Route path='/booking' element={<BookingPage />} />
         <Route path='/publish' element={<Publish />} />
         <Route path='/profilePage' element={<ProfilePage />} />
+        <Route path='/user/:userId' element={<OtherProfilePage />} />
+        <Route path='/search' element={<SearchPage />} />
+        <Route path='/others' element={<OtherProfilePage />} />
+        <Route path='/changePassword' element={<ChangePasswordPage />} />
+        <Route path='/history' element={<HistoryPage />} />
         <Route path='/signUp' element={<SignUp />} />
         <Route path='/notifications' element={<Notifications />} />
         <Route path='/passwordRecovery' element={<PasswordRecovery />} />

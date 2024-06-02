@@ -132,7 +132,7 @@ function SearchPage() {
       <Box p={3}>
         <Typography variant='h4' gutterBottom>
           <IoIosSearch />
-          搜索
+          Search
         </Typography>
         <TextField
           label='Search'
@@ -228,11 +228,9 @@ function SearchPage() {
                   <Card>
                     <CardContent>
                       <Typography variant='h6'>{user.nickname}</Typography>
-                      <Typography variant='body2'>
-                        用户 ID: {user.id}
-                      </Typography>
+                      <Typography variant='body2'>ID: {user.id}</Typography>
                       <ListItem button component={Link} to={`/user/${user.id}`}>
-                        查看详情
+                        Detail
                       </ListItem>
                     </CardContent>
                   </Card>
@@ -244,9 +242,7 @@ function SearchPage() {
                   <Card>
                     <CardContent>
                       <Typography variant='h6'>{event.title}</Typography>
-                      <Typography variant='body2'>
-                        事件 ID: {event.id}
-                      </Typography>
+                      <Typography variant='body2'>ID: {event.id}</Typography>
                       <Typography variant='body2'>Tag: {event.tag}</Typography>
                       <Typography variant='body2'>
                         Description: {event.description}
@@ -258,7 +254,7 @@ function SearchPage() {
                         button
                         component={Link}
                         to={`/event/${event.id}`}>
-                        查看详情
+                        Detail
                       </ListItem>
                     </CardContent>
                   </Card>

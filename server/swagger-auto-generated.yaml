@@ -93,10 +93,7 @@ paths:
                 - start_time
                 - end_time
                 - location
-                - tags
                 - status
-                - comments
-                - ratings
               properties:
                 title:
                   type: string
@@ -117,18 +114,16 @@ paths:
                 end_time:
                   type: string
                   format: date-time
-                location:
-                  $ref: '#/components/schemas/Location'
                 tags:
                   type: array
                   items:
                     $ref: '#/components/schemas/EventTag'
                 status:
                   $ref: '#/components/schemas/EventStatus'
-                comments:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Comment'
+                location:
+                  type: string
+                capacity:
+                  type: integer
       responses:
         '201':
           description: Event created successfully
@@ -218,41 +213,6 @@ paths:
                 $ref: '#/components/schemas/Event'
         '500':
           $ref: '#/components/responses/500'
-  /locations:
-    get:
-      tags:
-        - Locations
-      summary: Get a list of locations
-      description: Only available locations are returned
-      parameters:
-        - $ref: '#/components/parameters/query_limit'
-        - $ref: '#/components/parameters/query_offset'
-      responses:
-        '200':
-          description: Locations found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
-        '404':
-          $ref: '#/components/responses/404'
-    post:
-      tags:
-        - Locations
-      summary: Create a location
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Location'
-      responses:
-        '200':
-          description: Location created successfully
-        '401':
-          $ref: '#/components/responses/401'
   /users:
     post:
       tags:
@@ -568,14 +528,16 @@ components:
         end_time:
           type: string
           format: date-time
-        location:
-          $ref: '#/components/schemas/Location'
         tags:
           type: array
           items:
             $ref: '#/components/schemas/EventTag'
         status:
           $ref: '#/components/schemas/EventStatus'
+        location:
+          type: string
+        capacity:
+          type: integer
         comments:
           type: array
           items:
@@ -631,35 +593,6 @@ components:
         - 3
       type: integer
       description: 1 = male, 2 = female, 3 = other
-    Location:
-      type: object
-      additionalProperties: false
-      required:
-        - id
-        - name
-        - address
-        - status
-        - seat arrangement
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-        address:
-          type: string
-        status:
-          $ref: '#/components/schemas/LocationStatus'
-        seat arrangement:
-          type: integer
-          description: The number of seats in the location
-    LocationStatus:
-      enum:
-        - 1
-        - 2
-        - 3
-      type: integer
-      description: 1 = Available, 2 = Unavailable, 3 = Closed
     Message:
       type: object
       additionalProperties: false

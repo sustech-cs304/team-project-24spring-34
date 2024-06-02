@@ -8,8 +8,6 @@ const {
   init: EventParticipantInit,
 } = require('./eventParticipant');
 const {EventStatus, init: EventStatusInit} = require('./eventStatus');
-const {Location, init: LocationInit} = require('./location');
-const {LocationStatus, init: LocationStatusInit} = require('./locationStatus');
 const {Comment, init: CommentInit} = require('./comment');
 const {Message, init: MessageInit} = require('./message');
 
@@ -62,22 +60,19 @@ const initializeTables = async () => {
       foreignKey: 'user_id',
     });
 
-    //Event.belongsToMany(EventTag, {
-    //  foreignKey: 'event',
-    //  through: 'event_tag',
-    //  as: 'tags',
-    //});
-    //EventTag.belongsToMany(Event, {
-    //  foreignKey: 'tag',
-    //  through: 'event_tag',
-    //  as: 'events',
-    //});
+    Event.belongsToMany(EventTag, {
+      foreignKey: 'event',
+      through: 'event_tag',
+      as: 'tags',
+    });
+    EventTag.belongsToMany(Event, {
+      foreignKey: 'tag',
+      through: 'event_tag',
+      as: 'events',
+    });
 
     EventStatus.hasMany(Event);
     Event.belongsTo(EventStatus);
-
-    LocationStatus.hasMany(Location);
-    Location.belongsTo(LocationStatus);
 
     User.hasMany(Message, {
       foreignKey: 'sender',
@@ -105,19 +100,11 @@ const initializeModels = async () => {
   await Promise.all([
     GenderInit(),
     UserGroupInit(),
-    LocationStatusInit(),
     EventTagInit(),
     EventParticipantInit(),
     EventStatusInit(),
-    CommentInit(),
   ]);
-  await Promise.all([
-    UserInit(),
-    EventInit(),
-    LocationInit(),
-    MessageInit(),
-    CommentInit(),
-  ]);
+  await Promise.all([UserInit(), EventInit(), MessageInit(), CommentInit()]);
 
   const user1 = await User.findByPk(1);
   const user2 = await User.findByPk(2);
@@ -135,8 +122,6 @@ module.exports = {
   EventTag,
   EventParticipant,
   EventStatus,
-  Location,
-  LocationStatus,
   Comment,
   Message,
 };

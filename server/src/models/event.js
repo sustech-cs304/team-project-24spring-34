@@ -48,14 +48,16 @@ const sequelize = require('../config/connection');
  *         end_time:
  *           type: string
  *           format: date-time
- *         location:
- *           $ref: '#/components/schemas/Location'
  *         tags:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/EventTag'
  *         status:
  *           $ref: '#/components/schemas/EventStatus'
+ *         location:
+ *           type: string
+ *         capacity:
+ *           type: integer
  *         comments:
  *           type: array
  *           items:
@@ -91,6 +93,14 @@ const Event = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    capacity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,
@@ -107,6 +117,8 @@ const init = async () => {
         poster: 'https://www.google.com',
         start_time: new Date('2024-10-10T10:00:00.000Z'),
         end_time: new Date('2024-10-10T12:00:00.000Z'),
+        location: 'location1',
+        capacity: 100,
       },
       {
         id: 2,
@@ -115,6 +127,8 @@ const init = async () => {
         poster: 'https://www.google.com',
         start_time: new Date('2024-10-11T10:00:00.000Z'),
         end_time: new Date('2024-10-11T12:00:00.000Z'),
+        location: 'location2',
+        capacity: 100,
       },
       {
         id: 3,
@@ -123,6 +137,8 @@ const init = async () => {
         poster: 'https://www.google.com',
         start_time: new Date('2024-10-10T10:30:00.000Z'),
         end_time: new Date('2024-10-10T12:50:00.000Z'),
+        location: 'location3',
+        capacity: 100,
       },
     ]);
     console.log('Entries have been successfully inserted into the event table');
