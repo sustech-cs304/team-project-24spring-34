@@ -55,6 +55,8 @@ function getUidFromJwt(req) {
  *     responses:
  *       '201':
  *         description: Comment created successfully
+ *       '204':
+ *         description: Comment updated successfully
  *       '400':
  *         $ref: '#/components/responses/400'
  *       '401':
@@ -102,15 +104,30 @@ router.post('/comments/:event_id', async (req, res) => {
       res.status(404).json(getResponse(404, {description: 'Event not found'}));
       return;
     }
-    const comment = await Comment.create({
-      content: req.body.content,
-      user: uid,
-      event: req.params.event_id,
-      likes: 0,
-      dislikes: 0,
-      rating: req.body.rating,
+    const maybe_comment = await Comment.findOne({
+      where: {user_id: uid, event_id: req.params.event_id},
     });
-    res.status(201).json(comment);
+    if (maybe_comment) {
+      // One user could only comment once for an event
+      // If an old comment exists, update it
+      await maybe_comment.update({
+        content: req.body.content,
+        likes: 0,
+        dislikes: 0,
+        rating: req.body.rating,
+      });
+      res.status(204).send();
+    } else {
+      const comment = await Comment.create({
+        content: req.body.content,
+        user_id: uid,
+        event_id: req.params.event_id,
+        likes: 0,
+        dislikes: 0,
+        rating: req.body.rating,
+      });
+      res.status(201).json(comment);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json(getResponse(500, {description: 'Server error'}));
@@ -132,7 +149,7 @@ router.get('/comments/:event_id', async (req, res) => {
       return;
     }
     let comments = await Comment.findAll({
-      where: {event: req.params.event_id},
+      where: {event_id: req.params.event_id},
     });
     const total = comments.length;
     const offset = req.query.offset || 0;
@@ -162,16 +179,16 @@ router.get('/comments/:event_id', async (req, res) => {
  *     parameters:
  *       - $ref: '#/components/parameters/path_comment_id'
  *     responses:
- *     '204':
- *       description: Comment deleted successfully
- *     '401':
- *       $ref: '#/components/responses/401'
- *     '403':
- *       $ref: '#/components/responses/403'
- *     '404':
- *       $ref: '#/components/responses/404'
- *     '500':
- *       $ref: '#/components/responses/500'
+ *       '204':
+ *         description: Comment deleted successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '403':
+ *         $ref: '#/components/responses/403'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ *       '500':
+ *         $ref: '#/components/responses/500'
  */
 router.delete('/comments/:comment_id', async (req, res) => {
   const uid = getUidFromJwt(req);

@@ -217,10 +217,13 @@ router.get('/events', async (req, res) => {
       where: {event_id: eventList[i].id},
     });
     const rating_num = event_comments.length;
-    const rating =
-      event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
-      rating_num /
-      2; // convert from 1-10 to 0.5-5
+    let rating = 0;
+    if (rating_num > 0) {
+      rating =
+        event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+        rating_num /
+        2; // convert from 1-10 to 0.5-5
+    }
     // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
     const organizer = await User.findOne({
       where: {id: eventList[i].organizer_id},
