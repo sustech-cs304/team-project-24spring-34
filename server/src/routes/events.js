@@ -80,8 +80,6 @@ function getUidFromJwt(req) {
  *                 type: array
  *                 items:
  *                   $ref: '#/components/schemas/EventTag'
- *               status:
- *                 $ref: '#/components/schemas/EventStatus'
  *               location:
  *                 type: string
  *               capacity:
@@ -130,19 +128,13 @@ router.post('/events', async (req, res) => {
       start_time,
       end_time,
       tags,
-      status,
       location,
       capacity,
     } = req.body;
     for (let i = 0; i < tags.length; i++) {
       const tag = await EventTag.findOne({where: {name: tags[i].name}});
       if (!tag) {
-        res
-          .status(400)
-          .json(
-            getResponse(400, {description: 'Invalid tag id: ' + tags[i].name}),
-          );
-        return;
+        await EventTag.bulkCreate([{name: tags[i].name}]);
       }
       tags[i] = tag;
     }
@@ -158,18 +150,7 @@ router.post('/events', async (req, res) => {
         await EventParticipant.bulkCreate([participants[i]]);
       }
     }
-    console.log(
-      title,
-      description,
-      poster,
-      organizer_id,
-      publish_organization,
-      start_time,
-      end_time,
-      status,
-      location,
-      capacity,
-    );
+    const status = 1;
     const new_event = await Event.create({
       title,
       description,
@@ -259,6 +240,21 @@ router.get('/events', async (req, res) => {
  *               $ref: '#/components/schemas/Event'
  *       '404':
  *         $ref: '#/components/responses/404'
+ *   delete:
+ *     tags:
+ *       - Events
+ *     summary: Delete an event by id
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_event_id'
+ *     responses:
+ *       '204':
+ *         description: Event deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Event'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  */
 router.get('/events/:event_id', async (req, res) => {
   const event = await Event.findOne({where: {id: req.params.event_id}});
@@ -317,6 +313,47 @@ router.get('/events/:event_id', async (req, res) => {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }
 });
+router.delete('/events/:event_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const event = await Event.findOne({where: {id: req.params.event_id}});
+  if (!event) {
+    res.status(404).json(getResponse(404, {description: 'Event not found'}));
+    return;
+  }
+  if (
+    User.findOne({where: {id: uid}}).user_group === 2 &&
+    event.organizer_id !== uid
+  ) {
+    res
+      .status(401)
+      .json(getResponse(401, {description: 'Unauthorized to delete event'}));
+    return;
+  }
+  // event_participants = await EventToParticipant.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_participants.length; i++) {
+  //   await EventToParticipant.destroy({where: {id: event_participants[i].id}});
+  // }
+  // event_audiences = await EventToAudience.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_audiences.length; i++) {
+  //   await EventToAudience.destroy({where: {id: event_audiences[i].id}});
+  // }
+  // event_tags = await EventToTag.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_tags.length; i++) {
+  //   await EventToTag.destroy({where: {id: event_tags[i].id}});
+  // }
+  await Event.destroy({where: {id: req.params.event_id}});
+  res.status(204).send();
+});
 
 /**
  * @swagger
@@ -341,7 +378,7 @@ router.get('/events/:event_id', async (req, res) => {
  *                 example: Music
  *                 minLength: 1
  *                 maxLength: 50
- *                 pattern: ^[a-zA-Z]+$
+ *                 pattern: ^[a-zA-Z0-9_\-\ ]+$
  *     responses:
  *       '201':
  *         description: Event tag created successfully

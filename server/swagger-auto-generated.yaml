@@ -186,6 +186,21 @@ paths:
                 $ref: '#/components/schemas/Event'
         '404':
           $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Events
+      summary: Delete an event by id
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      responses:
+        '204':
+          description: Event deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/404'
   /events-tags:
     post:
       tags:
@@ -207,7 +222,7 @@ paths:
                   example: Music
                   minLength: 1
                   maxLength: 50
-                  pattern: ^[a-zA-Z]+$
+                  pattern: ^[a-zA-Z0-9_\-\ ]+$
       responses:
         '201':
           description: Event tag created successfully
@@ -617,7 +632,7 @@ components:
           type: string
           format: date-time
         status:
-          $ref: '#/components/schemas/EventStatus'
+          type: integer
         location:
           type: string
         capacity:
