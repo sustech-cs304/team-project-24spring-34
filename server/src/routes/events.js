@@ -274,6 +274,16 @@ router.get('/events/:event_id', async (req, res) => {
     where: {event_id: req.params.event_id},
   });
   const audience_cnt = event_to_audience.length;
+  let already_reserved = false;
+  const uid = getUidFromJwt(req);
+  if (uid) {
+    const event_to_audience = await EventToAudience.findOne({
+      where: {event_id: req.params.event_id, audience_id: uid},
+    });
+    if (event_to_audience) {
+      already_reserved = true;
+    }
+  }
   const event_to_participant = await EventToParticipant.findAll({
     where: {event_id: req.params.event_id},
   });
@@ -301,6 +311,7 @@ router.get('/events/:event_id', async (req, res) => {
       tags,
       rating_num,
       rating,
+      already_reserved,
     });
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
