@@ -3,7 +3,6 @@ const router = express.Router();
 
 const {
   Event,
-
   EventTag,
   EventToTag,
   EventParticipant,
@@ -114,8 +113,11 @@ function getUidFromJwt(req) {
  */
 router.post('/events', async (req, res) => {
   try {
-    const uid = getUidFromJwt(req);
-    if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+    const organizer_id = getUidFromJwt(req);
+    if (
+      !organizer_id ||
+      User.findOne({where: {id: organizer_id}}).user_group === 1
+    ) {
       res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
       return;
     }
@@ -133,13 +135,16 @@ router.post('/events', async (req, res) => {
       capacity,
     } = req.body;
     for (let i = 0; i < tags.length; i++) {
-      const tag = await EventTag.findOne({where: {id: tags[i]}});
+      const tag = await EventTag.findOne({where: {name: tags[i].name}});
       if (!tag) {
         res
           .status(400)
-          .json(getResponse(400, {description: 'Invalid tag id: ' + tags[i]}));
+          .json(
+            getResponse(400, {description: 'Invalid tag id: ' + tags[i].name}),
+          );
         return;
       }
+      tags[i] = tag;
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
@@ -153,11 +158,23 @@ router.post('/events', async (req, res) => {
         await EventParticipant.bulkCreate([participants[i]]);
       }
     }
+    console.log(
+      title,
+      description,
+      poster,
+      organizer_id,
+      publish_organization,
+      start_time,
+      end_time,
+      status,
+      location,
+      capacity,
+    );
     const new_event = await Event.create({
       title,
       description,
       poster,
-      uid,
+      organizer_id,
       publish_organization,
       start_time,
       end_time,
@@ -166,7 +183,7 @@ router.post('/events', async (req, res) => {
       capacity,
     });
     for (let i = 0; i < tags.length; i++) {
-      await EventToTag.create({event_id: new_event.id, tag_id: tags[i]});
+      await EventToTag.create({event_id: new_event.id, tag_id: tags[i].id});
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
@@ -245,8 +262,46 @@ router.get('/events', async (req, res) => {
  */
 router.get('/events/:event_id', async (req, res) => {
   const event = await Event.findOne({where: {id: req.params.event_id}});
+  const event_to_tag = await EventToTag.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  let tags = [];
+  for (let i = 0; i < event_to_tag.length; i++) {
+    const tag = await EventTag.findOne({where: {id: event_to_tag[i].tag_id}});
+    tags.push(tag);
+  }
+  const event_to_audience = await EventToAudience.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  const audience_cnt = event_to_audience.length;
+  const event_to_participant = await EventToParticipant.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  let participants = [];
+  for (let i = 0; i < event_to_participant.length; i++) {
+    const participant = await EventParticipant.findOne({
+      where: {id: event_to_participant[i].participant_id},
+    });
+    participants.push(participant);
+  }
+  const remaining_capacity = event.capacity - audience_cnt;
+  const event_comments = await Comment.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  const rating_num = event_comments.length;
+  const rating =
+    event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+    rating_num /
+    2; // convert from 1-10 to 0.5-5
   if (event) {
-    res.json(event);
+    res.json({
+      ...event.dataValues,
+      participants,
+      remaining_capacity,
+      tags,
+      rating_num,
+      rating,
+    });
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }
@@ -276,8 +331,6 @@ router.get('/events/:event_id', async (req, res) => {
  *                 minLength: 1
  *                 maxLength: 50
  *                 pattern: ^[a-zA-Z]+$
- *                 unique: true
- *                 readOnly: true
  *     responses:
  *       '201':
  *         description: Event tag created successfully

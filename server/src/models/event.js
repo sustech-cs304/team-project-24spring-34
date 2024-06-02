@@ -110,7 +110,6 @@ const init = async () => {
   try {
     await Event.bulkCreate([
       {
-        id: 1,
         title: 'Event 1',
         description: 'This is event 1',
         poster: 'https://www.google.com',
@@ -122,7 +121,6 @@ const init = async () => {
         capacity: 100,
       },
       {
-        id: 2,
         title: 'Event 2',
         description: 'This is event 2',
         poster: 'https://www.google.com',
@@ -134,7 +132,6 @@ const init = async () => {
         capacity: 100,
       },
       {
-        id: 3,
         title: 'Event 3',
         description: 'This is event 3',
         poster: 'https://www.google.com',
