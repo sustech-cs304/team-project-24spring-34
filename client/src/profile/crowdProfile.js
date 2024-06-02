@@ -18,9 +18,13 @@ import axios from 'axios';
 import {Delete as DeleteIcon} from '@mui/icons-material';
 import {Link} from 'react-router-dom';
 function CrowdProfile(user) {
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false);
+  const [users, setUsers] = useState([]); // 定义用户数据状态
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
   const [formData, setFormData] = useState({});
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   const [event_history, setEvents] = useState({});
   const [error, setError] = useState(null);
 
@@ -75,7 +79,35 @@ function CrowdProfile(user) {
     setFormData((prev) => ({...prev, [name]: value}));
   };
 
-  function handleDelete(id) {}
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/events/${id}`);
+    } catch (error) {
+      setError(`Failed to delete event with id ${id}:`);
+    }
+  };
+
+  // 关注用户
+  const handleFollow = (user) => {
+    setFollowing([...following, user]);
+  };
+
+  // 取消关注用户
+  const handleUnfollow = (id) => {
+    setFollowing(following.filter((user) => user.id !== id));
+  };
+
+  const isFollowing = (follower, followingList) => {
+    // 遍历关注列表
+    for (const followingUser of followingList) {
+      // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
+      if (followingUser.id === follower.id) {
+        return true;
+      }
+    }
+    // 如果未找到匹配项，则返回 false
+    return false;
+  };
 
   const renderContent = () => {
     switch (selectedItem) {
@@ -344,12 +376,6 @@ function CrowdProfile(user) {
                     primary={event.title}
                     secondary={`${event.time} | ${event.location} | ${event.organizer}`}
                   />
-                  <IconButton
-                    edge='end'
-                    aria-label='delete'
-                    onClick={() => handleDelete(event.id)}>
-                    <DeleteIcon />
-                  </IconButton>
                 </ListItem>
               ))}
             </List>
@@ -371,6 +397,100 @@ function CrowdProfile(user) {
                     aria-label='delete'
                     onClick={() => handleDelete(event.id)}>
                     <DeleteIcon />
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      case 'followers':
+        return (
+          <Box>
+            <Typography variant='h6'>All followers</Typography>
+            <List>
+              {followers.map((follower) => (
+                <ListItem
+                  key={follower.id}
+                  sx={{display: 'flex', alignItems: 'center'}}>
+                  <Avatar
+                    alt={follower.nickname}
+                    src={follower.avatar}
+                    sx={{width: 40, height: 40, marginRight: 2}}
+                  />
+                  <ListItemText primary={follower.nickname} />
+                  {isFollowing(follower) ? (
+                    <IconButton
+                      edge='end'
+                      aria-label='unfollow'
+                      onClick={() => handleUnfollow(following.id)}>
+                      <MKButton
+                        variant='contained'
+                        sx={{
+                          backgroundColor: 'red',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: '#d32f2f',
+                          },
+                        }}>
+                        unfollow
+                      </MKButton>
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      edge='end'
+                      aria-label='follow'
+                      onClick={() => handleFollow(follower)}>
+                      <MKButton
+                        variant='contained'
+                        sx={{
+                          backgroundColor: 'white',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: '#F5F5F5',
+                          },
+                        }}>
+                        follow
+                      </MKButton>
+                    </IconButton>
+                  )}
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      case 'following':
+        return (
+          <Box>
+            <Typography variant='h6'>All following</Typography>
+            <List>
+              {following.map((following) => (
+                <ListItem
+                  key={following.id}
+                  sx={{display: 'flex', alignItems: 'center'}}>
+                  <Avatar
+                    alt={following.name}
+                    src={following.avatar}
+                    sx={{width: 40, height: 40, marginRight: 2}}
+                  />
+                  <ListItemText primary={following.nickname} />
+                  <IconButton
+                    edge='end'
+                    aria-label='unfollow'
+                    onClick={() => handleUnfollow(following.id)}>
+                    <MKButton
+                      variant='contained'
+                      sx={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        '&:hover': {
+                          backgroundColor: '#d32f2f',
+                        },
+                      }}>
+                      unfollow
+                    </MKButton>
                   </IconButton>
                 </ListItem>
               ))}
@@ -399,20 +519,25 @@ function CrowdProfile(user) {
             sx={{width: 60, height: 60, marginRight: 2}}
           />
           <Box>
-            <Typography variant='h6'>{user.username}</Typography>
+            <Typography variant='h6'>{user.nickname}</Typography>
             <Typography variant='body2' color='textSecondary'>
               {user.user_group}
             </Typography>
             <Typography variant='body2' color='textSecondary'>
               {user.id}
             </Typography>
-            {/*<Typography variant='h6'>哈哈</Typography>*/}
-            {/*<Typography variant='body2' color='textSecondary'>*/}
-            {/*  学生*/}
-            {/*</Typography>*/}
-            {/*<Typography variant='body2' color='textSecondary'>*/}
-            {/*  123*/}
-            {/*</Typography>*/}
+            <Typography
+              variant='body2'
+              color='textSecondary'
+              onClick={() => setSelectedItem('followers')}>
+              followers: {followers.length}
+            </Typography>
+            <Typography
+              variant='body2'
+              color='textSecondary'
+              onClick={() => setSelectedItem('following')}>
+              following: {following.length}
+            </Typography>
           </Box>
         </Box>
         {/* 菜单项 */}
@@ -425,7 +550,7 @@ function CrowdProfile(user) {
               color: selectedItem === 'profile' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='个人资料' />
+            <ListItemText primary='Personal Profile' />
           </ListItem>
           <ListItem
             button
@@ -436,7 +561,7 @@ function CrowdProfile(user) {
               color: selectedItem === 'security' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='安全' />
+            <ListItemText primary='Security' />
           </ListItem>
           <ListItem
             button
@@ -446,7 +571,7 @@ function CrowdProfile(user) {
               color: selectedItem === 'history' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='历史记录' />
+            <ListItemText primary='History' />
           </ListItem>
           <ListItem
             button
@@ -456,7 +581,7 @@ function CrowdProfile(user) {
               color: selectedItem === 'reserve' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='预约的活动' />
+            <ListItemText primary='Reserved Events' />
           </ListItem>
         </List>
       </Box>

@@ -34,39 +34,39 @@ function AvatarUpload({onBack}) {
     console.log('Image uploaded');
   };
 
-  const handleResize = (direction) => {
-    switch (direction) {
-      case 'up':
-        setCropArea((prev) => ({
-          ...prev,
-          y: prev.y - 10,
-          height: prev.height + 10,
-        }));
-        break;
-      case 'down':
-        setCropArea((prev) => ({...prev, height: prev.height + 10}));
-        break;
-      case 'left':
-        setCropArea((prev) => ({
-          ...prev,
-          x: prev.x - 10,
-          width: prev.width + 10,
-        }));
-        break;
-      case 'right':
-        setCropArea((prev) => ({...prev, width: prev.width + 10}));
-        break;
-      default:
-        break;
-    }
-  };
+  // const handleResize = (direction) => {
+  //   switch (direction) {
+  //     case 'up':
+  //       setCropArea((prev) => ({
+  //         ...prev,
+  //         y: prev.y - 10,
+  //         height: prev.height + 10,
+  //       }));
+  //       break;
+  //     case 'down':
+  //       setCropArea((prev) => ({...prev, height: prev.height + 10}));
+  //       break;
+  //     case 'left':
+  //       setCropArea((prev) => ({
+  //         ...prev,
+  //         x: prev.x - 10,
+  //         width: prev.width + 10,
+  //       }));
+  //       break;
+  //     case 'right':
+  //       setCropArea((prev) => ({...prev, width: prev.width + 10}));
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   return (
     <Box p={3}>
       <IconButton onClick={onBack}>
         <ArrowBackIcon />
       </IconButton>
-      <Typography variant='h6'>上传头像</Typography>
+      <Typography variant='h6'>Upload Avatar</Typography>
       <Box my={2} position='relative' width='300px' height='300px'>
         {selectedImage && (
           <img
@@ -96,7 +96,7 @@ function AvatarUpload({onBack}) {
         </Typography>
       )}
       <MKButton variant='contained' component='label' sx={{color: 'white'}}>
-        选择图片
+        Select image
         <input
           type='file'
           hidden
@@ -107,20 +107,20 @@ function AvatarUpload({onBack}) {
       {selectedImage && (
         <Box mt={2}>
           <MKButton variant='contained' color='primary' onClick={handleUpload}>
-            上传
+            Upload
           </MKButton>
-          <IconButton onClick={() => handleResize('up')}>
-            <ArrowUpIcon />
-          </IconButton>
-          <IconButton onClick={() => handleResize('down')}>
-            <ArrowDownIcon />
-          </IconButton>
-          <IconButton onClick={() => handleResize('left')}>
-            <ArrowBackIcon />
-          </IconButton>
-          <IconButton onClick={() => handleResize('right')}>
-            <ArrowForwardIcon />
-          </IconButton>
+          {/*<IconButton onClick={() => handleResize('up')}>*/}
+          {/*  <ArrowUpIcon />*/}
+          {/*</IconButton>*/}
+          {/*<IconButton onClick={() => handleResize('down')}>*/}
+          {/*  <ArrowDownIcon />*/}
+          {/*</IconButton>*/}
+          {/*<IconButton onClick={() => handleResize('left')}>*/}
+          {/*  <ArrowBackIcon />*/}
+          {/*</IconButton>*/}
+          {/*<IconButton onClick={() => handleResize('right')}>*/}
+          {/*  <ArrowForwardIcon />*/}
+          {/*</IconButton>*/}
         </Box>
       )}
     </Box>

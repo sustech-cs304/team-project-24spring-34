@@ -100,17 +100,6 @@ function OtherProfilePage() {
   //   return <div>Loading...</div>;
   // }
 
-  // 定义更改用户类别函数
-  const handleChangeUserType = (userId) => {
-    // 执行更改用户类别的逻辑操作
-  };
-
-  // 定义删除用户函数
-  const handleDeleteUser = (id) => {
-    // 执行删除用户的逻辑操作
-    setEvents(events.filter((user) => user.id !== id));
-  };
-
   useEffect(() => {
     // 使用模拟数据
     setEvents(mockEvents);
@@ -130,8 +119,8 @@ function OtherProfilePage() {
   };
 
   // 关注用户
-  const handleFollow = (user) => {
-    setFollowing([...following, user]);
+  const handleFollow = () => {
+    // setFollowing([...following, user]);
   };
 
   // 取消关注用户
@@ -149,14 +138,14 @@ function OtherProfilePage() {
     setSelectedItem('following');
   };
 
-  const isFollowing = (follower, followingList) => {
+  const isFollowing = () => {
     // 遍历关注列表
-    for (const followedUser of followingList) {
-      // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
-      if (followedUser.id === follower.id) {
-        return true;
-      }
-    }
+    // for (const followedUser of followingList) {
+    //   // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
+    //   if (followedUser.id === follower.id) {
+    //     return true;
+    //   }
+    // }
     // 如果未找到匹配项，则返回 false
     return false;
   };
@@ -191,72 +180,56 @@ function OtherProfilePage() {
                   {user.id}
                 </Typography>
                 <Typography variant='body2' color='textSecondary'>
-                  粉丝数: {followers.length}
+                  followers: {followers.length}
                 </Typography>
                 <Typography variant='body2' color='textSecondary'>
-                  关注数: {following.length}
+                  following: {following.length}
                 </Typography>
               </Box>
             </Box>
-            <List>
-              {followers.map((follower) => (
-                <ListItem
-                  key={follower.id}
-                  button
-                  onClick={() => handleUserClick(follower)}
-                  sx={{display: 'flex', alignItems: 'center'}}>
-                  <Avatar
-                    alt={follower.name}
-                    src={follower.avatar}
-                    sx={{width: 40, height: 40, marginRight: 2}}
-                  />
-                  <ListItemText primary={follower.name} />
-                  {isFollowing(follower) ? (
-                    <IconButton
-                      edge='end'
-                      aria-label='unfollow'
-                      onClick={() => handleUnfollow(following.id)}>
-                      <MKButton
-                        variant='contained'
-                        sx={{
-                          backgroundColor: 'red',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          '&:hover': {
-                            backgroundColor: '#d32f2f',
-                          },
-                        }}>
-                        取消关注
-                      </MKButton>
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      edge='end'
-                      aria-label='follow'
-                      onClick={() => handleFollow(follower)}>
-                      <MKButton
-                        variant='contained'
-                        sx={{
-                          backgroundColor: 'white',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          '&:hover': {
-                            backgroundColor: '#F5F5F5',
-                          },
-                        }}>
-                        关注
-                      </MKButton>
-                    </IconButton>
-                  )}
-                </ListItem>
-              ))}
-            </List>
+            {isFollowing() ? (
+              <IconButton
+                edge='end'
+                aria-label='unfollow'
+                onClick={() => handleUnfollow(following.id)}>
+                <MKButton
+                  variant='contained'
+                  sx={{
+                    backgroundColor: 'red',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: '#d32f2f',
+                    },
+                  }}>
+                  unfollow
+                </MKButton>
+              </IconButton>
+            ) : (
+              <IconButton
+                edge='end'
+                aria-label='follow'
+                onClick={() => handleFollow()}>
+                <MKButton
+                  variant='contained'
+                  sx={{
+                    backgroundColor: 'white',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: '#F5F5F5',
+                    },
+                  }}>
+                  follow
+                </MKButton>
+              </IconButton>
+            )}
           </Box>
           {/* 右侧内容区 */}
           <Box>
             <Box>
               <Typography variant='h6' gutterBottom>
-                个人资料
+                Personal Profile
               </Typography>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
@@ -265,32 +238,32 @@ function OtherProfilePage() {
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>用户名:</strong> {user.username}
+                  <strong>Username:</strong> {user.nickname}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>性别:</strong> {user.gender || '男'}
+                  <strong>Gender:</strong> {user.gender}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>年龄:</strong> {user.age || 23}
+                  <strong>Age:</strong> {user.age || 23}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>电话:</strong> {user.phone || '131212344231'}
+                  <strong>Phone:</strong> {user.phone}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>邮箱:</strong> {user.email}
+                  <strong>Email:</strong> {user.email}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>个人介绍:</strong>
+                  <strong>Introduction:</strong>
                 </Typography>
               </Box>
               <Box ml={4}>

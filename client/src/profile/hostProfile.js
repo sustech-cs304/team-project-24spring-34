@@ -17,19 +17,26 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
 import {Delete as DeleteIcon} from '@mui/icons-material';
 import {Link} from 'react-router-dom';
+import {set} from 'husky';
 function HostProfile(user) {
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false);
+  const [users, setUsers] = useState([]); // 定义用户数据状态
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
   const [formData, setFormData] = useState({});
-  const [events, setEvents] = useState({});
+  const [selectedUser, setSelectedUser] = useState(null); // 用于存储选中的用户
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [event_history, setEvents] = useState({});
+  const [error, setError] = useState(null);
 
   setFormData({
-    username: user.username,
-    gender: user.gender || '男',
-    age: user.age || 23,
-    phone: user.phone || '131212344231',
+    username: user.nickname,
+    gender: user.gender,
+    age: user.age,
+    phone: user.phone,
     email: user.email,
-    intro: user.intro || '',
+    intro: user.intro,
   });
 
   const handleEditClick = (field) => {
@@ -39,11 +46,28 @@ function HostProfile(user) {
   const handleSaveClick = async (field) => {
     setEditMode((prev) => ({...prev, [field]: false}));
     try {
+      // Email format validation
+      if (field === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+          setError('Invalid email format');
+          setEditMode((prev) => ({...prev, [field]: true}));
+          return;
+        }
+      }
       await axios.put('/api/me', {[field]: formData[field]});
       // Update the user state to reflect the new data
-      user[field] = formData[field];
+      // user[field] = formData[field];
+      setFormData({
+        username: user.nickname,
+        gender: user.gender,
+        age: user.age,
+        phone: user.phone,
+        email: user.email,
+        intro: user.intro,
+      });
     } catch (error) {
-      console.error('Error saving user data:', error);
+      setError('Error saving user data:');
     }
   };
 
@@ -57,7 +81,35 @@ function HostProfile(user) {
     setFormData((prev) => ({...prev, [name]: value}));
   };
 
-  function handleDelete(id) {}
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/events/${id}`);
+    } catch (error) {
+      setError(`Failed to delete event with id ${id}:`);
+    }
+  };
+
+  // 关注用户
+  const handleFollow = (user) => {
+    setFollowing([...following, user]);
+  };
+
+  // 取消关注用户
+  const handleUnfollow = (id) => {
+    setFollowing(following.filter((user) => user.id !== id));
+  };
+
+  const isFollowing = (follower, followingList) => {
+    // 遍历关注列表
+    for (const followingUser of followingList) {
+      // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
+      if (followingUser.id === follower.id) {
+        return true;
+      }
+    }
+    // 如果未找到匹配项，则返回 false
+    return false;
+  };
 
   const renderContent = () => {
     switch (selectedItem) {
@@ -66,7 +118,7 @@ function HostProfile(user) {
           <Box>
             <Box>
               <Typography variant='h6' gutterBottom>
-                个人资料
+                Personal Profile
               </Typography>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
@@ -74,23 +126,23 @@ function HostProfile(user) {
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
-                {editMode.username ? (
+                {editMode.nickname ? (
                   <>
                     <TextField
-                      name='username'
-                      value={formData.username}
+                      name='nickname'
+                      value={formData.nickname}
                       onChange={handleChange}
                       size='small'
                     />
                     <IconButton
                       size='small'
-                      onClick={() => handleSaveClick('username')}
+                      onClick={() => handleSaveClick('nickname')}
                       sx={{ml: 1}}>
                       <SaveIcon fontSize='small' />
                     </IconButton>
                     <IconButton
                       size='small'
-                      onClick={() => handleCancelClick('username')}
+                      onClick={() => handleCancelClick('nickname')}
                       sx={{ml: 1}}>
                       <CancelIcon fontSize='small' />
                     </IconButton>
@@ -98,11 +150,11 @@ function HostProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>用户名:</strong> {user.username}
+                      <strong>Username:</strong> {user.nickname}
                     </Typography>
                     <IconButton
                       size='small'
-                      onClick={() => handleEditClick('username')}
+                      onClick={() => handleEditClick('nickname')}
                       sx={{ml: 1}}>
                       <EditIcon fontSize='small' />
                     </IconButton>
@@ -134,7 +186,7 @@ function HostProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>性别:</strong> {user.gender || '男'}
+                      <strong>Gender:</strong> {user.gender}
                     </Typography>
                     <IconButton
                       size='small'
@@ -170,7 +222,7 @@ function HostProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>年龄:</strong> {user.age || 23}
+                      <strong>Age:</strong> {user.age}
                     </Typography>
                     <IconButton
                       size='small'
@@ -206,7 +258,7 @@ function HostProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>电话:</strong> {user.phone || '131212344231'}
+                      <strong>Phone:</strong> {user.phone}
                     </Typography>
                     <IconButton
                       size='small'
@@ -242,7 +294,7 @@ function HostProfile(user) {
                 ) : (
                   <>
                     <Typography variant='body1'>
-                      <strong>邮箱:</strong> {user.email}
+                      <strong>Email:</strong> {user.email}
                     </Typography>
                     <IconButton
                       size='small'
@@ -255,7 +307,7 @@ function HostProfile(user) {
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>个人介绍:</strong>
+                  <strong>Introduction:</strong>
                 </Typography>
                 <IconButton
                   size='small'
@@ -298,7 +350,7 @@ function HostProfile(user) {
       case 'security':
         return (
           <Box>
-            <Typography variant='h6'>安全设置</Typography>
+            <Typography variant='h6'>Security</Typography>
             <MKButton
               component={Link}
               to='/changePassword'
@@ -318,59 +370,27 @@ function HostProfile(user) {
       case 'history':
         return (
           <Box>
-            <Typography variant='h6'>历史记录</Typography>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
-            <ListItem sx={{borderBottom: '1px solid #ddd'}}>
-              <ListItemText
-                primary='Title'
-                secondary='Time | Location | Organizer'
-              />
-            </ListItem>
+            <Typography variant='h6'>history</Typography>
+            <List>
+              {user.event_history.map((event) => (
+                <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
+                  <ListItemText
+                    primary={event.title}
+                    secondary={`${event.time} | ${event.location} | ${event.organizer}`}
+                  />
+                </ListItem>
+              ))}
+            </List>
           </Box>
         );
       case 'publish':
         return (
           <Box p={3}>
             <Typography variant='h6' gutterBottom>
-              活动管理
+              Event Management
             </Typography>
             <List>
-              {events.map((event) => (
+              {user.publish_events.map((event) => (
                 <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
                   <ListItemText
                     primary={event.title}
@@ -381,6 +401,100 @@ function HostProfile(user) {
                     aria-label='delete'
                     onClick={() => handleDelete(event.id)}>
                     <DeleteIcon />
+                  </IconButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      case 'followers':
+        return (
+          <Box>
+            <Typography variant='h6'>All followers</Typography>
+            <List>
+              {followers.map((follower) => (
+                <ListItem
+                  key={follower.id}
+                  sx={{display: 'flex', alignItems: 'center'}}>
+                  <Avatar
+                    alt={follower.nickname}
+                    src={follower.avatar}
+                    sx={{width: 40, height: 40, marginRight: 2}}
+                  />
+                  <ListItemText primary={follower.nickname} />
+                  {isFollowing(follower) ? (
+                    <IconButton
+                      edge='end'
+                      aria-label='unfollow'
+                      onClick={() => handleUnfollow(following.id)}>
+                      <MKButton
+                        variant='contained'
+                        sx={{
+                          backgroundColor: 'red',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: '#d32f2f',
+                          },
+                        }}>
+                        unfollow
+                      </MKButton>
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      edge='end'
+                      aria-label='follow'
+                      onClick={() => handleFollow(follower)}>
+                      <MKButton
+                        variant='contained'
+                        sx={{
+                          backgroundColor: 'white',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: '#F5F5F5',
+                          },
+                        }}>
+                        follow
+                      </MKButton>
+                    </IconButton>
+                  )}
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      case 'following':
+        return (
+          <Box>
+            <Typography variant='h6'>All following</Typography>
+            <List>
+              {following.map((following) => (
+                <ListItem
+                  key={following.id}
+                  sx={{display: 'flex', alignItems: 'center'}}>
+                  <Avatar
+                    alt={following.name}
+                    src={following.avatar}
+                    sx={{width: 40, height: 40, marginRight: 2}}
+                  />
+                  <ListItemText primary={following.nickname} />
+                  <IconButton
+                    edge='end'
+                    aria-label='unfollow'
+                    onClick={() => handleUnfollow(following.id)}>
+                    <MKButton
+                      variant='contained'
+                      sx={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        '&:hover': {
+                          backgroundColor: '#d32f2f',
+                        },
+                      }}>
+                      unfollow
+                    </MKButton>
                   </IconButton>
                 </ListItem>
               ))}
@@ -409,20 +523,25 @@ function HostProfile(user) {
             sx={{width: 60, height: 60, marginRight: 2}}
           />
           <Box>
-            <Typography variant='h6'>{user.username}</Typography>
+            <Typography variant='h6'>{user.nickname}</Typography>
             <Typography variant='body2' color='textSecondary'>
               {user.user_group}
             </Typography>
             <Typography variant='body2' color='textSecondary'>
               {user.id}
             </Typography>
-            {/*<Typography variant='h6'>哈哈</Typography>*/}
-            {/*<Typography variant='body2' color='textSecondary'>*/}
-            {/*  举办者*/}
-            {/*</Typography>*/}
-            {/*<Typography variant='body2' color='textSecondary'>*/}
-            {/*  123*/}
-            {/*</Typography>*/}
+            <Typography
+              variant='body2'
+              color='textSecondary'
+              onClick={() => setSelectedItem('followers')}>
+              followers: {followers.length}
+            </Typography>
+            <Typography
+              variant='body2'
+              color='textSecondary'
+              onClick={() => setSelectedItem('following')}>
+              following: {following.length}
+            </Typography>
           </Box>
         </Box>
         {/* 菜单项 */}
@@ -435,7 +554,7 @@ function HostProfile(user) {
               color: selectedItem === 'profile' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='个人资料' />
+            <ListItemText primary='Personal Profile' />
           </ListItem>
           <ListItem
             button
@@ -446,7 +565,7 @@ function HostProfile(user) {
               color: selectedItem === 'security' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='安全' />
+            <ListItemText primary='Security' />
           </ListItem>
           <ListItem
             button
@@ -456,7 +575,7 @@ function HostProfile(user) {
               color: selectedItem === 'history' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='历史记录' />
+            <ListItemText primary='History' />
           </ListItem>
           <ListItem
             button
@@ -466,7 +585,7 @@ function HostProfile(user) {
               color: selectedItem === 'publish' ? 'white' : 'inherit',
               marginY: '10px',
             }}>
-            <ListItemText primary='发布的活动' />
+            <ListItemText primary='Event Management' />
           </ListItem>
         </List>
       </Box>
