@@ -111,6 +111,18 @@ const init = async () => {
         avatar: 'https://example.com/avatar.jpg',
       },
     ]);
+    EventToParticipant.bulkCreate([
+      {
+        id: 1,
+        event_id: 1,
+        participant_id: 1,
+      },
+      {
+        id: 2,
+        event_id: 1,
+        participant_id: 2,
+      },
+    ]);
     console.log(
       'Entries have been successfully inserted into the event_participant table',
     );
