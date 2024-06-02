@@ -32,22 +32,7 @@ const Heading = styled.p`
   font-size: 50px;
   padding: 10px 20px;
 `;
-const Button = styled.button`
-  background-color: ${({theme}) => theme.colors.secondary};
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 50px;
-  width: 700px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-left: auto;
 
-  &:hover {
-    background-color: ${({theme}) => theme.colors.buttonHover};
-  }
-`;
 const Card = styled.div`
   background-color: ${({theme}) => theme.colors.cardBackground};
   padding: 20px;
@@ -70,7 +55,6 @@ function ThemeTitle(props) {
             flexDirection: 'row',
           }}>
           <Heading>{props.name}</Heading>
-          <Button onClick={handleClick}>SUBMIT</Button>
         </div>
       </Container>
     </ThemeProvider>

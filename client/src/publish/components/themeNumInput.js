@@ -35,21 +35,6 @@ const Card = styled.div`
   margin-bottom: 0;
 `;
 
-const Button = styled.button`
-  background-color: ${({theme}) => theme.colors.secondary};
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: ${({theme}) => theme.colors.buttonHover};
-  }
-`;
-
 const Heading = styled.h1`
   color: ${({theme}) => theme.colors.primary};
 `;
@@ -58,9 +43,7 @@ const Paragraph = styled.p`
   color: ${({theme}) => theme.colors.secondaryText};
 `;
 
-const TextArea = styled.textarea`
-  width: ${({width}) => width || '100%'};
-  height: ${({height}) => height || 'auto'};
+const Input = styled.input`
   padding: 10px;
   margin: 10px 0;
   border: 1px solid ${({theme}) => theme.colors.secondaryText};
@@ -81,19 +64,30 @@ const TextArea = styled.textarea`
   }
 `;
 
-function ThemeInput(props) {
+function ThemeNumInput(props) {
+  const [value, setValue] = useState(props.cap);
+  const handleChange = (event) => {
+    const inputValue = event.target.value;
+    if (/^\d+$/.test(inputValue)) {
+      const number = parseInt(inputValue, 10);
+      if (number >= 0 && number <= 10000) {
+        setValue(number);
+        props.cap(number.toString());
+      }
+    }
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container>
         <Card>
-          <Paragraph>{props.name}</Paragraph>
-          <TextArea
-            rows='4'
+          <Paragraph>Max Capacity</Paragraph>
+          <input
+            type='text'
             id={props.id}
-            placeholder={props.msg}
-            width={props.width} // 传入自定义宽度
-            height={props.height} // 传入自定义高度
-            onChange={props.onChange}
+            value={value}
+            onChange={handleChange}
+            placeholder=''
+            required
           />
         </Card>
       </Container>
@@ -101,4 +95,4 @@ function ThemeInput(props) {
   );
 }
 
-export default ThemeInput;
+export default ThemeNumInput;
