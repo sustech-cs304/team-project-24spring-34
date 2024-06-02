@@ -102,7 +102,6 @@ router.post('/comments/:event_id', async (req, res) => {
       res.status(404).json(getResponse(404, {description: 'Event not found'}));
       return;
     }
-
     const comment = await Comment.create({
       content: req.body.content,
       user: uid,
@@ -111,7 +110,6 @@ router.post('/comments/:event_id', async (req, res) => {
       dislikes: 0,
       rating: req.body.rating,
     });
-
     res.status(201).json(comment);
   } catch (error) {
     console.error(error);
@@ -137,9 +135,15 @@ router.get('/comments/:event_id', async (req, res) => {
       where: {event: req.params.event_id},
     });
     const total = comments.length;
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 10;
+    if (offset > total) {
+      res.status(404).json(getResponse(404, {description: 'No more comments'}));
+      return;
+    }
     comments = comments.slice(
-      req.query.offset,
-      req.query.offset + req.query.limit,
+      offset,
+      offset + limit > total ? total : offset + limit,
     );
     res.json({comments, total});
   } catch (error) {
