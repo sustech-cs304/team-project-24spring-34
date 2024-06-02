@@ -101,7 +101,7 @@ function getErrorDetail(statusCode) {
 /**
  * Function to get a response object based on the status code and options provided.
  * @param {number} statusCode - The HTTP status code.
- * @param {Object} options - The options for customizing the response.
+ * @param {{description: string}} options - The options for customizing the response.
  * @param {string} options.title - The title for the response. If not provided, the default title for the status code will be used.
  * @param {string} options.description - The description for the response. If not provided, the default description for the status code will be used.
  * @returns {Object} The response object.

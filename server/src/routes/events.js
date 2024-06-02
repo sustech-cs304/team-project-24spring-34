@@ -38,6 +38,9 @@ function getUidFromJwt(req) {
  *     tags:
  *       - Events
  *     summary: Create an event
+ *     parameters:
+ *       - $ref: '#/components/parameters/query_limit'
+ *       - $ref: '#/components/parameters/query_offset'
  *     requestBody:
  *       required: true
  *       content:
@@ -188,7 +191,14 @@ router.post('/events', async (req, res) => {
   }
 });
 router.get('/events', async (req, res) => {
-  const eventList = await Event.findAll();
+  let eventList = await Event.findAll();
+  const total = eventList.length;
+  const offset = req.query.offset || 0;
+  const limit = req.query.limit || 10;
+  eventList = eventList.slice(
+    offset,
+    offset + limit > total ? total : offset + limit,
+  );
   for (let i = 0; i < eventList.length; i++) {
     const event_to_tag = await EventToTag.findAll({
       where: {event_id: eventList[i].id},
@@ -207,10 +217,13 @@ router.get('/events', async (req, res) => {
       where: {event_id: eventList[i].id},
     });
     const rating_num = event_comments.length;
-    const rating =
-      event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
-      rating_num /
-      2; // convert from 1-10 to 0.5-5
+    let rating = 0;
+    if (rating_num > 0) {
+      rating =
+        event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+        rating_num /
+        2; // convert from 1-10 to 0.5-5
+    }
     // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
     const organizer = await User.findOne({
       where: {id: eventList[i].organizer_id},
@@ -235,7 +248,7 @@ router.get('/events', async (req, res) => {
       rating,
     };
   }
-  res.json(eventList);
+  res.json({events: eventList, total});
 });
 
 /**

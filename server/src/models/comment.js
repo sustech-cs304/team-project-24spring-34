@@ -11,10 +11,8 @@ const sequelize = require('../config/connection');
  *       required:
  *         - id
  *         - content
- *         - user
- *         - event
- *         - likes
- *         - dislikes
+ *         - user_id
+ *         - event_id
  *         - rating
  *       properties:
  *         id:
@@ -29,12 +27,6 @@ const sequelize = require('../config/connection');
  *           description: The id of the user who created the comment
  *         event_id:
  *           type: integer
- *         likes:
- *           type: integer
- *           default: 0
- *         dislikes:
- *           type: integer
- *           default: 0
  *         rating:
  *           type: integer
  */
@@ -55,7 +47,7 @@ const Comment = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'user',
+        model: 'users',
         key: 'id',
       },
     },
@@ -63,19 +55,9 @@ const Comment = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'event',
+        model: 'events',
         key: 'id',
       },
-    },
-    likes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    dislikes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
     },
     rating: {
       type: DataTypes.INTEGER,
@@ -83,6 +65,11 @@ const Comment = sequelize.define(
     },
   },
   {
+    uniqueKeys: {
+      unique_tag: {
+        fields: ['user_id', 'event_id'],
+      },
+    },
     timestamps: true,
   },
 );
@@ -92,26 +79,20 @@ const init = async () => {
     await Comment.bulkCreate([
       {
         content: 'This is a comment',
-        user: 1,
-        event: 1,
-        likes: 0,
-        dislikes: 0,
+        user_id: 2,
+        event_id: 1,
         rating: 5,
       },
       {
         content: 'This is another comment',
-        user: 1,
-        event: 1,
-        likes: 0,
-        dislikes: 0,
+        user_id: 2,
+        event_id: 2,
         rating: 5,
       },
       {
         content: 'This is yet another comment',
-        user: 1,
-        event: 1,
-        likes: 0,
-        dislikes: 0,
+        user_id: 2,
+        event_id: 3,
         rating: 5,
       },
     ]);
