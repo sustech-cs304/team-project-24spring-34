@@ -22,19 +22,13 @@ const PasswordRecovery = () => {
     console.log(`Verification code sent to ${email}`);
   };
 
-  const handleCodeSubmit = async () => {
+  const handlePasswordReset = async () => {
     // 模拟后端响应
     const correctCode = '123456';
     if (code !== correctCode) {
       setError('Incorrect verification code');
       return;
     }
-    setError('');
-    setStep(3);
-    console.log('Verification code is correct, proceed to reset password');
-  };
-
-  const handlePasswordReset = async () => {
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -82,7 +76,7 @@ const PasswordRecovery = () => {
       {step === 2 && (
         <Box p={2} width='100%'>
           <Typography variant='h6' component='h2' gutterBottom>
-            Enter Verification Code
+            Enter Verification Code and Reset Password
           </Typography>
           <TextField
             label='Verification Code'
@@ -93,26 +87,6 @@ const PasswordRecovery = () => {
             margin='normal'
             placeholder='Please enter the verification code'
           />
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={handleCodeSubmit}
-            fullWidth
-            sx={{mt: 2}}>
-            Submit
-          </Button>
-          {error && (
-            <Alert severity='error' sx={{mt: 2}}>
-              {error}
-            </Alert>
-          )}
-        </Box>
-      )}
-      {step === 3 && (
-        <Box p={2} width='100%'>
-          <Typography variant='h6' component='h2' gutterBottom>
-            Reset Password
-          </Typography>
           <TextField
             label='New Password'
             type='password'

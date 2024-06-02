@@ -2,11 +2,11 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import EventDetails from './event_detail';
-import OrganizerInfo from './OrganizerInfo';
 import Introduction from './introduction';
 import Reserve from './reserve';
 import './Detail_page.css';
 import DefaultNavbar from './DetailPageComponents/DefaultNavbar';
+import ParticipatorList from './Participator';
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import routes from '../publicAssets/detailPageRoutes';
@@ -15,20 +15,56 @@ import Container from '@mui/material/Container';
 import CommentsSection from './comment/comment';
 import example_img from './example-poster.jpg';
 import sample_text from './sample-text.txt';
+import avatar from './example_org_img.jpg';
 
 function ActivityDetails() {
   let {activeid} = useParams();
+  const authToken = localStorage.getItem('authToken');
+  const [isLogin, setIsLogin] = useState(false);
+  const test_login = async () => {
+    try {
+      const response = await fetch('http://10.27.41.93:5000/api/sessions', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: 'admin',
+          password: 'admin',
+        }),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      });
+      localStorage.setItem('authToken', response.token);
+      setIsLogin(true);
+    } catch (error) {
+      console.error('Error fetching activity details:', error);
+    }
+  };
   const [active, setActive] = useState({
     id: 1,
     title: '基窝托斯偷跑大赛',
     description: sample_text,
     poster: example_img,
-    organizerid: 10,
-    start_time: '09:00',
-    end_time: '17:00',
+    organizer_id: 10,
+    publish_organization: '格赫娜学院万魔殿',
+    start_time: '2024-10-10T10:00:00.000Z',
+    end_time: '2024-10-10T12:00:00.000Z',
     location: '格赫娜学院·社团大楼本馆前广场',
     capacity: 100,
+    eventStatuesId: null,
     remaining_capacity: 50,
+    participants: [
+      {
+        id: 1,
+        name: 'iroha',
+        avatar: {avatar},
+      },
+    ],
     tags: [
       {
         id: 1,
@@ -51,11 +87,15 @@ function ActivityDetails() {
     async function fetchActivityDetails() {
       try {
         //test
+        if (!isLogin) {
+          await test_login(); //Need to update
+        }
         const response = await fetch(
           'http://10.27.41.93:5000/api/events/' + activeid,
           {
             method: 'GET',
             headers: {
+              Authorization: `Bearer ${authToken}`,
               Accept: 'application/json',
             },
           },
@@ -93,7 +133,6 @@ function ActivityDetails() {
 
         <section className='details-container'>
           <EventDetails
-            date={active.date}
             location={active.location}
             startTime={active.start_time}
             endTime={active.end_time}
@@ -101,8 +140,7 @@ function ActivityDetails() {
             rating_num={active.rating_num}
             classifications={active.tags}
           />
-          <OrganizerInfo organizerid={10} />
-          {/*need to upadate*/}
+          <ParticipatorList Participators={active.participants} />
         </section>
 
         <Introduction
