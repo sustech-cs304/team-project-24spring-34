@@ -26,23 +26,51 @@ import {
 import axios from 'axios';
 
 const SingleComment = ({comment, authority}) => {
+  const authToken = localStorage.getItem('authToken');
   const {
     id,
-    userId,
-    userName,
-    avatar,
-    rating,
     content,
-    timestamp,
+    username,
+    event_id,
     likes,
     dislikes,
+    rating,
+    createdAt,
+    updatedAt,
   } = comment;
 
   const navigate = useNavigate();
   const [hovered, setHovered] = useState({like: false, dislike: false});
+  const [userName, setUserName] = useState('user');
+  const [avatar, setAvatar] = useState('');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(
+          `http://http://10.27.41.93:5000/api/users/${username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+          {
+            withCredentials: true,
+          },
+        );
+        setUserName(response.data.nickname);
+        setAvatar(response.data.avatar);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+    fetchUserInfo();
+  }, [authToken, username]);
 
   const handleClickOnUserInfo = () => {
-    navigate('/profilePage');
+    navigate('/profilePage/' + username);
     // TODO
   };
   const handleClickLike = () => {
@@ -90,7 +118,7 @@ const SingleComment = ({comment, authority}) => {
         alignItems='center'
         mt={1}>
         <section>
-          <Typography variant='caption'>{timestamp}</Typography>
+          <Typography variant='caption'>{updatedAt}</Typography>
           {authority && (
             <Button
               variant='contained'
@@ -199,6 +227,7 @@ const CommentList = ({
 
 // 主组件
 const CommentsSection = ({active_id}) => {
+  const authToken = localStorage.getItem('authToken');
   const commentPerPage = 10;
   const [comments, setComments] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -211,11 +240,15 @@ const CommentsSection = ({active_id}) => {
 
   const fetchComments = async (page) => {
     try {
+      console.log(
+        `http://10.27.41.93:5000/api/comments/${active_id}?limit=${commentPerPage}&offset=${page - 1}`,
+      );
       const response = await axios.get(
-        'http://localhost:3001/api/comments?active_id=${active_id}&offset=${page}&limit=${commentPerPage}',
+        `http://10.27.41.93:5000/api/comments/${active_id}?limit=${commentPerPage}&offset=${page - 1}`,
         {
           headers: {
-            Accept: '*/*',
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
             'Content-Type': 'application/json',
           },
         },
@@ -223,7 +256,9 @@ const CommentsSection = ({active_id}) => {
           withCredentials: true,
         },
       );
-      const total = 11;
+      const total = response.data.total;
+      setComments(response.data.comments);
+      console.log(response.data.comments);
       setTotalPage(Math.ceil(total / commentPerPage));
     } catch (error) {
       console.error('Error fetching comments:', error);
