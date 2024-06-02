@@ -1,59 +1,31 @@
-import React from 'react';
-import example_img from './example-poster.jpg';
-import sample_text from './sample-text.txt';
+import React, {useState, useEffect} from 'react';
 
-// load the activity description from the server
-async function fetchActivityDescription() {
-  try {
-    // const response = await fetch('http://localhost:3306/activity-description');
-    // const data = await response.json();
+const Introduction = ({activityImage, activityDescription}) => {
+  const [descriptionContent, setDescriptionContent] = useState('');
 
-    // use fake data for testing
-    const response = await fetch(sample_text);
-    const data = await response.text();
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function fetchActivityImage() {
-  try {
-    // const response = await fetch('http://localhost:3306/activity-image');
-    // const data = await response.json();
-
-    // use fake data for testing
-    const data = example_img;
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-const Introduction = () => {
-  const [activityImage, setActivityImage] = React.useState(''); //activity image
-  const [activityDescription, setActivityDescription] = React.useState(''); //user text
-
-  React.useEffect(() => {
-    async function fetchData() {
-      const data = await fetchActivityDescription();
-      setActivityDescription(data);
+  useEffect(() => {
+    async function fetchDescriptionContent() {
+      try {
+        const response = await fetch(activityDescription);
+        const text = await response.text();
+        setDescriptionContent(text);
+      } catch (error) {
+        console.error('Error fetching description content:', error);
+      }
     }
-    fetchData();
-    async function fetchImage() {
-      const data = await fetchActivityImage();
-      setActivityImage(data);
+
+    if (activityDescription) {
+      fetchDescriptionContent();
     }
-    fetchImage();
-  }, []);
+  }, [activityDescription]);
 
   return (
     <div className='introduction-container'>
       <div className='image'>
-        <img src={activityImage} alt='activity poster' />
+        {activityImage && <img src={activityImage} alt='activity poster' />}
       </div>
       <div className='text'>
-        <p>{activityDescription}</p>
+        <p>{descriptionContent}</p>
       </div>
     </div>
   );

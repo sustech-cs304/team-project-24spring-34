@@ -1,19 +1,47 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import exampleOrgImg from './example_org_img.jpg';
-import {Typography, Card, CardMedia, CardContent, Box} from '@mui/material';
+import {Typography, Box, CardContent} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 
-const OrganizerInfo = () => {
+const OrganizerInfo = ({organizerid}) => {
   const navigate = useNavigate();
+  const [organizerInfo, setOrganizerInfo] = useState(null);
+
+  // Fetch organizer info from backend
+  useEffect(() => {
+    async function fetchOrganizerInfo() {
+      try {
+        // const response = await fetch(`/api/organizer/${organizerid}`);
+        // const data = await response.json();
+        // Test data
+        const data = {
+          organizerName: '格赫娜学院万魔殿',
+          contactPerson: 'iroha',
+          contactPhone: '123-456-7890',
+          organizerAvatar: exampleOrgImg,
+        };
+        setOrganizerInfo(data);
+      } catch (error) {
+        console.error('Error fetching organizer info:', error);
+      }
+    }
+
+    if (organizerid) {
+      fetchOrganizerInfo();
+    }
+  }, [organizerid]);
 
   const handleClick = () => {
     navigate('/profile');
   };
 
-  const organizerName = '南方科技大学计算机科学与工程系';
-  const contactPerson = 'iroha';
-  const contactPhone = '1942-88-312';
+  if (!organizerInfo) {
+    return null;
+  }
+
+  const {organizerName, contactPerson, contactPhone, organizerAvatar} =
+    organizerInfo;
 
   return (
     <Box
@@ -43,7 +71,7 @@ const OrganizerInfo = () => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Avatar src={exampleOrgImg} sx={{width: 100, height: 100}} />
+        <Avatar src={organizerAvatar} sx={{width: 100, height: 100}} />
       </Box>
       <CardContent
         className='detail'
@@ -52,20 +80,26 @@ const OrganizerInfo = () => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: 'flex-start', // 对齐到左侧
           padding: 2,
         }}>
         <Typography
           variant='body1'
           component='div'
-          sx={{whiteSpace: 'balance'}}>
-          <strong>主办方:</strong> {organizerName}
+          sx={{whiteSpace: 'nowrap', textAlign: 'left'}}>
+          <strong>Org:</strong> {organizerName}
         </Typography>
-        <Typography variant='body1' component='div' sx={{whiteSpace: 'nowrap'}}>
-          <strong>联系人:</strong> {contactPerson}
+        <Typography
+          variant='body1'
+          component='div'
+          sx={{whiteSpace: 'nowrap', textAlign: 'left'}}>
+          <strong>Contact:</strong> {contactPerson}
         </Typography>
-        <Typography variant='body1' component='div' sx={{whiteSpace: 'nowrap'}}>
-          <strong>电话:</strong> {contactPhone}
+        <Typography
+          variant='body1'
+          component='div'
+          sx={{whiteSpace: 'nowrap', textAlign: 'left'}}>
+          <strong>Phone:</strong> {contactPhone}
         </Typography>
       </CardContent>
     </Box>
