@@ -29,7 +29,7 @@ const LocationComponent = ({location}) => {
 const ClassificationComponent = ({classifications}) => {
   return (
     <Typography variant='body1' gutterBottom>
-      🏷️ <strong>Tags</strong>: {classifications.join(', ')}
+      🏷️ <strong>Tags</strong>: {classifications.name.join(', ')}
     </Typography>
   );
 };

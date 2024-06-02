@@ -21,43 +21,55 @@ function ActivityDetails() {
   const [active, setActive] = useState({
     id: 1,
     title: '基窝托斯偷跑大赛',
-    rating: 9.9,
-    rating_num: 100,
+    description: sample_text,
+    poster: example_img,
     organizerid: 10,
-    date: '2024-04-06', // 改正的日期格式
-    beginTime: '09:00',
-    endTime: '17:00',
+    start_time: '09:00',
+    end_time: '17:00',
     location: '格赫娜学院·社团大楼本馆前广场',
     capacity: 100,
-    seats: 50,
-    poster: example_img,
-    introduction: sample_text,
-    classifications: ['偷跑', '装甲'],
+    remaining_capacity: 50,
+    tags: [
+      {
+        id: 1,
+        name: '偷跑',
+      },
+      {
+        id: 2,
+        name: '基窝托斯',
+      },
+      {
+        id: 3,
+        name: '装甲',
+      },
+    ],
+    rating: 9.9,
+    rating_num: 100,
   });
 
   useEffect(() => {
     async function fetchActivityDetails() {
       try {
-        // const response = await fetch(`/api/activity/${activeid}`);
-        // const data = await response.json();
-        // For now using static data as example
-        const data = {
-          id: activeid,
-          title: '基窝托斯偷跑大赛',
-          rating: 9.9,
-          rating_num: 100,
-          organizerid: 10,
-          date: '2024-04-06', // Example date
-          beginTime: '09:00',
-          endTime: '17:00',
-          location: '格赫娜学院·社团大楼本馆前广场',
-          capacity: 100,
-          seats: 50,
-          poster: example_img,
-          introduction: sample_text,
-          classifications: ['偷跑', '装甲'],
-        };
-        setActive(data);
+        //test
+        const response = await fetch(
+          'http://10.27.41.93:5000/api/events/' + activeid,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          },
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .catch((error) => {
+            console.error('Error fetching activity details:', error);
+          });
+        setActive(response);
       } catch (error) {
         console.error('Error fetching activity details:', error);
       }
@@ -83,20 +95,21 @@ function ActivityDetails() {
           <EventDetails
             date={active.date}
             location={active.location}
-            startTime={active.beginTime}
-            endTime={active.endTime}
+            startTime={active.start_time}
+            endTime={active.end_time}
             rating={active.rating}
             rating_num={active.rating_num}
-            classifications={active.classifications}
+            classifications={active.tags}
           />
-          <OrganizerInfo organizerid={active.organizerid} />
+          <OrganizerInfo organizerid={10} />
+          {/*need to upadate*/}
         </section>
 
         <Introduction
           activityImage={active.poster}
-          activityDescription={active.introduction}
+          activityDescription={active.description}
         />
-        <Reserve capacity={active.capacity} seats={active.seats} />
+        <Reserve capacity={active.capacity} seats={active.remaining_capacity} />
         <hr />
         <section
           style={{
