@@ -257,6 +257,16 @@ router.get('/events/:event_id', async (req, res) => {
     where: {event_id: req.params.event_id},
   });
   const audience_cnt = event_to_audience.length;
+  const event_to_participant = await EventToParticipant.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  let participants = [];
+  for (let i = 0; i < event_to_participant.length; i++) {
+    const participant = await EventParticipant.findOne({
+      where: {id: event_to_participant[i].participant_id},
+    });
+    participants.push(participant);
+  }
   const remaining_capacity = event.capacity - audience_cnt;
   const event_comments = await Comment.findAll({
     where: {event_id: req.params.event_id},
@@ -269,6 +279,7 @@ router.get('/events/:event_id', async (req, res) => {
   if (event) {
     res.json({
       ...event.dataValues,
+      participants,
       remaining_capacity,
       tags,
       rating_num,
