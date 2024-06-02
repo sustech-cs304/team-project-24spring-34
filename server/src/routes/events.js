@@ -211,8 +211,24 @@ router.get('/events', async (req, res) => {
       event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
       rating_num /
       2; // convert from 1-10 to 0.5-5
+    // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
+    const organizer = await User.findOne({
+      where: {id: eventList[i].organizer_id},
+    });
     eventList[i] = {
-      ...eventList[i].dataValues,
+      id: eventList[i].id,
+      title: eventList[i].title,
+      description: eventList[i].description,
+      poster: eventList[i].poster,
+      publish_organization: eventList[i].publish_organization,
+      start_time: eventList[i].start_time,
+      end_time: eventList[i].end_time,
+      status: eventList[i].status,
+      location: eventList[i].location,
+      capacity: eventList[i].capacity,
+      createdAt: eventList[i].createdAt,
+      updatedAt: eventList[i].updatedAt,
+      organizer_name: organizer.username,
       remaining_capacity,
       tags,
       rating_num,
@@ -295,13 +311,32 @@ router.get('/events/:event_id', async (req, res) => {
     where: {event_id: req.params.event_id},
   });
   const rating_num = event_comments.length;
-  const rating =
-    event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
-    rating_num /
-    2; // convert from 1-10 to 0.5-5
+  let rating = 0;
+  if (rating_num > 0) {
+    rating =
+      event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+      rating_num /
+      2; // convert from 1-10 to 0.5-5
+  }
+  // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
+  const organizer = await User.findOne({
+    where: {id: event.organizer_id},
+  });
   if (event) {
     res.json({
-      ...event.dataValues,
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      poster: event.poster,
+      publish_organization: event.publish_organization,
+      start_time: event.start_time,
+      end_time: event.end_time,
+      status: event.status,
+      location: event.location,
+      capacity: event.capacity,
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt,
+      organizer_name: organizer.username,
       participants,
       remaining_capacity,
       tags,
