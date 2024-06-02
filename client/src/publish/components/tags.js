@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import styled, {ThemeProvider} from 'styled-components';
-import {MdOutlineDeleteForever} from 'react-icons/md';
+import {MdOutlineDeleteOutline} from 'react-icons/md';
 
 const Button = styled.button`
   width: 20px;
@@ -75,7 +75,7 @@ const Tags = ({onTagsChange}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            x
+            <MdOutlineDeleteOutline />
           </button>
         </div>
       ))}

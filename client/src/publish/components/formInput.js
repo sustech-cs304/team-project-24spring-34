@@ -15,7 +15,6 @@ import ThemeUpload from './themeUpload';
 import ThemeNumInput from './themeNumInput';
 import ThemeButton from './themeButton';
 import Tags from './tags';
-import Avatar from './avatarInput';
 import ParticipatorComponent from './Participator';
 
 const ErrorMessage = styled.p`
