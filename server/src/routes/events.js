@@ -389,6 +389,47 @@ router.delete('/events/:event_id', async (req, res) => {
   await Event.destroy({where: {id: req.params.event_id}});
   res.status(204).send();
 });
+router.delete('/events/:event_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const event = await Event.findOne({where: {id: req.params.event_id}});
+  if (!event) {
+    res.status(404).json(getResponse(404, {description: 'Event not found'}));
+    return;
+  }
+  if (
+    User.findOne({where: {id: uid}}).user_group === 2 &&
+    event.organizer_id !== uid
+  ) {
+    res
+      .status(401)
+      .json(getResponse(401, {description: 'Unauthorized to delete event'}));
+    return;
+  }
+  // event_participants = await EventToParticipant.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_participants.length; i++) {
+  //   await EventToParticipant.destroy({where: {id: event_participants[i].id}});
+  // }
+  // event_audiences = await EventToAudience.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_audiences.length; i++) {
+  //   await EventToAudience.destroy({where: {id: event_audiences[i].id}});
+  // }
+  // event_tags = await EventToTag.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_tags.length; i++) {
+  //   await EventToTag.destroy({where: {id: event_tags[i].id}});
+  // }
+  await Event.destroy({where: {id: req.params.event_id}});
+  res.status(204).send();
+});
 
 /**
  * @swagger
