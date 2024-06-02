@@ -1,9 +1,10 @@
-const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const upload = multer({dest: 'uploads/'});
 const router = express.Router();
+const sharp = require('sharp');
 const getResponse = require('../models/response');
 
 /**
@@ -44,19 +45,20 @@ const getResponse = require('../models/response');
  *       '500':
  *         $ref: '#/components/responses/500'
  */
-router.post('/images', upload.single('image'), function (req, res) {
+router.post('/images', upload.single('image'), async (req, res) => {
   if (!req.file) {
     res.status(400).json(getResponse(400, {description: 'No image uploaded'}));
     return;
   }
   const image = req.file;
-  const imageId = Date.now();
+  const imageId = Date.now() + '.webp';
   const imagePath = path.join(__dirname, '../../resources/images', imageId);
   try {
     if (!fs.existsSync(path.dirname(imagePath))) {
       fs.mkdirSync(path.dirname(imagePath), {recursive: true});
     }
-    fs.renameSync(image.path, imagePath);
+    await sharp(image.path).toFormat('webp').toFile(imagePath);
+    fs.unlinkSync(image.path);
     res.json({url: `/images/${imageId}`});
   } catch (error) {
     console.error(error);
@@ -89,7 +91,7 @@ router.post('/images', upload.single('image'), function (req, res) {
  *         $ref: '#/components/responses/404'
  */
 router.get('/images/:image_id', function (req, res) {
-  const imageId = req.params.image_id;
+  const imageId = req.params.image_id + '.webp';
   const imagePath = path.join(__dirname, '../../resources/images', imageId);
   if (!fs.existsSync(imagePath)) {
     res.status(404).json(getResponse(404, {description: 'Image not found'}));
