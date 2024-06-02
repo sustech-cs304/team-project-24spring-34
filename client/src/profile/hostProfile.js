@@ -17,7 +17,6 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
 import {Delete as DeleteIcon} from '@mui/icons-material';
 import {Link} from 'react-router-dom';
-import {set} from 'husky';
 function HostProfile(user) {
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
   const [users, setUsers] = useState([]); // 定义用户数据状态
