@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {PlusOutlined} from '@ant-design/icons';
 import {Image, Upload} from 'antd';
 const getBase64 = (file) =>
@@ -8,10 +8,15 @@ const getBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-const AddPics = () => {
+const AddPics = ({onPicsChange}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState([]);
+
+  useEffect(() => {
+    onPicsChange(fileList);
+  }, [fileList, onPicsChange]);
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -39,7 +44,7 @@ const AddPics = () => {
   return (
     <>
       <Upload
-        action='https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload'
+        action='http://10.27.41.93:5000/api/images'
         listType='picture-card'
         fileList={fileList}
         onPreview={handlePreview}
