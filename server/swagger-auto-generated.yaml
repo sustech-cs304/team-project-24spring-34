@@ -100,6 +100,9 @@ paths:
       tags:
         - Events
       summary: Create an event
+      parameters:
+        - $ref: '#/components/parameters/query_limit'
+        - $ref: '#/components/parameters/query_offset'
       requestBody:
         required: true
         content:
@@ -637,8 +640,6 @@ components:
           type: integer
           minimum: 1
           uniqueItems: true
-        style: form
-        explode: false
         default: []
   securitySchemes:
     bearerAuth:
