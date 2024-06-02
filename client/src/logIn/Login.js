@@ -45,10 +45,16 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
   const navigate = useNavigate();
   const [retrieveOpen, setRetrieveOpen] = React.useState(false);
-  const [accountInfo, setAccountInfo] = useState({
-    username: '',
-    password: '',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
 
   const handleClickRetrieveOpen = () => {
     setRetrieveOpen(true);
@@ -60,10 +66,7 @@ export default function SignInSide() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setAccountInfo({
-      username: event.target.email.value,
-      password: event.target.password.value,
-    });
+    console.log(email, password);
 
     try {
       const response = await fetch('http://10.27.41.93:5000/api/sessions', {
@@ -73,8 +76,8 @@ export default function SignInSide() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: accountInfo.username,
-          password: accountInfo.password,
+          username: email,
+          password: password,
         }),
       }).then((response) => {
         if (!response.ok) {
@@ -134,11 +137,12 @@ export default function SignInSide() {
                 margin='normal'
                 required
                 fullWidth
-                id='email'
-                label='Email Address'
-                name='email'
-                autoComplete='email'
+                id='Username'
+                label='Username'
+                name='Username'
+                autoComplete='Username'
                 autoFocus
+                onChange={handleEmailChange}
               />
               <TextField
                 margin='normal'
@@ -149,6 +153,7 @@ export default function SignInSide() {
                 type='password'
                 id='password'
                 autoComplete='current-password'
+                onChange={handlePasswordChange}
               />
               <FormControlLabel
                 control={<Checkbox value='remember' color='primary' />}
