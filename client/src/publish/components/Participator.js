@@ -166,8 +166,11 @@ const InputBox = ({addParticipator}) => {
   );
 };
 
-const ParticipatorComponent = () => {
+const ParticipatorComponent = ({onParticipatorChange}) => {
   const [participators, setParticipators] = useState([]);
+  useEffect(() => {
+    onParticipatorChange(participators);
+  }, [participators, onParticipatorChange]);
 
   const addParticipator = (newParticipator) => {
     setParticipators([...participators, newParticipator]);
