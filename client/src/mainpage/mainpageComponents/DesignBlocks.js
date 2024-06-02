@@ -8,6 +8,7 @@ import MKTypography from '../../components/MKTypography';
 import DefaultInfoCard from '../../publicAssets/DefaultInfoCard';
 import axios from 'axios';
 
+const authToken = localStorage.getItem('authToken');
 function DesignBlocks() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,14 +17,11 @@ function DesignBlocks() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/events`,
-          {
-            headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzI5MTM2LCJleHAiOjE3MTc0MTU1MzZ9.9XX6MWQ0XNEccbgx64W6YM0SdKZUcNNJGzNFQI-kaU8`,
-            },
+        const response = await axios.get('http://10.27.41.93:5000/api/events', {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
           },
-        );
+        });
         console.log(response);
         setData(response.data);
       } catch (error) {
@@ -45,7 +43,7 @@ function DesignBlocks() {
   }
 
   const renderData = data.events.map((event) => (
-    <Grid item xs={12} md={4} sx={{mb: 2}} key={event.title}>
+    <Grid item xs={10} md={4} sx={{mb: 2}} key={event.title}>
       <Link to={`/event/${event.id}`}>
         <DefaultInfoCard
           title={event.title}
