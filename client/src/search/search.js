@@ -21,8 +21,8 @@ import DefaultNavbar from '../mainpage/mainpageComponents/DefaultNavbar';
 
 function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [users, setUsers] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [allUsers, setUsers] = useState([]);
+  const [allEvents, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [filterAll, setFilterAll] = useState(false);
@@ -122,11 +122,11 @@ function SearchPage() {
     }
   };
 
-  const filteredUsers = users.filter((user) =>
+  const filteredUsers = (allUsers.users || []).filter((user) =>
     user.nickname.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const filteredEvents = events.filter((event) => {
+  const filteredEvents = (allEvents.events || []).filter((event) => {
     const term = searchTerm.toLowerCase();
     return (
       (searchByTitle && event.title.toLowerCase().includes(term)) ||
