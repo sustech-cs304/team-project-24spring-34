@@ -74,6 +74,7 @@ function DefaultInfoCard({
           {site}
         </MKTypography>
       </MKBox>
+      <br />
       <MKTypography display='block' variant='5' fontWeight='bold' mb={2.5}>
         {title}
       </MKTypography>
