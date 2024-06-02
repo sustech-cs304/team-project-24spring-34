@@ -14,6 +14,7 @@ const {
 } = require('./eventToAudience');
 const {EventStatus, init: EventStatusInit} = require('./eventStatus');
 const {Comment, init: CommentInit} = require('./comment');
+const {UserToLike, init: UserToLikeInit} = require('./userToLike');
 const {Message, init: MessageInit} = require('./message');
 
 const initializeTables = async () => {
@@ -74,21 +75,17 @@ const initializeTables = async () => {
     Event.belongsTo(EventStatus);
 
     User.hasMany(Message, {
-      foreignKey: 'sender',
-      as: 'sender_id',
+      foreignKey: 'receiver_id',
     });
     Message.belongsTo(User, {
-      foreignKey: 'sender',
-      as: 'sender_id',
+      foreignKey: 'receiver_id',
     });
 
-    User.hasMany(Message, {
-      foreignKey: 'receiver',
-      as: 'receiver_id',
+    User.belongsToMany(Comment, {
+      through: 'user_to_like',
     });
-    Message.belongsTo(User, {
-      foreignKey: 'receiver',
-      as: 'receiver_id',
+    Comment.belongsToMany(User, {
+      through: 'user_to_like',
     });
   } catch (error) {
     console.error('Error initializing tables:', error);
@@ -105,6 +102,7 @@ const initializeModels = async () => {
     EventToAudienceInit(),
     MessageInit(),
     CommentInit(),
+    UserToLikeInit(),
   ]);
 
   // const user1 = await User.findByPk(1);
@@ -127,5 +125,6 @@ module.exports = {
   EventToAudience,
   EventStatus,
   Comment,
+  UserToLike,
   Message,
 };

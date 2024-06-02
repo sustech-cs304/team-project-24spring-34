@@ -68,6 +68,13 @@ function verifyToken(req, res, next) {
  *       schema:
  *         type: integer
  *         minimum: 1
+ *     path_message_id:
+ *       name: message_id
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: integer
+ *         minimum: 1
  *     query_limit:
  *       name: limit
  *       in: query

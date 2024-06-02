@@ -13,8 +13,6 @@ const sequelize = require('../config/connection');
  *         - content
  *         - user_id
  *         - event_id
- *         - likes
- *         - dislikes
  *         - rating
  *       properties:
  *         id:
@@ -29,12 +27,6 @@ const sequelize = require('../config/connection');
  *           description: The id of the user who created the comment
  *         event_id:
  *           type: integer
- *         likes:
- *           type: integer
- *           default: 0
- *         dislikes:
- *           type: integer
- *           default: 0
  *         rating:
  *           type: integer
  */
@@ -67,16 +59,6 @@ const Comment = sequelize.define(
         key: 'id',
       },
     },
-    likes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    dislikes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
     rating: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -97,26 +79,20 @@ const init = async () => {
     await Comment.bulkCreate([
       {
         content: 'This is a comment',
-        user_id: 1,
+        user_id: 2,
         event_id: 1,
-        likes: 0,
-        dislikes: 0,
         rating: 5,
       },
       {
         content: 'This is another comment',
-        user_id: 1,
+        user_id: 2,
         event_id: 2,
-        likes: 0,
-        dislikes: 0,
         rating: 5,
       },
       {
         content: 'This is yet another comment',
-        user_id: 1,
+        user_id: 2,
         event_id: 3,
-        likes: 0,
-        dislikes: 0,
         rating: 5,
       },
     ]);
