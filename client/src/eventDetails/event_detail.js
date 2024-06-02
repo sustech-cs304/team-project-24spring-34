@@ -2,18 +2,18 @@ import React from 'react';
 import {Typography, Box} from '@mui/material';
 import Rating from './Rating'; // 确保 Rating 组件导出正确
 
-const DateComponent = ({date}) => {
+const StartTimeComponent = ({startTime}) => {
   return (
     <Typography variant='body1' gutterBottom>
-      📅 <strong>Date</strong>: {date}
+      🕒 <strong>Start Time</strong>: {new Date(startTime).toLocaleString()}
     </Typography>
   );
 };
 
-const TimeComponent = ({startTime, endTime}) => {
+const EndTimeComponent = ({endTime}) => {
   return (
     <Typography variant='body1' gutterBottom>
-      ⏰ <strong>Time</strong>: {startTime} - {endTime}
+      🕒 <strong>End Time</strong>: {new Date(endTime).toLocaleString()}
     </Typography>
   );
 };
@@ -27,15 +27,15 @@ const LocationComponent = ({location}) => {
 };
 
 const ClassificationComponent = ({classifications}) => {
+  const namelist = classifications.map((classification) => classification.name);
   return (
     <Typography variant='body1' gutterBottom>
-      🏷️ <strong>Tags</strong>: {classifications.join(', ')}
+      🏷️ <strong>Tags</strong>: {namelist.join(', ')}
     </Typography>
   );
 };
 
 const EventDetails = ({
-  date,
   location,
   startTime,
   endTime,
@@ -62,8 +62,8 @@ const EventDetails = ({
           padding: '10px',
           marginTop: '30px',
         }}>
-        <DateComponent date={date} />
-        <TimeComponent startTime={startTime} endTime={endTime} />
+        <StartTimeComponent startTime={startTime} />
+        <EndTimeComponent endTime={endTime} />
         <LocationComponent location={location} />
         <ClassificationComponent classifications={classifications} />
       </section>

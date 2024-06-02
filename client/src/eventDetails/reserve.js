@@ -16,10 +16,10 @@ const Reserve = ({capacity, seats}) => {
           marginTop: '20px',
         }}>
         <Typography variant='body1'>
-          <strong>Capacity:</strong> {capacity}
+          <strong>Capacity:</strong> {capacity === 0 ? 'Unlimited' : capacity}
         </Typography>
         <Typography variant='body1'>
-          <strong>Spare seat:</strong> {seats}
+          <strong>Spare seat:</strong> {capacity === 0 ? 'N/A' : seats}
         </Typography>
       </section>
 
