@@ -134,9 +134,8 @@ router.post('/events', async (req, res) => {
     for (let i = 0; i < tags.length; i++) {
       const tag = await EventTag.findOne({where: {name: tags[i].name}});
       if (!tag) {
-        await EventTag.bulkCreate([{name: tags[i].name}]);
+        await EventTag.create({name: tags[i].name});
       }
-      tags[i] = tag;
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
@@ -164,7 +163,8 @@ router.post('/events', async (req, res) => {
       capacity,
     });
     for (let i = 0; i < tags.length; i++) {
-      await EventToTag.create({event_id: new_event.id, tag_id: tags[i].id});
+      const tag = await EventTag.findOne({where: {name: tags[i].name}});
+      await EventToTag.create({event_id: new_event.id, tag_id: tag.id});
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
