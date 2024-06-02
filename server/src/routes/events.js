@@ -312,13 +312,32 @@ router.get('/events/:event_id', async (req, res) => {
     where: {event_id: req.params.event_id},
   });
   const rating_num = event_comments.length;
-  const rating =
-    event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
-    rating_num /
-    2; // convert from 1-10 to 0.5-5
+  let rating = 0;
+  if (rating_num > 0) {
+    rating =
+      event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+      rating_num /
+      2; // convert from 1-10 to 0.5-5
+  }
+  // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
+  const organizer = await User.findOne({
+    where: {id: event.organizer_id},
+  });
   if (event) {
     res.json({
-      ...event.dataValues,
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      poster: event.poster,
+      publish_organization: event.publish_organization,
+      start_time: event.start_time,
+      end_time: event.end_time,
+      status: event.status,
+      location: event.location,
+      capacity: event.capacity,
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt,
+      organizer_name: organizer.username,
       participants,
       remaining_capacity,
       tags,
