@@ -41,6 +41,8 @@ paths:
       responses:
         '201':
           description: Comment created successfully
+        '204':
+          description: Comment updated successfully
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -75,16 +77,6 @@ paths:
           $ref: '#/components/responses/500'
   /comments/{comment_id}:
     delete:
-      '204':
-        description: Comment deleted successfully
-      '401':
-        $ref: '#/components/responses/401'
-      '403':
-        $ref: '#/components/responses/403'
-      '404':
-        $ref: '#/components/responses/404'
-      '500':
-        $ref: '#/components/responses/500'
       tags:
         - Comments
       summary: >-
@@ -92,7 +84,17 @@ paths:
         an admin could delete any comment
       parameters:
         - $ref: '#/components/parameters/path_comment_id'
-      responses: null
+      responses:
+        '204':
+          description: Comment deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   /events:
     post:
       tags:
@@ -650,8 +652,8 @@ components:
       required:
         - id
         - content
-        - user
-        - event
+        - user_id
+        - event_id
         - likes
         - dislikes
         - rating
