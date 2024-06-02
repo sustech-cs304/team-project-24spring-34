@@ -134,4 +134,45 @@ router.get('/comments/:event_id', async (req, res) => {
   res.json({comments, total});
 });
 
+/**
+ * @swagger
+ * /comments/{comment_id}:
+ *   delete:
+ *     tags:
+ *       - Comments
+ *     summary: Delete a comment - A user could delete only his/her own comment, while an admin could delete any comment
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_comment_id'
+ *     responses:
+ *     '204':
+ *       description: Comment deleted successfully
+ *     '401':
+ *       $ref: '#/components/responses/401'
+ *     '403':
+ *       $ref: '#/components/responses/403'
+ *     '404':
+ *       $ref: '#/components/responses/404'
+ *     '500':
+ *       $ref: '#/components/responses/500'
+ */
+router.delete('/comments/:comment_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const comment = await Comment.findOne({where: {id: req.params.comment_id}});
+  if (!comment) {
+    res.status(404).json(getResponse(404, {description: 'Comment not found'}));
+    return;
+  }
+  const curr_user = await User.findOne({where: {id: uid}});
+  if (curr_user.user_group !== 3 && comment.user_id !== uid) {
+    res.status(403).json(getResponse(403, {description: 'Forbidden'}));
+    return;
+  }
+  await comment.destroy();
+  res.status(204).send();
+});
+
 module.exports = router;
