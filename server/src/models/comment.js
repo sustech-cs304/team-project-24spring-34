@@ -51,6 +51,22 @@ const Comment = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'user',
+        key: 'id',
+      },
+    },
+    event_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'event',
+        key: 'id',
+      },
+    },
     likes: {
       type: DataTypes.INTEGER,
       allowNull: false,

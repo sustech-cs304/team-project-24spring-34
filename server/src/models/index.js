@@ -2,11 +2,16 @@ const {Gender, init: GenderInit} = require('./gender');
 const {UserGroup, init: UserGroupInit} = require('./userGroup');
 const {User, init: UserInit} = require('./user');
 const {Event, init: EventInit} = require('./event');
-const {EventTag, init: EventTagInit} = require('./eventTag');
+const {EventTag, EventToTag, init: EventTagInit} = require('./eventTag');
 const {
   EventParticipant,
+  EventToParticipant,
   init: EventParticipantInit,
 } = require('./eventParticipant');
+const {
+  EventToAudience,
+  init: EventToAudienceInit,
+} = require('./eventToAudience');
 const {EventStatus, init: EventStatusInit} = require('./eventStatus');
 const {Comment, init: CommentInit} = require('./comment');
 const {Message, init: MessageInit} = require('./message');
@@ -32,44 +37,30 @@ const initializeTables = async () => {
     });
 
     User.belongsToMany(Event, {
-      foreignKey: 'audience',
-      through: 'event_audience',
-      as: 'event_history',
+      through: 'event_to_audience',
     });
     Event.belongsToMany(User, {
-      foreignKey: 'event',
-      through: 'event_audience',
-      as: 'audience',
+      through: 'event_to_audience',
     });
 
     Event.belongsToMany(EventParticipant, {
-      foreignKey: 'event',
-      through: 'event_participant',
-      as: 'participants',
+      through: 'event_to_participant',
     });
     EventParticipant.belongsToMany(Event, {
-      foreignKey: 'participant',
-      through: 'event_participant',
-      as: 'events',
-    });
-
-    Event.hasMany(Comment, {
-      foreignKey: 'event_id',
-    });
-    User.hasMany(Comment, {
-      foreignKey: 'user_id',
+      through: 'event_to_participant',
     });
 
     Event.belongsToMany(EventTag, {
-      foreignKey: 'event',
-      through: 'event_tag',
-      as: 'tags',
+      through: 'event_to_tag',
     });
     EventTag.belongsToMany(Event, {
-      foreignKey: 'tag',
-      through: 'event_tag',
-      as: 'events',
+      through: 'event_to_tag',
     });
+
+    Event.hasMany(Comment);
+    Comment.belongsTo(Event);
+    User.hasMany(Comment);
+    Comment.belongsTo(User);
 
     EventStatus.hasMany(Event);
     Event.belongsTo(EventStatus);
@@ -97,19 +88,21 @@ const initializeTables = async () => {
 };
 
 const initializeModels = async () => {
+  await Promise.all([GenderInit(), UserGroupInit(), EventStatusInit()]);
   await Promise.all([
-    GenderInit(),
-    UserGroupInit(),
+    UserInit(),
+    EventInit(),
     EventTagInit(),
     EventParticipantInit(),
-    EventStatusInit(),
+    EventToAudienceInit(),
+    MessageInit(),
+    CommentInit(),
   ]);
-  await Promise.all([UserInit(), EventInit(), MessageInit(), CommentInit()]);
 
-  const user1 = await User.findByPk(1);
-  const user2 = await User.findByPk(2);
-  const event = await Event.findByPk(1);
-  await event.addAudience([user1, user2]);
+  // const user1 = await User.findByPk(1);
+  // const user2 = await User.findByPk(2);
+  // const event = await Event.findByPk(1);
+  // await event.addAudience([user1, user2]);
 };
 
 module.exports = {
@@ -120,7 +113,10 @@ module.exports = {
   User,
   Event,
   EventTag,
+  EventToTag,
   EventParticipant,
+  EventToParticipant,
+  EventToAudience,
   EventStatus,
   Comment,
   Message,

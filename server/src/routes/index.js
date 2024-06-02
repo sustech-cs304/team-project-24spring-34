@@ -128,8 +128,7 @@ function verifyToken(req, res, next) {
 router.use((req, res, next) => {
   if (
     (req.path === '/users' && req.method === 'POST') ||
-    (req.path === '/sessions' && req.method === 'POST') ||
-    (req.path.startsWith('/events') && req.method === 'GET')
+    (req.path === '/sessions' && req.method === 'POST')
   ) {
     next();
   } else {
@@ -148,6 +147,8 @@ router.use((req, res, next) => {
  *     description: Operations about comments
  *   - name: Locations
  *     description: Operations about locations
+ *   - name: Images
+ *     description: Operations about images
  */
 const usersRoutes = require('./users');
 router.use(usersRoutes);
@@ -155,5 +156,7 @@ const eventsRoutes = require('./events');
 router.use(eventsRoutes);
 const commentsRoutes = require('./comments');
 router.use(commentsRoutes);
+const imagesRoutes = require('./images');
+router.use(imagesRoutes);
 
 module.exports = router;

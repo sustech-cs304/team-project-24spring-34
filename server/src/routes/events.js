@@ -1,8 +1,36 @@
 const express = require('express');
 const router = express.Router();
 
-const {Event, EventTag} = require('../models');
+const {
+  Event,
+
+  EventTag,
+  EventToTag,
+  EventParticipant,
+  EventToParticipant,
+  EventToAudience,
+  User,
+  Comment,
+} = require('../models');
 const getResponse = require('../models/response');
+const jwt = require('jsonwebtoken');
+
+function getUidFromJwt(req) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('Invalid or missing Authorization header');
+      return null;
+    }
+
+    const token = authHeader.slice(7);
+    const decoded = jwt.verify(token, '42');
+    return decoded.id;
+  } catch (error) {
+    console.log('Invalid token:', error);
+    return null;
+  }
+}
 
 /**
  * @swagger
@@ -22,7 +50,7 @@ const getResponse = require('../models/response');
  *               - title
  *               - description
  *               - poster
- *               - organizer
+ *               - publish_organization
  *               - participants
  *               - start_time
  *               - end_time
@@ -36,8 +64,9 @@ const getResponse = require('../models/response');
  *               poster:
  *                 type: string
  *                 description: The URL of the event's poster
- *               organizer:
- *                 $ref: '#/components/schemas/User'
+ *               publish_organization:
+ *                 type: string
+ *                 description: The organization that published the event
  *               participants:
  *                 type: array
  *                 items:
@@ -86,11 +115,16 @@ const getResponse = require('../models/response');
  */
 router.post('/events', async (req, res) => {
   try {
+    const uid = getUidFromJwt(req);
+    if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+      res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+      return;
+    }
     const {
       title,
       description,
       poster,
-      organizer,
+      publish_organization,
       participants,
       start_time,
       end_time,
@@ -99,19 +133,55 @@ router.post('/events', async (req, res) => {
       location,
       capacity,
     } = req.body;
-    await Event.create({
+    for (let i = 0; i < tags.length; i++) {
+      const tag = await EventTag.findOne({where: {id: tags[i]}});
+      if (!tag) {
+        res
+          .status(400)
+          .json(getResponse(400, {description: 'Invalid tag id: ' + tags[i]}));
+        return;
+      }
+    }
+    for (let i = 0; i < participants.length; i++) {
+      const participant = await EventParticipant.findOne({
+        where: {
+          name: participants[i].name,
+          description: participants[i].description,
+          avatar: participants[i].avatar,
+        },
+      });
+      if (!participant) {
+        await EventParticipant.bulkCreate([participants[i]]);
+      }
+    }
+    const new_event = await Event.create({
       title,
       description,
       poster,
-      organizer,
-      participants,
+      uid,
+      publish_organization,
       start_time,
       end_time,
-      tags,
       status,
       location,
       capacity,
     });
+    for (let i = 0; i < tags.length; i++) {
+      await EventToTag.create({event_id: new_event.id, tag_id: tags[i]});
+    }
+    for (let i = 0; i < participants.length; i++) {
+      const participant = await EventParticipant.findOne({
+        where: {
+          name: participants[i].name,
+          description: participants[i].description,
+          avatar: participants[i].avatar,
+        },
+      });
+      await EventToParticipant.create({
+        event_id: new_event.id,
+        participant_id: participant.id,
+      });
+    }
     res.status(201).send();
   } catch (error) {
     console.error(error);
@@ -122,6 +192,36 @@ router.post('/events', async (req, res) => {
 });
 router.get('/events', async (req, res) => {
   const eventList = await Event.findAll();
+  for (let i = 0; i < eventList.length; i++) {
+    const event_to_tag = await EventToTag.findAll({
+      where: {event_id: eventList[i].id},
+    });
+    let tags = [];
+    for (let j = 0; j < event_to_tag.length; j++) {
+      const tag = await EventTag.findOne({where: {id: event_to_tag[j].tag_id}});
+      tags.push(tag);
+    }
+    const event_to_audience = await EventToAudience.findAll({
+      where: {event_id: eventList[i].id},
+    });
+    const audience_cnt = event_to_audience.length;
+    const remaining_capacity = eventList[i].capacity - audience_cnt;
+    const event_comments = await Comment.findAll({
+      where: {event_id: eventList[i].id},
+    });
+    const rating_num = event_comments.length;
+    const rating =
+      event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+      rating_num /
+      2; // convert from 1-10 to 0.5-5
+    eventList[i] = {
+      ...eventList[i].dataValues,
+      remaining_capacity,
+      tags,
+      rating_num,
+      rating,
+    };
+  }
   res.json(eventList);
 });
 
@@ -206,8 +306,14 @@ router.get('/events/:event_id', async (req, res) => {
  */
 router.post('/events-tags', async (req, res) => {
   try {
-    const {new_tag_name} = req.body;
-    const eventTag = await EventTag.findOne({where: {tag_name: new_tag_name}});
+    const uid = getUidFromJwt(req);
+    if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+      res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+      return;
+    }
+    const new_tag_name = req.body.tag_name;
+    console.log(new_tag_name);
+    const eventTag = await EventTag.findOne({where: {name: new_tag_name}});
     if (eventTag) {
       res
         .status(429)
@@ -224,9 +330,58 @@ router.post('/events-tags', async (req, res) => {
   }
 });
 router.get('/events-tags', async (req, res) => {
-  console.log('Getting tags');
   const tagList = await EventTag.findAll();
   res.json(tagList);
+});
+
+/**
+ * @swagger
+ * /event-reservations/{event_id}:
+ *   post:
+ *     tags:
+ *       - Events
+ *     summary: Reserve a spot for an event
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_event_id'
+ *     responses:
+ *       '201':
+ *         description: Reservation successful
+ *       '400':
+ *         $ref: '#/components/responses/400'
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ *       '500':
+ *         $ref: '#/components/responses/500'
+ */
+router.post('/event-reservations/:event_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const target_event = await Event.findOne({where: {id: req.params.event_id}});
+  if (!target_event) {
+    res.status(404).json(getResponse(404, {description: 'Event not found'}));
+    return;
+  }
+
+  const event_to_audience = await EventToAudience.findOne({
+    where: {event_id: req.params.event_id, audience_id: uid},
+  });
+  if (event_to_audience) {
+    res
+      .status(429)
+      .json(getResponse(429, {description: 'Already reserved for this event'}));
+    return;
+  }
+
+  await EventToAudience.create({
+    event_id: req.params.event_id,
+    audience_id: uid,
+  });
+  res.status(201).send();
 });
 
 module.exports = router;
