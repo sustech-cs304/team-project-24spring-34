@@ -44,7 +44,7 @@ const sequelize = require('../config/connection');
  *           type: string
  *           format: date-time
  *         status:
- *           $ref: '#/components/schemas/EventStatus'
+ *           type: integer
  *         location:
  *           type: string
  *         capacity:
@@ -92,6 +92,14 @@ const Event = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'event_statuses',
+        key: 'id',
+      },
+    },
     location: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -117,6 +125,7 @@ const init = async () => {
         publish_organization: 'organization1',
         start_time: new Date('2024-10-10T10:00:00.000Z'),
         end_time: new Date('2024-10-10T12:00:00.000Z'),
+        status: 1,
         location: 'location1',
         capacity: 100,
       },
@@ -128,6 +137,7 @@ const init = async () => {
         publish_organization: 'organization2',
         start_time: new Date('2024-10-11T10:00:00.000Z'),
         end_time: new Date('2024-10-11T12:00:00.000Z'),
+        status: 1,
         location: 'location2',
         capacity: 100,
       },
@@ -139,6 +149,7 @@ const init = async () => {
         publish_organization: 'organization3',
         start_time: new Date('2024-10-10T10:30:00.000Z'),
         end_time: new Date('2024-10-10T12:50:00.000Z'),
+        status: 1,
         location: 'location3',
         capacity: 100,
       },
