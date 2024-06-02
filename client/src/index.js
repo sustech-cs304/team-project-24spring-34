@@ -12,7 +12,7 @@ import Mainpage from './mainpage/Mainpage';
 import ProfilePage from './profile/profile';
 import Notifications from './Notification/Notifications';
 import PasswordRecovery from './PasswordRecovery/PasswordRecovery';
-import SignUp from './signUp/signUpignUp';
+import SignUp from './signUp/signUp';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
