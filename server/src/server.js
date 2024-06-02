@@ -21,9 +21,9 @@ const setupSwagger = require('./swagger');
 
 const app = express();
 const cors = require('cors');
+app.use(cors());
 app.use(bodyParser.json());
 app.use('/api', routes);
-app.use(cors());
 
 setupSwagger(app);
 
