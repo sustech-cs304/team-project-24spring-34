@@ -101,9 +101,7 @@ router.get('/users', async (req, res) => {
       res.status(403).json(getResponse(403, {description: 'Forbidden'}));
       return;
     }
-    let users = await User.findAll({
-      attributes: ['id', 'username', 'nickname', 'avatar', 'user_intro'],
-    });
+    let users = await User.findAll({attributes: {exclude: ['password']}});
     const total = await users.length;
     const offset = req.query.offset || 0;
     const limit = req.query.limit || 10;
@@ -214,14 +212,45 @@ router.delete('/sessions', (req, res) => {
  *               $ref: '#/components/schemas/User'
  *       '404':
  *         $ref: '#/components/responses/404'
+ *   delete:
+ *     tags:
+ *       - Users
+ *     summary: Delete a user by username
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     responses:
+ *       '200':
+ *         description: User deleted successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  */
 router.get('/users/:username', async (req, res) => {
-  const user = await User.findOne({where: {username: req.params.username}});
+  const user = await User.findOne({
+    where: {username: req.params.username},
+    attributes: {exclude: ['password']},
+  });
   if (user) {
     res.json(user);
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
+});
+router.delete('/users/:username', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  const op = await User.findOne({where: {id: userId}});
+  if (!op.user_group === 3) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const user = await User.findOne({where: {username: req.params.username}});
+  if (!user) {
+    res.status(404).json(getResponse(404, {description: 'User not found'}));
+    return;
+  }
+  await user.destroy();
+  res.send();
 });
 
 /**
@@ -271,7 +300,10 @@ router.get('/me', async (req, res) => {
     res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
     return;
   }
-  const user = await User.findOne({where: {id: userId}});
+  const user = await User.findOne({
+    where: {id: userId},
+    attributes: {exclude: ['password']},
+  });
   if (user) {
     res.json(user);
   } else {

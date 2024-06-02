@@ -17,9 +17,9 @@ import routes from '../publicAssets/routes';
 import {useNavigate} from 'react-router-dom';
 
 const TagEnum = {
-  0: 'normal',
-  1: 'important',
-  2: 'urgent',
+  1: 'normal',
+  2: 'important',
+  3: 'urgent',
 };
 
 const NotificationBriefBlock = ({Notification}) => {
@@ -34,13 +34,13 @@ const NotificationBriefBlock = ({Notification}) => {
   let bgColor;
   if (read == false) {
     switch (tag) {
-      case '0':
+      case '1':
         bgColor = '#e0f7fa'; // normal
         break;
-      case '1':
+      case '2':
         bgColor = '#fff3e0'; // important
         break;
-      case '2':
+      case '3':
         bgColor = '#ffebee'; // urgent
         break;
       default:

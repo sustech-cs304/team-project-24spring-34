@@ -132,7 +132,6 @@ router.post('/comments/:event_id', async (req, res) => {
 router.get('/comments/:event_id', async (req, res) => {
   try {
     const uid = getUidFromJwt(req);
-    console.log(uid);
     if (!uid) {
       res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
       return;

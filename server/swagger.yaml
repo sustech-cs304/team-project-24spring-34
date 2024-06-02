@@ -123,6 +123,19 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Users
+      summary: Delete a user by username
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      responses:
+        '200':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
   /me:
     get:
       tags:
