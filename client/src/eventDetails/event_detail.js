@@ -1,19 +1,19 @@
 import React from 'react';
 import {Typography, Box} from '@mui/material';
-import Rating from './Rating';
+import Rating from './Rating'; // 确保 Rating 组件导出正确
 
-const DateComponent = ({date}) => {
+const StartTimeComponent = ({startTime}) => {
   return (
     <Typography variant='body1' gutterBottom>
-      📅 <strong>日期</strong>: {date}
+      🕒 <strong>Start Time</strong>: {new Date(startTime).toLocaleString()}
     </Typography>
   );
 };
 
-const TimeComponent = ({startTime, endTime}) => {
+const EndTimeComponent = ({endTime}) => {
   return (
     <Typography variant='body1' gutterBottom>
-      ⏰ <strong>时间</strong>: {startTime} - {endTime}
+      🕒 <strong>End Time</strong>: {new Date(endTime).toLocaleString()}
     </Typography>
   );
 };
@@ -21,20 +21,28 @@ const TimeComponent = ({startTime, endTime}) => {
 const LocationComponent = ({location}) => {
   return (
     <Typography variant='body1' gutterBottom>
-      📍 <strong>地点</strong>: {location}
+      📍 <strong>Location</strong>: {location}
     </Typography>
   );
 };
 
 const ClassificationComponent = ({classifications}) => {
+  const namelist = classifications.map((classification) => classification.name);
   return (
     <Typography variant='body1' gutterBottom>
-      🏷️ <strong>分类</strong>: {classifications.join(', ')}
+      🏷️ <strong>Tags</strong>: {namelist.join(', ')}
     </Typography>
   );
 };
 
-const EventDetails = () => {
+const EventDetails = ({
+  location,
+  startTime,
+  endTime,
+  rating,
+  rating_num,
+  classifications,
+}) => {
   return (
     <Box
       className='event-details'
@@ -45,7 +53,7 @@ const EventDetails = () => {
         marginLeft: '40px',
         marginTop: '30px',
       }}>
-      <Rating rating={4.0} rating_num={19} />
+      <Rating rating={rating} rating_num={rating_num} />
       <section
         style={{
           display: 'flex',
@@ -54,10 +62,10 @@ const EventDetails = () => {
           padding: '10px',
           marginTop: '30px',
         }}>
-        <DateComponent date='2024-4-26' />
-        <TimeComponent startTime='10:00' endTime='12:00' />
-        <LocationComponent location='格赫娜学院' />
-        <ClassificationComponent classifications={['偷跑', '装甲']} />
+        <StartTimeComponent startTime={startTime} />
+        <EndTimeComponent endTime={endTime} />
+        <LocationComponent location={location} />
+        <ClassificationComponent classifications={classifications} />
       </section>
     </Box>
   );

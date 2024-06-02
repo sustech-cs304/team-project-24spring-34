@@ -26,7 +26,7 @@ root.render(
         <Route path='/' element={<App />} />
         <Route path='/mainpage' element={<Mainpage />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/details' element={<ActivityDetails />} />
+        <Route path='/details/:activeid' element={<ActivityDetails />} />
         <Route path='/booking' element={<BookingPage />} />
         <Route path='/publish' element={<Publish />} />
         <Route path='/profilePage' element={<ProfilePage />} />

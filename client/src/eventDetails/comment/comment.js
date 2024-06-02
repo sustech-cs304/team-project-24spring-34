@@ -3,7 +3,6 @@ import {useNavigate} from 'react-router-dom';
 import RatingMini from './RatingMini';
 import CommentForm from './CommentForm';
 import ReactDOM from 'react-dom';
-import './comment.css';
 import {
   Box,
   Typography,
@@ -165,33 +164,22 @@ const SingleComment = ({comment, authority}) => {
   );
 };
 
-const CommentList = ({comments, authority, user}) => {
-  const commentPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentComments, setCurrentComments] = useState([]);
-  const totalPage = Math.ceil(comments.length / commentPerPage);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
-
-  useEffect(() => {
-    const sortedComments = [...comments].sort(
-      (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-    );
-    const start = (currentPage - 1) * commentPerPage;
-    const end = start + commentPerPage;
-    setCurrentComments(sortedComments.slice(start, end));
-  }, [comments, currentPage]);
-
+const CommentList = ({
+  comments,
+  authority,
+  user,
+  onPageChange,
+  currentPage,
+  totalPage,
+}) => {
   return (
     <>
       <List className='comment-list'>
-        {currentComments.map((comment) => (
+        {comments.map((comment) => (
           <ListItem key={comment.id}>
             <SingleComment
               comment={comment}
-              authority={authority || comment.userId == user.id}
+              authority={authority || comment.userId === user.id}
             />
           </ListItem>
         ))}
@@ -200,7 +188,7 @@ const CommentList = ({comments, authority, user}) => {
         <Pagination
           count={totalPage}
           page={currentPage}
-          onChange={handlePageChange}
+          onChange={onPageChange}
         />
       </Box>
     </>
@@ -209,16 +197,19 @@ const CommentList = ({comments, authority, user}) => {
 
 // 主组件
 const CommentsSection = ({active_id}) => {
+  const commentPerPage = 10;
   const [comments, setComments] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const titletext = {zh: '评论', en: 'Comments'};
   const [authority, setAuthority] = useState(false);
   const [user, setUser] = useState({id: 4, name: 'user4'});
   const [isLogin, setIsLogin] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      // 用于测试的假数据
+  const fetchComments = async (page) => {
+    try {
+      // 假数据
       const data = [
         {
           id: 1,
@@ -332,30 +323,22 @@ const CommentsSection = ({active_id}) => {
           likes: 5,
           dislikes: 2,
         },
-        {
-          id: 11,
-          userId: 11,
-          userName: 'user11',
-          avatar: null,
-          rating: 4.5,
-          content: 'comment11',
-          timestamp: '2021-08-11',
-          likes: 20,
-          dislikes: 0,
-        },
       ];
+      const total = 11;
       setComments(data);
-      //   try {
-      //     const response = await fetch(`/api/events/${active_id}/comments`);
-      //     const data = await response.json();
-      //     setComments(data);
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-    };
+      setTotalPage(Math.ceil(total / commentPerPage));
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
 
-    fetchComments();
-  }, [active_id]);
+  useEffect(() => {
+    fetchComments(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   const handleCommentSubmit = (newComment) => {
     setComments((prevComments) => [newComment, ...prevComments]);
@@ -408,7 +391,14 @@ const CommentsSection = ({active_id}) => {
           </Box>
         </Fade>
       </Modal>
-      <CommentList comments={comments} authority={authority} user={user} />
+      <CommentList
+        comments={comments}
+        authority={authority}
+        user={user}
+        onPageChange={handlePageChange}
+        currentPage={currentPage}
+        totalPage={totalPage}
+      />
     </Box>
   );
 };
