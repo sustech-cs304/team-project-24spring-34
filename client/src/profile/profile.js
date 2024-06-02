@@ -1,30 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Container,
-  Box,
-  Typography,
-  Avatar,
-  List,
-  ListItem,
-  ListItemText,
-} from '@mui/material';
-
 import CrowdProfile from './crowdProfile';
 import HostProfile from './hostProfile';
-import DefaultNavbar from '../mainpage/mainpageComponents/DefaultNavbar';
-import routes from '../publicAssets/routes';
 import theme from '../assets/theme';
 import {ThemeProvider} from '@mui/material/styles';
-import MKBox from '../components/MKBox';
-import {Link} from 'react-router-dom';
 import MKTypography from '../components/MKTypography';
 import CssBaseline from '@mui/material/CssBaseline';
-import {IoIosSearch} from 'react-icons/io';
-import {AiOutlineHome} from 'react-icons/ai';
-import {MdOutlinePublish} from 'react-icons/md';
-import {PiEnvelopeSimpleLight} from 'react-icons/pi';
-import {RxPerson} from 'react-icons/rx';
-import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import AdminProfile from './adminProfile';
 import axios from 'axios';
 import DefaultNavbar_1 from '../mainpage/mainpageComponents/DefaultNavbar_1';
@@ -34,49 +14,73 @@ function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/me');
-  //       setData(response.data);
-  //     } catch (error) {
-  //       setError(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchData();
-  // }, []);
-  //
-  // if (loading) {
-  //   return <MKTypography variant='h6'>Loading...</MKTypography>;
-  // }
-  //
-  // if (error) {
-  //   return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
-  // }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/me`,
+          {
+            headers: {
+              Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+            },
+          },
+        );
+        console.log('Fetched data:', response.data); // Add a log statement
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error); // Add error log
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <DefaultNavbar_1 />
+        <MKTypography variant='h6'>Loading...</MKTypography>
+      </ThemeProvider>
+    );
+  }
+
+  if (error) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <DefaultNavbar_1 />
+        <MKTypography variant='h6'>Error: {error.message}</MKTypography>
+      </ThemeProvider>
+    );
+  }
+
   const renderProfile = () => {
+    if (!data) {
+      return <MKTypography variant='h6'>No user data available.</MKTypography>;
+    }
     switch (data.user_group) {
       case 1:
-        return <CrowdProfile user={data} />;
+        return <CrowdProfile />;
       case 2:
-        return <HostProfile user={data} />;
+        return <HostProfile />;
       case 3:
-        return <AdminProfile user={data} />;
+        return <AdminProfile />;
       default:
-        return null;
+        return <MKTypography variant='h6'>Unknown user group.</MKTypography>;
     }
   };
 
   return (
-    <div>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <DefaultNavbar_1 />
-        {renderProfile()}
-      </ThemeProvider>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <DefaultNavbar_1 />
+      {renderProfile()}
+    </ThemeProvider>
   );
 }
 

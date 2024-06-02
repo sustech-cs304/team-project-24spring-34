@@ -18,6 +18,11 @@ function DesignBlocks() {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/events`,
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzI5MTM2LCJleHAiOjE3MTc0MTU1MzZ9.9XX6MWQ0XNEccbgx64W6YM0SdKZUcNNJGzNFQI-kaU8`,
+            },
+          },
         );
         console.log(response);
         setData(response.data);
@@ -39,7 +44,7 @@ function DesignBlocks() {
     return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
   }
 
-  const renderData = data.map((event) => (
+  const renderData = data.events.map((event) => (
     <Grid item xs={12} md={4} sx={{mb: 2}} key={event.title}>
       <Link to={`/event/${event.id}`}>
         <DefaultInfoCard
@@ -47,8 +52,8 @@ function DesignBlocks() {
           description={event.description}
           start_time={event.start_time}
           end_time={event.end_time}
-          site={event.location.name}
-          host={event.organizer.nickname}
+          site={event.location}
+          host={event.poster}
         />
       </Link>
     </Grid>
