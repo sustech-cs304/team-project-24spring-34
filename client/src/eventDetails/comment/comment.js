@@ -42,6 +42,7 @@ const SingleComment = ({comment, authority}) => {
 
   const handleClickOnUserInfo = () => {
     navigate('/profilePage');
+    // TODO
   };
   const handleClickLike = () => {
     console.log('like');
