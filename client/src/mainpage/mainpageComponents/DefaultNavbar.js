@@ -14,7 +14,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  */
 
-import {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 
 // react-router components
 import {Link} from 'react-router-dom';
@@ -46,6 +46,7 @@ import {MdOutlinePublish} from 'react-icons/md';
 import {AiOutlineHome} from 'react-icons/ai';
 
 import DefaultInfoCard from '../../publicAssets/DefaultInfoCard';
+import {IoIosSearch} from 'react-icons/io';
 
 // Material Kit 2 React base styles
 
@@ -99,6 +100,23 @@ function DefaultNavbar({
             </MKTypography>
           </MKBox>
           <MKBox display='flex' alignItems='center' marginLeft='auto'>
+            <MKBox
+              component={Link}
+              to='/search'
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                color: 'black',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+                ml: 1,
+              }}>
+              <IoIosSearch />
+            </MKBox>
             <MKBox
               component={Link}
               to='/'

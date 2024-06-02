@@ -24,6 +24,7 @@ function DefaultNavbar_1() {
           fontWeight='bold'
           sx={{
             fontSize: '1.2rem',
+            marginRight: '300px',
           }}>
           Campus Events and Entertainment Center
         </MKTypography>

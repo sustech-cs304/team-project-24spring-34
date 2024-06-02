@@ -128,7 +128,7 @@ function SearchPage() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DefaultNavbar sticky />
-      <Box sx={{width: 100, height: 100}} />
+      <Box sx={{width: 1000, height: 100}} />
       <Box p={3}>
         <Typography variant='h4' gutterBottom>
           <IoIosSearch />

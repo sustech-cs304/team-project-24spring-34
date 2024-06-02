@@ -19,6 +19,9 @@ const options = {
       {
         url: 'http://217.142.229.202/api',
       },
+      {
+        url: 'http://10.27.41.93:5000/api',
+      },
     ],
     security: [
       {
