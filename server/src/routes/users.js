@@ -212,6 +212,25 @@ router.delete('/sessions', (req, res) => {
  *               $ref: '#/components/schemas/User'
  *       '404':
  *         $ref: '#/components/responses/404'
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: Edit a user by username
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       '200':
+ *         description: User info updated successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  *   delete:
  *     tags:
  *       - Users
@@ -236,6 +255,35 @@ router.get('/users/:username', async (req, res) => {
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
+});
+router.put('/users/:username', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  const op = await User.findOne({where: {id: userId}});
+  if (!op.user_group === 3) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const user = await User.findOne({where: {username: req.params.username}});
+  if (!user) {
+    res.status(404).json(getResponse(404, {description: 'User not found'}));
+    return;
+  }
+  if (req.body.password) {
+    res
+      .status(400)
+      .json(getResponse(400, {description: 'Cannot change password'}));
+    return;
+  }
+  if (req.body.user_group && op.user_group !== 3) {
+    res
+      .status(401)
+      .json(
+        getResponse(401, {description: 'Only admin can change user group'}),
+      );
+    return;
+  }
+  await user.update(req.body);
+  res.send();
 });
 router.delete('/users/:username', async (req, res) => {
   const userId = getUidFromJwt(req);
