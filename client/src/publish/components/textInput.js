@@ -16,7 +16,7 @@ function TextInput(props) {
     <div>
       <MKBox>{props.name}</MKBox>
 
-      <textarea type='text' style={inputStyle} />
+      <textarea type='text' style={inputStyle} required />
       {/* <ThemeBox/> */}
     </div>
   );

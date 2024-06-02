@@ -1,16 +1,27 @@
-import React from 'react';
-import MKInput from '../../components/MKInput';
-import MKBox from '../../components/MKBox';
-function NumInput(props) {
-  const inputStyle = {
-    pattern: '[0-9]*',
-    backgroundColor: '#FFFFFF',
-  };
-  return (
-    <div style={{backgroundColor: '#ADD8E6 '}}>
-      <MKBox>{props.name}</MKBox>
+import React, {useState} from 'react';
 
-      <MKInput type='text' style={inputStyle} placeholder={props.text} />
+function NumInput() {
+  const [value, setValue] = useState('');
+
+  const handleChange = (event) => {
+    const inputValue = event.target.value;
+    if (/^\d+$/.test(inputValue)) {
+      const number = parseInt(inputValue, 10);
+      if (number >= 0 && number <= 10000) {
+        setValue(number);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type='text'
+        value={value}
+        onChange={handleChange}
+        placeholder=''
+        required
+      />
     </div>
   );
 }
