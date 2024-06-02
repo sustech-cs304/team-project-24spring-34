@@ -13,6 +13,10 @@ const Reserve = () => {
       <Button
         className='reserve-button'
         variant='contained'
+        style={{
+          backgroundColor: '#9999ff',
+          color: '#ffffff',
+        }}
         onClick={redirectToBookingPage}>
         <FaRegHandPointRight />
         点击此处预定
