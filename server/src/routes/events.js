@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const {Event, EventTag} = require('../models');
+const {
+  Event,
+  EventTag,
+  EventToTag,
+  EventToAudience,
+  Comment,
+} = require('../models');
 const getResponse = require('../models/response');
 
 /**
@@ -146,8 +152,35 @@ router.get('/events', async (req, res) => {
  */
 router.get('/events/:event_id', async (req, res) => {
   const event = await Event.findOne({where: {id: req.params.event_id}});
+  const event_to_tag = await EventToTag.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  let tags = [];
+  for (let i = 0; i < event_to_tag.length; i++) {
+    const tag = await EventTag.findOne({where: {id: event_to_tag[i].tag_id}});
+    tags.push(tag);
+  }
+  const event_to_audience = await EventToAudience.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  const audience_cnt = event_to_audience.length;
+  const remaining_capacity = event.capacity - audience_cnt;
+  const event_comments = await Comment.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  const rating_num = event_comments.length;
+  const rating =
+    event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+    rating_num /
+    2; // convert from 1-10 to 0.5-5
   if (event) {
-    res.json(event);
+    res.json({
+      ...event.dataValues,
+      remaining_capacity,
+      tags,
+      rating_num,
+      rating,
+    });
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }

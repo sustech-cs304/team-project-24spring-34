@@ -637,6 +637,25 @@ components:
           type: string
         avatar:
           type: string
+    EventToParticipant:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - event_id
+        - participant_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event_id:
+          type: integer
+          readOnly: true
+          description: The id of the event
+        participant_id:
+          type: integer
+          readOnly: true
+          description: The id of the participant
     EventStatus:
       enum:
         - 1
@@ -663,6 +682,45 @@ components:
         tag_name:
           type: string
           description: The name of the tag
+    EventToTag:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - event_id
+        - tag_id
+      properties:
+        id:
+          type: integer
+          description: The auto-generated id of the event-tag relationship
+          readOnly: true
+        event_id:
+          type: integer
+          description: The id of the event
+          readOnly: true
+        tag_id:
+          type: integer
+          description: The id of the tag
+          readOnly: true
+    EventToAudience:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - event_id
+        - audience_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event_id:
+          type: integer
+          readOnly: true
+          description: The id of the event
+        audience_id:
+          type: integer
+          readOnly: true
+          description: The id of the audience
     Gender:
       enum:
         - 1
