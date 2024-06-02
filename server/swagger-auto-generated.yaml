@@ -108,7 +108,7 @@ paths:
                 - title
                 - description
                 - poster
-                - organizer
+                - publish_organization
                 - participants
                 - start_time
                 - end_time
@@ -122,8 +122,9 @@ paths:
                 poster:
                   type: string
                   description: The URL of the event's poster
-                organizer:
-                  $ref: '#/components/schemas/User'
+                publish_organization:
+                  type: string
+                  description: The organization that published the event
                 participants:
                   type: array
                   items:
@@ -207,7 +208,6 @@ paths:
                   minLength: 1
                   maxLength: 50
                   pattern: ^[a-zA-Z]+$
-                  unique: true
                   readOnly: true
       responses:
         '201':
@@ -231,6 +231,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/500'
+  /event-reservations/{event_id}:
+    post:
+      tags:
+        - Events
+      summary: Reserve a spot for an event
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      responses:
+        '201':
+          description: Reservation successful
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /users:
@@ -514,6 +532,7 @@ components:
         - description
         - poster
         - organizer
+        - publish_organization
         - participants
         - time
         - location
@@ -532,36 +551,22 @@ components:
         poster:
           type: string
           description: The URL of the event's poster
-        organizer:
-          $ref: '#/components/schemas/User'
-        audience:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        participants:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventParticipant'
+        organizer_id:
+          type: integer
+        publish_organization:
+          type: string
         start_time:
           type: string
           format: date-time
         end_time:
           type: string
           format: date-time
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventTag'
         status:
           $ref: '#/components/schemas/EventStatus'
         location:
           type: string
         capacity:
           type: integer
-        comments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Comment'
     EventParticipant:
       type: object
       additionalProperties: false
