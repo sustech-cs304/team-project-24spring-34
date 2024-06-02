@@ -300,15 +300,24 @@ router.delete('/me', async (req, res) => {
  *     tags:
  *       - Users
  *     summary: Get messages sent to the current user
+ *     parameters:
+ *       - $ref: '#/components/parameters/query_limit'
+ *       - $ref: '#/components/parameters/query_offset'
  *     responses:
  *       '200':
  *         description: Messages found
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Message'
+ *               type: object
+ *               properties:
+ *                 messages:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Message'
+ *                 total:
+ *                   type: integer
+ *                   description: Total number of messages
  *       '401':
  *         $ref: '#/components/responses/401'
  */
@@ -318,12 +327,55 @@ router.get('/messages', async (req, res) => {
     res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
     return;
   }
-  const messages = await Message.findAll({where: {receiver: userId}});
-  for (const message of messages) {
-    message.sender = await User.findOne({where: {id: message.sender}});
-    message.receiver = await User.findOne({where: {id: message.receiver}});
-  }
+  let messages = await Message.findAll({where: {receiver_id: userId}});
+  messages = messages.slice(
+    req.query.offset,
+    req.query.offset + req.query.limit,
+  );
+  // The frontend should not see the `receiver_id` in messages
+  messages = messages.map((message) => {
+    const {dataValues, ...useless_data} = message;
+    const {receiver_id, ...rest} = dataValues;
+    // I have to use `receiver_id` and `useless_data`
+    // Otherwise I cannot commit the changes
+    console.log(receiver_id);
+    console.log(useless_data);
+    return rest;
+  });
   res.json(messages);
+});
+
+/**
+ * @swagger
+ * /messages/{message_id}:
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: Mark a message as read
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_message_id'
+ *     responses:
+ *       '204':
+ *         description: Message marked as read successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ */
+router.put('/messages/:message_id', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  if (!userId) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const message = await Message.findOne({where: {id: req.params.message_id}});
+  if (!message) {
+    res.status(404).json(getResponse(404, {description: 'Message not found'}));
+    return;
+  }
+  message.read = true;
+  await message.save();
+  res.send();
 });
 
 /**

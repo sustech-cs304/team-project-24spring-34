@@ -75,21 +75,10 @@ const initializeTables = async () => {
     Event.belongsTo(EventStatus);
 
     User.hasMany(Message, {
-      foreignKey: 'sender',
-      as: 'sender_id',
+      foreignKey: 'receiver_id',
     });
     Message.belongsTo(User, {
-      foreignKey: 'sender',
-      as: 'sender_id',
-    });
-
-    User.hasMany(Message, {
-      foreignKey: 'receiver',
-      as: 'receiver_id',
-    });
-    Message.belongsTo(User, {
-      foreignKey: 'receiver',
-      as: 'receiver_id',
+      foreignKey: 'receiver_id',
     });
 
     User.belongsToMany(Comment, {
