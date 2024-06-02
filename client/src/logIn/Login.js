@@ -126,7 +126,7 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component='h1' variant='h5'>
-              Sign in
+              Sign In
             </Typography>
             <Box
               component='form'
@@ -155,10 +155,11 @@ export default function SignInSide() {
                 autoComplete='current-password'
                 onChange={handlePasswordChange}
               />
+              {/*
               <FormControlLabel
                 control={<Checkbox value='remember' color='primary' />}
                 label='Remember me'
-              />
+          />*/}
               <Button
                 type='submit'
                 fullWidth
