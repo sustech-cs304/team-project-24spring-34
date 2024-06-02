@@ -66,9 +66,15 @@ function FormInput(props) {
     setTags(changeTags);
   };
   const [pics, setPics] = useState('');
-  const UpdatePicsChange = (changePics) => {
+  const updatePicsChange = (changePics) => {
     setPics(changePics);
   };
+
+  const [cast, setCast] = useState([]);
+  const updateCast = (changeCast) => {
+    setCast(changeCast);
+  };
+
   const [error, setError] = useState('');
 
   const getDateTime = ({dateProp, timeProp}) => {
@@ -85,13 +91,7 @@ function FormInput(props) {
     description: eventIntro.trim(),
     poster: pics,
     publish_organization: eventOrganizer.trim(),
-    participants: [
-      {
-        name: 'string',
-        description: 'string',
-        avatar: 'string',
-      },
-    ],
+    participants: cast,
     start_time: getDateTime({dateProp: startDate, timeProp: startTime}),
     end_time: getDateTime({dateProp: endDate, timeProp: endTime}),
     tags: tags,
@@ -104,6 +104,7 @@ function FormInput(props) {
     console.log(startDate);
     console.log(tags);
     console.log(pics);
+    console.log(cast);
     e.preventDefault();
     if (
       eventIntro.trim() === '' ||
@@ -189,7 +190,7 @@ function FormInput(props) {
             marginTop: '0px',
           }}>
           <Tags onTagsChange={updateTags} />
-          <ParticipatorComponent />
+          <ParticipatorComponent onParticipatorChange={updateCast} />
         </div>
         {error && <ErrorMessage>{error}</ErrorMessage>}
       </div>
@@ -246,7 +247,7 @@ function FormInput(props) {
               height='600px'
               msg='Type your detailed event description here...'
             />
-            <ThemeUpload onPicsChange={UpdatePicsChange} />
+            <ThemeUpload onPicsChange={updatePicsChange} />
             <ThemeNumInput cap={updateEventCap} />
             <ThemeButton onClick={handleClick} />
           </div>

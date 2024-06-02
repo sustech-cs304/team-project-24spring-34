@@ -124,6 +124,7 @@ const SignUp = () => {
           title: 'New User Created!',
           content: 'You can login now.',
         });
+        window.location.href = '/login';
       })
       .catch((error) => {
         console.error('Error:', error);
