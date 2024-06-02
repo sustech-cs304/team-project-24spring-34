@@ -38,6 +38,9 @@ function getUidFromJwt(req) {
  *     tags:
  *       - Events
  *     summary: Create an event
+ *     parameters:
+ *       - $ref: '#/components/parameters/query_limit'
+ *       - $ref: '#/components/parameters/query_offset'
  *     requestBody:
  *       required: true
  *       content:
@@ -188,7 +191,14 @@ router.post('/events', async (req, res) => {
   }
 });
 router.get('/events', async (req, res) => {
-  const eventList = await Event.findAll();
+  let eventList = await Event.findAll();
+  const total = eventList.length;
+  const offset = req.query.offset || 0;
+  const limit = req.query.limit || 10;
+  eventList = eventList.slice(
+    offset,
+    offset + limit > total ? total : offset + limit,
+  );
   for (let i = 0; i < eventList.length; i++) {
     const event_to_tag = await EventToTag.findAll({
       where: {event_id: eventList[i].id},
@@ -235,7 +245,7 @@ router.get('/events', async (req, res) => {
       rating,
     };
   }
-  res.json(eventList);
+  res.json({events: eventList, total});
 });
 
 /**
