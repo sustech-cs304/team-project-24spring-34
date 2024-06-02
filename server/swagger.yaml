@@ -38,6 +38,25 @@ paths:
         '429':
           $ref: '#/components/responses/429'
       security: []
+    get:
+      tags:
+        - Users
+      summary: Get a list of users
+      description: Only public information of users are returned
+      parameters:
+        - $ref: '#/components/parameters/query_limit'
+        - $ref: '#/components/parameters/query_offset'
+      responses:
+        '200':
+          description: Users found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/404'
   /sessions:
     post:
       tags:
@@ -142,6 +161,60 @@ paths:
           description: User deleted successfully
         '401':
           $ref: '#/components/responses/401'
+  /requestReset:
+    post:
+      summary: 'Request password reset'
+      description: 'This endpoint allows a user to request a password reset. An email with a reset token is sent to the user.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: 'Password reset email sent successfully'
+        '400':
+          $ref: '#/components/responses/400'
+      security: []
+  /resetPassword:
+    post:
+      summary: 'Reset password'
+      description: 'This endpoint allows a user to reset their password using a reset token that was sent to their email.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - email
+                - token
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                token:
+                  type: string
+                password:
+                  type: string
+                  pattern: ^[a-zA-Z0-9]+$
+                  maxLength: 32
+      responses:
+        '200':
+          description: 'Password reset successfully'
+        '400':
+          $ref: '#/components/responses/400'
+      security: []
   /events:
     post:
       tags:
