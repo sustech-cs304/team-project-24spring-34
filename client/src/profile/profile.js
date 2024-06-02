@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Container,
   Box,
@@ -24,17 +24,45 @@ import {PiEnvelopeSimpleLight} from 'react-icons/pi';
 import {RxPerson} from 'react-icons/rx';
 import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import CssBaseline from '@mui/material/CssBaseline';
+import {IoIosSearch} from 'react-icons/io';
 import AdminProfile from './adminProfile';
+import axios from 'axios';
 
-function ProfilePage(user) {
+function ProfilePage() {
+  const [data, setData] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  //
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/me');
+  //       setData(response.data);
+  //     } catch (error) {
+  //       setError(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //
+  //   fetchData();
+  // }, []);
+  //
+  // if (loading) {
+  //   return <MKTypography variant='h6'>Loading...</MKTypography>;
+  // }
+  //
+  // if (error) {
+  //   return <MKTypography variant='h6'>Error: {error.message}</MKTypography>;
+  // }
   const renderProfile = () => {
-    switch ('crowd') {
-      case 'crowd':
-        return <CrowdProfile user={user} />;
-      case 'host':
-        return <HostProfile user={user} />;
-      case 'admin':
-        return <AdminProfile user={user} />;
+    switch (3) {
+      case 1:
+        return <CrowdProfile user={data} />;
+      case 2:
+        return <HostProfile user={data} />;
+      case 3:
+        return <AdminProfile user={data} />;
       default:
         return null;
     }
@@ -65,6 +93,23 @@ function ProfilePage(user) {
             </MKTypography>
           </MKBox>
           <MKBox display='flex' alignItems='center' marginLeft='auto'>
+            <MKBox
+              component={Link}
+              to='/search'
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                color: 'black',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+                ml: 1,
+              }}>
+              <IoIosSearch />
+            </MKBox>
             <MKBox
               component={Link}
               to='/'

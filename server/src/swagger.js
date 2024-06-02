@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fs = require('fs');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -5,7 +6,7 @@ const yaml = require('js-yaml');
 
 const options = {
   swaggerDefinition: {
-    openapi: '3.0.0',
+    openapi: '3.0.2',
     info: {
       title: 'Campus Events and Entertainment Center API',
       version: '1.0.0',
@@ -14,6 +15,14 @@ const options = {
     servers: [
       {
         url: 'http://localhost:5000/api',
+      },
+      {
+        url: 'http://217.142.229.202/api',
+      },
+    ],
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
@@ -39,5 +48,7 @@ module.exports = (app) => {
     swaggerUi.serve,
     swaggerUi.setup(specs, {explorer: true}),
   );
-  console.log('API documentation available at http://localhost:5000/api-docs');
+  console.log(
+    `API documentation available at http://${process.env.LISTEN_HOST}:${process.env.LISTEN_PORT}/api-docs`,
+  );
 };

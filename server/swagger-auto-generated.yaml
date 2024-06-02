@@ -1,13 +1,222 @@
-openapi: 3.0.0
+openapi: 3.0.2
 info:
   title: Campus Events and Entertainment Center API
   version: 1.0.0
   description: API for managing campus events and entertainment
 servers:
   - url: http://localhost:5000/api
+  - url: http://217.142.229.202/api
+security:
+  - bearerAuth: []
 paths:
-  /users/register:
+  /comments/{event_id}:
     post:
+      tags:
+        - Comments
+      summary: Create a comment
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - content
+                - rating
+              properties:
+                content:
+                  type: string
+                  description: The content of the comment
+                  minLength: 1
+                  maxLength: 500
+                rating:
+                  type: integer
+                  description: The rating of the event
+                  minimum: 1
+                  maximum: 10
+      responses:
+        '201':
+          description: Comment created successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      tags:
+        - Comments
+      summary: Get all comments of an event
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+        - $ref: '#/components/parameters/query_limit'
+        - $ref: '#/components/parameters/query_offset'
+      responses:
+        '200':
+          description: Comments found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+                properties:
+                  total:
+                    type: integer
+                    description: The total number of comments
+        '404':
+          $ref: '#/components/responses/404'
+          description: Event not found
+        '500':
+          $ref: '#/components/responses/500'
+  /events:
+    post:
+      tags:
+        - Events
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - title
+                - description
+                - poster
+                - organizer
+                - participants
+                - start_time
+                - end_time
+                - location
+                - status
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                poster:
+                  type: string
+                  description: The URL of the event's poster
+                organizer:
+                  $ref: '#/components/schemas/User'
+                participants:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EventParticipant'
+                start_time:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                tags:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EventTag'
+                status:
+                  $ref: '#/components/schemas/EventStatus'
+                location:
+                  type: string
+                capacity:
+                  type: integer
+      responses:
+        '201':
+          description: Event created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      security: []
+    get:
+      tags:
+        - Events
+      summary: Get a list of all events
+      responses:
+        '200':
+          description: Event list found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/500'
+  /events/{event_id}:
+    get:
+      tags:
+        - Events
+      summary: Get an event by id
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/404'
+  /events-tags:
+    post:
+      tags:
+        - Events
+      summary: Create a new event tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - tag_name
+              properties:
+                tag_name:
+                  type: string
+                  description: The name of the tag
+                  example: Music
+                  minLength: 1
+                  maxLength: 50
+                  pattern: ^[a-zA-Z]+$
+                  unique: true
+                  readOnly: true
+      responses:
+        '201':
+          description: Event tag created successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      tags:
+        - Events
+      summary: Get all event tags
+      responses:
+        '200':
+          description: Event tag list found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/500'
+  /users:
+    post:
+      tags:
+        - Users
       summary: Register a user
       requestBody:
         required: true
@@ -15,19 +224,29 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               required:
                 - username
                 - password
               properties:
                 username:
                   type: string
+                  pattern: ^[a-zA-Z0-9]+$
+                  maxLength: 15
                 password:
                   type: string
+                  pattern: ^[a-zA-Z0-9]+$
+                  maxLength: 32
       responses:
         '200':
           description: User created successfully
-  /users/login:
+        '429':
+          $ref: '#/components/responses/429'
+      security: []
+  /sessions:
     post:
+      tags:
+        - Users
       summary: Login a user
       requestBody:
         required: true
@@ -35,30 +254,396 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               required:
                 - username
                 - password
               properties:
                 username:
                   type: string
+                  pattern: ^[a-zA-Z0-9]+$
+                  maxLength: 15
                 password:
                   type: string
+                  pattern: ^[a-zA-Z0-9]+$
+                  maxLength: 32
       responses:
         '200':
           description: User logged in successfully
           content:
             application/json:
               schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  token:
+                    type: string
+                  expires:
+                    type: string
+                    format: date-time
+        '401':
+          $ref: '#/components/responses/401'
+      security: []
+    delete:
+      tags:
+        - Users
+      summary: Logout a user
+      responses:
+        '200':
+          description: User logged out successfully
+        '401':
+          $ref: '#/components/responses/401'
+  /users/{username}:
+    get:
+      tags:
+        - Users
+      summary: Get a user by username
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/404'
+  /me:
+    get:
+      tags:
+        - Users
+      summary: Get the current user by token
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/User'
         '401':
-          description: Invalid username or password
+          $ref: '#/components/responses/401'
+    put:
+      tags:
+        - Users
+      summary: Edit the current user's info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User info updated successfully
+        '401':
+          $ref: '#/components/responses/401'
+    delete:
+      tags:
+        - Users
+      summary: Delete the current user
+      responses:
+        '200':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+  /messages:
+    get:
+      tags:
+        - Users
+      summary: Get messages sent to the current user
+      responses:
+        '200':
+          description: Messages found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '401':
+          $ref: '#/components/responses/401'
 components:
+  parameters:
+    path_username:
+      name: username
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9]+$
+        maxLength: 15
+    path_event_id:
+      name: event_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    path_location_id:
+      name: location_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    path_tag_id:
+      name: tag_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    path_comment_id:
+      name: comment_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    query_limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    query_offset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    query_desc:
+      name: desc
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    query_event_status:
+      name: event_status
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 6
+        default: 1
+    query_event_tag_list:
+      name: event_tag_list
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          minimum: 1
+          uniqueItems: true
+        style: form
+        explode: false
+        default: []
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    Comment:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - content
+        - user
+        - event
+        - likes
+        - dislikes
+        - rating
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: The auto-generated id of the comment
+        content:
+          type: string
+          description: The content of the comment
+        user_id:
+          type: integer
+          description: The id of the user who created the comment
+        event_id:
+          type: integer
+        likes:
+          type: integer
+          default: 0
+        dislikes:
+          type: integer
+          default: 0
+        rating:
+          type: integer
+    Event:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - description
+        - poster
+        - organizer
+        - participants
+        - time
+        - location
+        - tags
+        - status
+        - comments
+        - ratings
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        poster:
+          type: string
+          description: The URL of the event's poster
+        organizer:
+          $ref: '#/components/schemas/User'
+        audience:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventParticipant'
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventTag'
+        status:
+          $ref: '#/components/schemas/EventStatus'
+        location:
+          type: string
+        capacity:
+          type: integer
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    EventParticipant:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - description
+        - avatar
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        avatar:
+          type: string
+    EventStatus:
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+      type: integer
+      description: >-
+        1 = Draft,2 = Reviewing, 3 = Published, 4 = Ongoing, 5 = Finished, 6 =
+        Cancelled
+    EventTag:
+      type: object
+      additionalProperties: false
+      required:
+        - tag_id
+        - tag_name
+      properties:
+        tag_id:
+          type: integer
+          description: The auto-generated id of the tag
+          readOnly: true
+        tag_name:
+          type: string
+          description: The name of the tag
+    Gender:
+      enum:
+        - 1
+        - 2
+        - 3
+      type: integer
+      description: 1 = male, 2 = female, 3 = other
+    Message:
+      type: object
+      additionalProperties: false
+      required:
+        - title
+        - content
+        - time
+        - sender
+        - receiver
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        time:
+          type: string
+          format: date-time
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+    ErrorDetail:
+      title: ErrorDetail
+      additionalProperties: false
+      required:
+        - title
+        - description
+      type: object
+      properties:
+        title:
+          title: Title
+          type: string
+        description:
+          title: Description
+          type: string
     User:
       type: object
+      additionalProperties: false
       required:
         - username
-        - password
+        - nickname
+        - user_group
+        - avatar
+        - user_intro
+        - user_email
+        - gender
+        - birthday
+        - event_history
+        - following
+        - followers
+        - published_events
       properties:
         id:
           type: integer
@@ -67,11 +652,92 @@ components:
         username:
           type: string
           description: The username of the user
+        nickname:
+          type: string
+        user_group:
+          $ref: '#/components/schemas/UserGroup'
+        avatar:
+          type: string
+          description: The URL of the user's avatar
+        user_intro:
+          type: string
+        user_email:
+          type: string
+          format: email
         password:
           type: string
-          description: The password of the user
-      example:
-        id: 1
-        username: user1
-        password: pass1
-tags: []
+          description: The password after sha256 encryption with salt
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birthday:
+          type: string
+          format: date
+        event_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        following:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        followers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        published_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    UserGroup:
+      enum:
+        - 1
+        - 2
+        - 3
+      type: integer
+      description: 1 = Audience, 2 = Organizer, 3 = Admin
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetail'
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetail'
+    '403':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetail'
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetail'
+    '429':
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetail'
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetail'
+tags:
+  - name: Users
+    description: Operations about users
+  - name: Events
+    description: Operations about events
+  - name: Comments
+    description: Operations about comments
+  - name: Locations
+    description: Operations about locations
