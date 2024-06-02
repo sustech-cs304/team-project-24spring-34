@@ -19,6 +19,26 @@ const sequelize = require('../config/connection');
  *         tag_name:
  *           type: string
  *           description: The name of the tag
+ *     EventToTag:
+ *       type: object
+ *       additionalProperties: false
+ *       required:
+ *         - id
+ *         - event_id
+ *         - tag_id
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the event-tag relationship
+ *           readOnly: true
+ *         event_id:
+ *           type: integer
+ *           description: The id of the event
+ *           readOnly: true
+ *         tag_id:
+ *           type: integer
+ *           description: The id of the tag
+ *           readOnly: true
  */
 const EventTag = sequelize.define('event_tags', {
   id: {
@@ -32,6 +52,36 @@ const EventTag = sequelize.define('event_tags', {
     type: DataTypes.STRING,
     allowNull: false,
     description: 'The name of the tag',
+  },
+});
+
+const EventToTag = sequelize.define('event_to_tag', {
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+    description: 'The auto-generated id of the event-tag relationship',
+  },
+  event_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    description: 'The id of the event',
+    references: {
+      model: 'event',
+      key: 'id',
+    },
+  },
+  tag_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    description: 'The id of the tag',
+    references: {
+      model: 'event_tags',
+      key: 'id',
+    },
   },
 });
 
@@ -49,6 +99,12 @@ const init = async () => {
       {id: 9, name: 'Travel'},
       {id: 10, name: 'Fashion'},
     ]);
+    await EventToTag.bulkCreate([
+      {event_id: 1, tag_id: 1},
+      {event_id: 1, tag_id: 3},
+      {event_id: 2, tag_id: 2},
+      {event_id: 2, tag_id: 3},
+    ]);
     console.log(
       'Entries have been successfully inserted into the event_tags table',
     );
@@ -57,4 +113,4 @@ const init = async () => {
   }
 };
 
-module.exports = {EventTag, init};
+module.exports = {EventTag, EventToTag, init};
