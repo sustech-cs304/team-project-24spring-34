@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled, {ThemeProvider} from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
@@ -108,16 +108,22 @@ const StyledDatePicker = styled(DatePicker)`
   }
 `;
 
-function ThemeBox() {
-  const [time, setTime] = useState('10:00');
-  const [date, setDate] = useState(new Date());
+function ThemeBox({onPicsChange}) {
+  const [pics, setPics] = useState('');
+  const HandlePicsChange = (changePics) => {
+    setPics(changePics);
+  };
+
+  useEffect(() => {
+    onPicsChange(pics);
+  }, [pics, onPicsChange]);
 
   return (
     <ThemeProvider theme={theme}>
       <Container>
         <Card>
           <Paragraph>Upload Pictures Here.</Paragraph>
-          <AddPics />
+          <AddPics onPicsChange={HandlePicsChange} />
         </Card>
       </Container>
     </ThemeProvider>

@@ -1,10 +1,11 @@
 import React, {useState, useRef} from 'react';
 import styled, {ThemeProvider} from 'styled-components';
 import {Modal} from 'antd';
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 import TextInput from './textInput';
 import NumInput from './numInput';
-import AddPics from './addPics';
 import MKButton from '../../components/MKButton';
 import ThemeBox from './themeBox';
 import ThemeInput from './themeInput';
@@ -15,6 +16,7 @@ import ThemeUpload from './themeUpload';
 import ThemeNumInput from './themeNumInput';
 import ThemeButton from './themeButton';
 import Tags from './tags';
+import ParticipatorComponent from './Participator';
 
 const ErrorMessage = styled.p`
   color: red;
@@ -64,31 +66,18 @@ function FormInput(props) {
   const updateTags = (changeTags) => {
     setTags(changeTags);
   };
+  const [pics, setPics] = useState('');
+  const updatePicsChange = (changePics) => {
+    setPics(changePics);
+  };
+
+  const [cast, setCast] = useState([]);
+  const updateCast = (changeCast) => {
+    setCast(changeCast);
+  };
+
   const [error, setError] = useState('');
 
-  const requestBody = {
-    title: eventTitle.trim(),
-    description: eventIntro.trim(),
-    poster: 'string',
-    publish_organization: eventOrganizer.trim(),
-    participants: [
-      {
-        name: 'string',
-        description: 'string',
-        avatar: 'string',
-      },
-    ],
-    start_time: '2024-06-02T12:45:41.822Z',
-    end_time: '2024-06-02T12:45:41.822Z',
-    tags: [
-      {
-        name: 'string',
-      },
-    ],
-    status: 1,
-    location: eventLocation.trim(),
-    capacity: parseInt(eventCap),
-  };
   const getDateTime = ({dateProp, timeProp}) => {
     const [hours, minutes, seconds] = timeProp.split(':');
     const combinedDateTime = new Date(dateProp);
@@ -97,11 +86,33 @@ function FormInput(props) {
     combinedDateTime.setSeconds(parseInt(seconds, 10));
     return combinedDateTime;
   };
+
+  const requestBody = {
+    title: eventTitle.trim(),
+    description: eventIntro.trim(),
+    poster: pics.length === 1 && typeof pics[0] === 'object' ? pics[0].uid : '',
+    publish_organization: eventOrganizer.trim(),
+    participants: cast,
+    start_time: getDateTime({dateProp: startDate, timeProp: startTime}),
+    end_time: getDateTime({dateProp: endDate, timeProp: endTime}),
+    tags: tags.map((tag) => {
+      return {name: tag};
+    }),
+    location: eventLocation,
+    capacity: eventCap,
+  };
+  const navigate = useNavigate();
+  const authToken = localStorage.getItem('authToken');
   const handleClick = (e) => {
     console.log(eventCap);
     console.log(startDate);
     console.log(tags);
+    console.log(pics);
+    console.log(cast);
     e.preventDefault();
+    if (!authToken) {
+      navigate('/login');
+    }
     if (
       eventIntro.trim() === '' ||
       eventTitle.trim() === '' ||
@@ -129,12 +140,38 @@ function FormInput(props) {
       setError(`Event starting time must be earlier than ending time.`);
       return;
     }
+    const tagSet = new Set(tags);
+    if (tagSet.size !== tags.length) {
+      setError(`You have added duplicate tags for this event.`);
+      return;
+    }
     console.log('Form submitted');
-    Modal.success({
-      title: 'New Event Created!',
-      content: 'You can now check your events.',
-    });
-    window.location.href = '/';
+    axios
+      .post(
+        'http://10.27.41.93:5000/api/events',
+        requestBody,
+        {
+          headers: {
+            Accept: '*/*',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+        },
+        {
+          withCredentials: true, // 发送请求时包括Cookie
+        },
+      )
+      .then((response) => {
+        console.log('Event created successfully:', response.data);
+        Modal.success({
+          title: 'New Event Created!',
+          content: 'You can check out your events now.',
+        });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    // window.location.href = '/';
   };
   return (
     <div
@@ -161,6 +198,7 @@ function FormInput(props) {
             marginTop: '0px',
           }}>
           <Tags onTagsChange={updateTags} />
+          <ParticipatorComponent onParticipatorChange={updateCast} />
         </div>
         {error && <ErrorMessage>{error}</ErrorMessage>}
       </div>
@@ -217,7 +255,7 @@ function FormInput(props) {
               height='600px'
               msg='Type your detailed event description here...'
             />
-            <ThemeUpload />
+            <ThemeUpload onPicsChange={updatePicsChange} />
             <ThemeNumInput cap={updateEventCap} />
             <ThemeButton onClick={handleClick} />
           </div>

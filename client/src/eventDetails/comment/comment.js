@@ -23,6 +23,7 @@ import {
   AiFillLike,
   AiFillDislike,
 } from 'react-icons/ai';
+import axios from 'axios';
 
 const SingleComment = ({comment, authority}) => {
   const {
@@ -42,6 +43,7 @@ const SingleComment = ({comment, authority}) => {
 
   const handleClickOnUserInfo = () => {
     navigate('/profilePage');
+    // TODO
   };
   const handleClickLike = () => {
     console.log('like');
@@ -209,123 +211,19 @@ const CommentsSection = ({active_id}) => {
 
   const fetchComments = async (page) => {
     try {
-      // 假数据
-      const data = [
+      const response = await axios.get(
+        'http://localhost:3001/api/comments?active_id=${active_id}&offset=${page}&limit=${commentPerPage}',
         {
-          id: 1,
-          userId: 1,
-          userName: 'user1',
-          avatar: null,
-          rating: 4,
-          content: 'comment1',
-          timestamp: '2021-08-01',
-          likes: 10,
-          dislikes: 2,
+          headers: {
+            Accept: '*/*',
+            'Content-Type': 'application/json',
+          },
         },
         {
-          id: 2,
-          userId: 2,
-          userName:
-            'user2user2user2user2user2user2user2user2user2user2user2user2',
-          avatar: null,
-          rating: 3,
-          content: 'comment2',
-          timestamp: '2021-08-02',
-          likes: 5,
-          dislikes: 1,
+          withCredentials: true,
         },
-        {
-          id: 3,
-          userId: 3,
-          userName: 'user3',
-          avatar: null,
-          rating: 4.5,
-          content: 'comment3',
-          timestamp: '2021-08-03',
-          likes: 20,
-          dislikes: 0,
-        },
-        {
-          id: 4,
-          userId: 4,
-          userName: 'user4',
-          avatar: null,
-          rating: 5,
-          content:
-            'comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4comment4',
-          timestamp: '2021-08-04',
-          likes: 30,
-          dislikes: 0,
-        },
-        {
-          id: 5,
-          userId: 5,
-          userName: 'user5',
-          avatar: null,
-          rating: 2,
-          content: 'comment5',
-          timestamp: '2021-08-05',
-          likes: 1,
-          dislikes: 10,
-        },
-        {
-          id: 6,
-          userId: 6,
-          userName: 'user6',
-          avatar: null,
-          rating: 3.5,
-          content: 'comment6',
-          timestamp: '2021-08-06',
-          likes: 4,
-          dislikes: 3,
-        },
-        {
-          id: 7,
-          userId: 7,
-          userName: 'user7',
-          avatar: null,
-          rating: 4,
-          content: 'comment7',
-          timestamp: '2021-08-07',
-          likes: 15,
-          dislikes: 5,
-        },
-        {
-          id: 8,
-          userId: 8,
-          userName: 'user8',
-          avatar: null,
-          rating: 1,
-          content: 'comment8',
-          timestamp: '2021-08-08',
-          likes: 0,
-          dislikes: 20,
-        },
-        {
-          id: 9,
-          userId: 9,
-          userName: 'user9',
-          avatar: null,
-          rating: 4,
-          content: 'comment9',
-          timestamp: '2021-08-09',
-          likes: 10,
-          dislikes: 1,
-        },
-        {
-          id: 10,
-          userId: 10,
-          userName: 'user10',
-          avatar: null,
-          rating: 3,
-          content: 'comment10',
-          timestamp: '2021-08-10',
-          likes: 5,
-          dislikes: 2,
-        },
-      ];
+      );
       const total = 11;
-      setComments(data);
       setTotalPage(Math.ceil(total / commentPerPage));
     } catch (error) {
       console.error('Error fetching comments:', error);

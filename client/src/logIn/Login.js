@@ -17,6 +17,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Link as RouterLink} from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {set} from 'date-fns';
+import {useNavigate} from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -40,7 +43,18 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
+  const navigate = useNavigate();
   const [retrieveOpen, setRetrieveOpen] = React.useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
 
   const handleClickRetrieveOpen = () => {
     setRetrieveOpen(true);
@@ -50,13 +64,32 @@ export default function SignInSide() {
     setRetrieveOpen(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    console.log(email, password);
+
+    try {
+      const response = await fetch('http://10.27.41.93:5000/api/sessions', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password,
+        }),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      });
+      localStorage.setItem('authToken', response.token);
+      navigate('/mainpage');
+    } catch (error) {
+      console.error('Error fetching activity details:', error);
+    }
   };
 
   return (
@@ -93,7 +126,7 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component='h1' variant='h5'>
-              Sign in
+              Sign In
             </Typography>
             <Box
               component='form'
@@ -104,11 +137,12 @@ export default function SignInSide() {
                 margin='normal'
                 required
                 fullWidth
-                id='email'
-                label='Email Address'
-                name='email'
-                autoComplete='email'
+                id='Username'
+                label='Username'
+                name='Username'
+                autoComplete='Username'
                 autoFocus
+                onChange={handleEmailChange}
               />
               <TextField
                 margin='normal'
@@ -119,11 +153,13 @@ export default function SignInSide() {
                 type='password'
                 id='password'
                 autoComplete='current-password'
+                onChange={handlePasswordChange}
               />
+              {/*
               <FormControlLabel
                 control={<Checkbox value='remember' color='primary' />}
                 label='Remember me'
-              />
+          />*/}
               <Button
                 type='submit'
                 fullWidth

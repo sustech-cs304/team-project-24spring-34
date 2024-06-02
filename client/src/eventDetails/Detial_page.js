@@ -16,35 +16,12 @@ import CommentsSection from './comment/comment';
 import example_img from './example-poster.jpg';
 import sample_text from './sample-text.txt';
 import avatar from './example_org_img.jpg';
+import {useNavigate} from 'react-router-dom';
 
 function ActivityDetails() {
   let {activeid} = useParams();
+  const navigate = useNavigate();
   const authToken = localStorage.getItem('authToken');
-  const [isLogin, setIsLogin] = useState(false);
-  const test_login = async () => {
-    try {
-      const response = await fetch('http://10.27.41.93:5000/api/sessions', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: 'admin',
-          password: 'admin',
-        }),
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      });
-      localStorage.setItem('authToken', response.token);
-      setIsLogin(true);
-    } catch (error) {
-      console.error('Error fetching activity details:', error);
-    }
-  };
   const [active, setActive] = useState({
     id: 1,
     title: '基窝托斯偷跑大赛',
@@ -87,8 +64,8 @@ function ActivityDetails() {
     async function fetchActivityDetails() {
       try {
         //test
-        if (!isLogin) {
-          await test_login(); //Need to update
+        if (!authToken) {
+          navigate('/login');
         }
         const response = await fetch(
           'http://10.27.41.93:5000/api/events/' + activeid,
