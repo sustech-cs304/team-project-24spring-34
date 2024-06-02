@@ -715,6 +715,7 @@ function AdminProfile() {
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
   const [user, setUser] = useState({});
+  const [otherUser, setOtherUser] = useState({});
   const [userHard, setUserHard] = useState({});
   const [allUsers, setUsers] = useState([]);
   const [allEvents, setEvents] = useState({});
@@ -857,7 +858,36 @@ function AdminProfile() {
   };
 
   // 定义更改用户类别函数
-  const handleChangeUserType = (userId, user_type) => {};
+  const handleChangeUserType = async (username, user_group) => {
+    try {
+      const otherUserResponse = await axios.get(
+        `${process.env.REACT_APP_API_URL}/users/${username}`,
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+          },
+        },
+      );
+
+      const updatedOtherUser = {...otherUserResponse.data, user_group};
+      setOtherUser(updatedOtherUser);
+
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/users/${username}`,
+        updatedOtherUser,
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+          },
+        },
+      );
+      fetchDataAll();
+    } catch (error) {
+      setError(`Error`);
+    }
+  };
 
   // 定义删除用户函数
   const handleDeleteUser = async (username) => {
@@ -1204,19 +1234,19 @@ function AdminProfile() {
                         }}>
                         <MenuItem
                           onClick={() =>
-                            handleChangeUserType(userTemp.username, 'Audience')
+                            handleChangeUserType(userTemp.username, 1)
                           }>
                           Audience
                         </MenuItem>
                         <MenuItem
                           onClick={() =>
-                            handleChangeUserType(userTemp.username, 'Organizer')
+                            handleChangeUserType(userTemp.username, 2)
                           }>
                           Organizer
                         </MenuItem>
                         <MenuItem
                           onClick={() =>
-                            handleChangeUserType(userTemp.username, 'Admin')
+                            handleChangeUserType(userTemp.username, 3)
                           }>
                           Admin
                         </MenuItem>

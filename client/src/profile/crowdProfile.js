@@ -9,61 +9,118 @@ import {
   IconButton,
   TextField,
 } from '@mui/material';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import MKButton from '../components/MKButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
-import {Delete as DeleteIcon} from '@mui/icons-material';
+import {
+  Delete as DeleteIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  PersonOutline as PersonIcon,
+} from '@mui/icons-material';
 import {Link} from 'react-router-dom';
-function CrowdProfile(user) {
+import AvatarUpload from './AvatarUpload';
+function CrowdProfile() {
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
-  const [users, setUsers] = useState([]); // 定义用户数据状态
   const [selectedItem, setSelectedItem] = useState('profile');
   const [editMode, setEditMode] = useState({});
-  const [formData, setFormData] = useState({});
-  const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
-  const [event_history, setEvents] = useState({});
+  const [user, setUser] = useState({});
+  const [userHard, setUserHard] = useState({});
+  const [allUsers, setUsers] = useState([]);
+  const [allEvents, setEvents] = useState({});
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
+  // const [formData, setFormData] = useState({
+  //   username: user.username,
+  //   nickname: user.nickname,
+  //   user_group: user.user_group,
+  //   avatar: user.avatar,
+  //   user_intro: user.user_intro,
+  //   user_email: user.user_email,
+  //   password: user.password,
+  //   gender: user.gender,
+  //   birthday: user.birthday,
+  //   following: user.following || [],
+  //   followers: user.followers || [],
+  // });
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      });
+      console.log('Fetched data:', response.data); // Add a log statement
+      setUser(response.data);
+      setUserHard(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error); // Add error log
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchDataAll = async () => {
+    setLoading(true);
+    try {
+      const usersResponse = await axios.get(
+        `${process.env.REACT_APP_API_URL}/users`,
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMxODQ1LCJleHAiOjE3MTc0MTgyNDV9.Cp30IBolsYEIoslPH-UBBk_EWKJEbMAGil118Hltt0A`,
+          },
+        },
+      );
+      const eventsResponse = await axios.get(
+        `${process.env.REACT_APP_API_URL}/events`,
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMxODQ1LCJleHAiOjE3MTc0MTgyNDV9.Cp30IBolsYEIoslPH-UBBk_EWKJEbMAGil118Hltt0A`,
+          },
+        },
+      );
 
-  setFormData({
-    username: user.nickname,
-    gender: user.gender,
-    age: user.age,
-    phone: user.phone,
-    email: user.email,
-    intro: user.intro,
-  });
+      setUsers(usersResponse.data);
+      setEvents(eventsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchDataAll();
+  }, []);
 
   const handleEditClick = (field) => {
     setEditMode((prev) => ({...prev, [field]: true}));
   };
 
   const handleSaveClick = async (field) => {
+    // 对字段进行保存操作
     setEditMode((prev) => ({...prev, [field]: false}));
+    // setUser(prevFormData => ({
+    //   ...prevFormData,
+    //   gender: tempGender
+    // }));
     try {
-      // Email format validation
-      if (field === 'email') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-          setError('Invalid email format');
-          setEditMode((prev) => ({...prev, [field]: true}));
-          return;
-        }
-      }
-      await axios.put('/api/me', {[field]: formData[field]});
-      // Update the user state to reflect the new data
-      // user[field] = formData[field];
-      setFormData({
-        username: user.nickname,
-        gender: user.gender,
-        age: user.age,
-        phone: user.phone,
-        email: user.email,
-        intro: user.intro,
+      // const updatedUser = { ...user, ...formData };
+      await axios.put(`${process.env.REACT_APP_API_URL}/me`, user, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
       });
+      // 更新用户数据状态
+      // setUser(updatedUser);
+      fetchData();
     } catch (error) {
       console.error('Error saving user data:', error);
     }
@@ -71,524 +128,549 @@ function CrowdProfile(user) {
 
   const handleCancelClick = (field) => {
     setEditMode((prev) => ({...prev, [field]: false}));
-    setFormData((prev) => ({...prev, [field]: user[field]}));
+    setUser((prev) => ({...prev, [field]: user[field]}));
   };
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    setFormData((prev) => ({...prev, [name]: value}));
+    if (name === 'gender') {
+      if (value === 'null1') {
+        setUser((prev) => ({...prev, [name]: null}));
+        // setTempGender(null);
+      } else {
+        setUser((prev) => ({...prev, [name]: value}));
+        // setTempGender(value);
+      }
+    } else {
+      setUser((prev) => ({...prev, [name]: value}));
+    }
+  };
+
+  // function handleChangeGender(e) {
+  //   setTempGender(e.target.value === 'null' ? null : e.target.value);
+  // }
+
+  const handleFollow = (userToFollow) => {
+    setUser((prev) => ({
+      ...prev,
+      following: [...prev.following, userToFollow],
+    }));
+  };
+
+  const handleUnfollow = (id) => {
+    setUser((prev) => ({
+      ...prev,
+      following: prev.following.filter((userId) => userId !== id),
+    }));
+  };
+
+  const isFollowing = (followerId, followingList) => {
+    return followingList.includes(followerId);
+  };
+
+  // 定义更改用户类别函数
+  const handleChangeUserType = (userId, user_type) => {};
+
+  // 定义删除用户函数
+  const handleDeleteUser = async (username) => {
+    try {
+      // 发起删除请求
+      await axios.delete(`${process.env.REACT_APP_API_URL}/users/${username}`, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      });
+
+      // 删除成功后重新获取数据
+      fetchDataAll();
+    } catch (error) {
+      setError(`Failed to delete event with username ${username}:`);
+    }
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/events/${id}`);
+      // 发起删除请求
+      await axios.delete(`${process.env.REACT_APP_API_URL}/events/${id}`, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      });
+
+      // 删除成功后重新获取数据
+      fetchDataAll();
     } catch (error) {
       setError(`Failed to delete event with id ${id}:`);
     }
   };
 
-  // 关注用户
-  const handleFollow = (user) => {
-    setFollowing([...following, user]);
-  };
-
-  // 取消关注用户
-  const handleUnfollow = (id) => {
-    setFollowing(following.filter((user) => user.id !== id));
-  };
-
-  const isFollowing = (follower, followingList) => {
-    // 遍历关注列表
-    for (const followingUser of followingList) {
-      // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
-      if (followingUser.id === follower.id) {
-        return true;
-      }
+  const getUserGroupText = (group) => {
+    switch (group) {
+      case 1:
+        return 'Audience';
+      case 2:
+        return 'Organizer';
+      case 3:
+        return 'Admin';
+      default:
+        return '';
     }
-    // 如果未找到匹配项，则返回 false
-    return false;
+  };
+
+  const getUserGenderText = (gender) => {
+    switch (gender) {
+      case 1:
+        return 'Male';
+      case 2:
+        return 'Female';
+      case 3:
+        return 'Other';
+      default:
+        return '';
+    }
+  };
+
+  const genderOptions = [
+    {value: null, label: ''},
+    {value: 1, label: 'Male'},
+    {value: 2, label: 'Female'},
+    {value: 3, label: 'Other'},
+  ];
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
 
   const renderContent = () => {
-    switch (selectedItem) {
-      case 'profile':
-        return (
-          <Box>
+    if (showAvatarUpload) {
+      return <AvatarUpload onBack={() => setShowAvatarUpload(false)} />;
+    }
+
+    const renderContent = () => {
+      switch (selectedItem) {
+        case 'profile':
+          return (
+            <Box>
+              <Box>
+                <Typography variant='h6' gutterBottom>
+                  Personal Profile
+                </Typography>
+                <Box display='flex' alignItems='center' mb={2}>
+                  <Typography variant='body1'>
+                    <strong>Username:</strong> {user.username}
+                  </Typography>
+                </Box>
+                <Box display='flex' alignItems='center' mb={2}>
+                  {editMode.nickname ? (
+                    <>
+                      <strong>Nickname:</strong>
+                      <TextField
+                        name='nickname'
+                        value={user.nickname}
+                        onChange={handleChange}
+                        size='small'
+                      />
+                      <IconButton
+                        size='small'
+                        onClick={() => handleSaveClick('nickname')}
+                        sx={{ml: 1}}>
+                        <SaveIcon fontSize='small' />
+                      </IconButton>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleCancelClick('nickname')}
+                        sx={{ml: 1}}>
+                        <CancelIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body1'>
+                        <strong>Nickname:</strong> {user.nickname}
+                      </Typography>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleEditClick('nickname')}
+                        sx={{ml: 1}}>
+                        <EditIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+                <Box display='flex' alignItems='center' mb={2}>
+                  {editMode.gender ? (
+                    <>
+                      <strong>Gender:</strong>
+                      <select
+                        name='gender'
+                        value={user.gender}
+                        onChange={handleChange}
+                        style={{width: '100px'}}>
+                        <option value='null1'></option>
+                        <option value='1'>Male</option>
+                        <option value='2'>Female</option>
+                        <option value='3'>Other</option>
+                      </select>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleSaveClick('gender')}
+                        sx={{ml: 1}}>
+                        <SaveIcon fontSize='small' />
+                      </IconButton>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleCancelClick('gender')}
+                        sx={{ml: 1}}>
+                        <CancelIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body1'>
+                        <strong>Gender:</strong>
+                        {getUserGenderText(user.gender)}
+                      </Typography>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleEditClick('gender')}
+                        sx={{ml: 1}}>
+                        <EditIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+                <Box display='flex' alignItems='center' mb={2}>
+                  {editMode.birthday ? (
+                    <>
+                      <strong>Birthday:</strong>
+                      <TextField
+                        name='birthday'
+                        value={user.birthday}
+                        onChange={handleChange}
+                        size='small'
+                      />
+                      <IconButton
+                        size='small'
+                        onClick={() => handleSaveClick('birthday')}
+                        sx={{ml: 1}}>
+                        <SaveIcon fontSize='small' />
+                      </IconButton>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleCancelClick('birthday')}
+                        sx={{ml: 1}}>
+                        <CancelIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body1'>
+                        <strong>Birthday:</strong> {user.birthday}
+                      </Typography>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleEditClick('birthday')}
+                        sx={{ml: 1}}>
+                        <EditIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+                <Box display='flex' alignItems='center' mb={2}>
+                  {editMode.user_email ? (
+                    <>
+                      <strong>Email:</strong>
+                      <TextField
+                        name='user_email'
+                        value={user.user_email}
+                        onChange={handleChange}
+                        size='small'
+                      />
+                      <IconButton
+                        size='small'
+                        onClick={() => handleSaveClick('user_email')}
+                        sx={{ml: 1}}>
+                        <SaveIcon fontSize='small' />
+                      </IconButton>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleCancelClick('user_email')}
+                        sx={{ml: 1}}>
+                        <CancelIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body1'>
+                        <strong>Email:</strong> {user.user_email}
+                      </Typography>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleEditClick('user_email')}
+                        sx={{ml: 1}}>
+                        <EditIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+                <Box display='flex' alignItems='center' mb={2}>
+                  {editMode.user_intro ? (
+                    <>
+                      <strong>Introduction:</strong>
+                      <TextField
+                        name='user_intro'
+                        value={user.user_intro}
+                        onChange={handleChange}
+                        size='small'
+                      />
+                      <IconButton
+                        size='small'
+                        onClick={() => handleSaveClick('user_intro')}
+                        sx={{ml: 1}}>
+                        <SaveIcon fontSize='small' />
+                      </IconButton>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleCancelClick('user_intro')}
+                        sx={{ml: 1}}>
+                        <CancelIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body1'>
+                        <strong>Introduction:</strong> {user.user_intro}
+                      </Typography>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleEditClick('user_intro')}
+                        sx={{ml: 1}}>
+                        <EditIcon fontSize='small' />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+              </Box>
+              {error && (
+                <Typography variant='body2' color='error'>
+                  {error}
+                </Typography>
+              )}
+            </Box>
+          );
+        case 'security':
+          return (
+            <Box>
+              <Typography variant='h6'>Security</Typography>
+              <MKButton
+                component={Link}
+                to='/changePassword'
+                variant='contained'
+                sx={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  '&:hover': {
+                    backgroundColor: '#d32f2f',
+                  },
+                }}>
+                Password Modification
+              </MKButton>
+            </Box>
+          );
+        case 'history':
+          return (
+            <Box>
+              <Typography variant='h6'>history</Typography>
+              <List>
+                {user.event_history.map((event) => (
+                  <ListItem
+                    key={event.id}
+                    sx={{borderBottom: '1px solid #ddd'}}>
+                    <ListItemText
+                      primary={event.title}
+                      secondary={`${event.location} | ${event.poster}`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          );
+        case 'reserve':
+          return (
+            <Box>
+              <Typography variant='h6'>Reserved Events</Typography>
+              <List>
+                {user.event_history.map((event) => (
+                  <ListItem
+                    key={event.id}
+                    sx={{borderBottom: '1px solid #ddd'}}>
+                    <ListItemText
+                      primary={event.title}
+                      secondary={`${event.location} | ${event.organizer}`}
+                    />
+                    <IconButton
+                      edge='end'
+                      aria-label='delete'
+                      onClick={() => handleDelete(event.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          );
+        case 'followers':
+          return (
             <Box>
               <Typography variant='h6' gutterBottom>
-                Personal Profile
+                Followers
               </Typography>
-              <Box display='flex' alignItems='center' mb={2}>
-                <Typography variant='body1'>
-                  <strong>ID:</strong> {user.id}
-                </Typography>
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                {editMode.nickname ? (
-                  <>
-                    <TextField
-                      name='nickname'
-                      value={formData.nickname}
-                      onChange={handleChange}
-                      size='small'
+              <List>
+                {user.followers.map((follower) => (
+                  <ListItem key={follower.id}>
+                    {/* 根据followingId获取用户信息 */}
+                    {/* 显示用户信息，包括头像、昵称、邮箱 */}
+                    {isFollowing(follower, user.followers) ? (
+                      <IconButton
+                        edge='end'
+                        onClick={() => handleUnfollow(follower.id)}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        edge='end'
+                        onClick={() => handleFollow(follower.id)}>
+                        <PersonIcon />
+                      </IconButton>
+                    )}
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          );
+        case 'following':
+          return (
+            <Box>
+              <Typography variant='h6' gutterBottom>
+                Following
+              </Typography>
+              <List>
+                {user.following.map((following) => (
+                  <ListItem key={following.id}>
+                    <Avatar alt={following.nickname} src={following.avatar} />
+                    <ListItemText
+                      primary={following.nickname}
+                      secondary={following.user_email}
                     />
                     <IconButton
-                      size='small'
-                      onClick={() => handleSaveClick('nickname')}
-                      sx={{ml: 1}}>
-                      <SaveIcon fontSize='small' />
+                      edge='end'
+                      onClick={() => handleUnfollow(following.id)}>
+                      <DeleteIcon />
                     </IconButton>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleCancelClick('nickname')}
-                      sx={{ml: 1}}>
-                      <CancelIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <Typography variant='body1'>
-                      <strong>Username:</strong> {user.nickname}
-                    </Typography>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleEditClick('nickname')}
-                      sx={{ml: 1}}>
-                      <EditIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                {editMode.gender ? (
-                  <>
-                    <TextField
-                      name='gender'
-                      value={formData.gender}
-                      onChange={handleChange}
-                      size='small'
-                    />
-                    <IconButton
-                      size='small'
-                      onClick={() => handleSaveClick('gender')}
-                      sx={{ml: 1}}>
-                      <SaveIcon fontSize='small' />
-                    </IconButton>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleCancelClick('gender')}
-                      sx={{ml: 1}}>
-                      <CancelIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <Typography variant='body1'>
-                      <strong>Gender:</strong> {user.gender}
-                    </Typography>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleEditClick('gender')}
-                      sx={{ml: 1}}>
-                      <EditIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                {editMode.age ? (
-                  <>
-                    <TextField
-                      name='age'
-                      value={formData.age}
-                      onChange={handleChange}
-                      size='small'
-                    />
-                    <IconButton
-                      size='small'
-                      onClick={() => handleSaveClick('age')}
-                      sx={{ml: 1}}>
-                      <SaveIcon fontSize='small' />
-                    </IconButton>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleCancelClick('age')}
-                      sx={{ml: 1}}>
-                      <CancelIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <Typography variant='body1'>
-                      <strong>Age:</strong> {user.age}
-                    </Typography>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleEditClick('age')}
-                      sx={{ml: 1}}>
-                      <EditIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                {editMode.phone ? (
-                  <>
-                    <TextField
-                      name='phone'
-                      value={formData.phone}
-                      onChange={handleChange}
-                      size='small'
-                    />
-                    <IconButton
-                      size='small'
-                      onClick={() => handleSaveClick('phone')}
-                      sx={{ml: 1}}>
-                      <SaveIcon fontSize='small' />
-                    </IconButton>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleCancelClick('phone')}
-                      sx={{ml: 1}}>
-                      <CancelIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <Typography variant='body1'>
-                      <strong>Phone:</strong> {user.phone}
-                    </Typography>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleEditClick('phone')}
-                      sx={{ml: 1}}>
-                      <EditIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                {editMode.email ? (
-                  <>
-                    <TextField
-                      name='email'
-                      value={formData.email}
-                      onChange={handleChange}
-                      size='small'
-                    />
-                    <IconButton
-                      size='small'
-                      onClick={() => handleSaveClick('email')}
-                      sx={{ml: 1}}>
-                      <SaveIcon fontSize='small' />
-                    </IconButton>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleCancelClick('email')}
-                      sx={{ml: 1}}>
-                      <CancelIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <Typography variant='body1'>
-                      <strong>Email:</strong> {user.email}
-                    </Typography>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleEditClick('email')}
-                      sx={{ml: 1}}>
-                      <EditIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                <Typography variant='body1'>
-                  <strong>Introduction:</strong>
-                </Typography>
-                <IconButton
-                  size='small'
-                  onClick={() => handleEditClick('intro')}
-                  sx={{ml: 1}}>
-                  <EditIcon fontSize='small' />
-                </IconButton>
-              </Box>
-              <Box ml={4}>
-                {editMode.intro ? (
-                  <>
-                    <TextField
-                      name='intro'
-                      value={formData.intro}
-                      onChange={handleChange}
-                      multiline
-                      size='small'
-                      rows={4}
-                    />
-                    <IconButton
-                      size='small'
-                      onClick={() => handleSaveClick('intro')}
-                      sx={{ml: 1}}>
-                      <SaveIcon fontSize='small' />
-                    </IconButton>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleCancelClick('intro')}
-                      sx={{ml: 1}}>
-                      <CancelIcon fontSize='small' />
-                    </IconButton>
-                  </>
-                ) : (
-                  <Typography variant='body1'>{user.intro}</Typography>
-                )}
-              </Box>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          );
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <Container sx={{display: 'flex', height: '100vh', paddingTop: 2}}>
+        {/* 左侧边栏 */}
+        <Box
+          sx={{
+            width: 250,
+            borderRight: '1px solid #ddd',
+            paddingRight: 2,
+          }}>
+          {/* 头像和名字 */}
+          <Box sx={{display: 'flex', alignItems: 'center', marginBottom: 2}}>
+            <Avatar
+              alt='User Avatar'
+              src='/path-to-avatar.jpg' // 替换成实际的头像路径
+              sx={{width: 60, height: 60, marginRight: 2}}
+            />
+            <Box>
+              <Typography variant='h6'>{userHard.nickname}</Typography>
+              <Typography variant='body2' color='textSecondary'>
+                {getUserGroupText(userHard.user_group)}
+              </Typography>
+              <Typography
+                variant='body2'
+                color='textSecondary'
+                onClick={() => setSelectedItem('followers')}>
+                followers: {user.followers}
+              </Typography>
+              <Typography
+                variant='body2'
+                color='textSecondary'
+                onClick={() => setSelectedItem('following')}>
+                following: {user.following}
+              </Typography>
             </Box>
           </Box>
-        );
-      case 'security':
-        return (
-          <Box>
-            <Typography variant='h6'>Security</Typography>
-            <MKButton
-              component={Link}
-              to='/changePassword'
-              variant='contained'
+          {/* 菜单项 */}
+          <List component='nav'>
+            <ListItem
+              button
+              onClick={() => setSelectedItem('profile')}
               sx={{
-                backgroundColor: 'red',
-                color: 'white',
-                fontWeight: 'bold',
-                '&:hover': {
-                  backgroundColor: '#d32f2f',
-                },
+                backgroundColor:
+                  selectedItem === 'profile' ? 'black' : 'inherit',
+                color: selectedItem === 'profile' ? 'white' : 'inherit',
+                marginY: '10px',
               }}>
-              Password Modification
-            </MKButton>
-          </Box>
-        );
-      case 'history':
-        return (
-          <Box>
-            <Typography variant='h6'>history</Typography>
-            <List>
-              {user.event_history.map((event) => (
-                <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
-                  <ListItemText
-                    primary={event.title}
-                    secondary={`${event.time} | ${event.location} | ${event.organizer}`}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        );
-      case 'reserve':
-        return (
-          <Box>
-            <Typography variant='h6'>Reserved Events</Typography>
-            <List>
-              {user.event_history.map((event) => (
-                <ListItem key={event.id} sx={{borderBottom: '1px solid #ddd'}}>
-                  <ListItemText
-                    primary={event.title}
-                    secondary={`${event.time} | ${event.location} | ${event.organizer}`}
-                  />
-                  <IconButton
-                    edge='end'
-                    aria-label='delete'
-                    onClick={() => handleDelete(event.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        );
-      case 'followers':
-        return (
-          <Box>
-            <Typography variant='h6'>All followers</Typography>
-            <List>
-              {followers.map((follower) => (
-                <ListItem
-                  key={follower.id}
-                  sx={{display: 'flex', alignItems: 'center'}}>
-                  <Avatar
-                    alt={follower.nickname}
-                    src={follower.avatar}
-                    sx={{width: 40, height: 40, marginRight: 2}}
-                  />
-                  <ListItemText primary={follower.nickname} />
-                  {isFollowing(follower) ? (
-                    <IconButton
-                      edge='end'
-                      aria-label='unfollow'
-                      onClick={() => handleUnfollow(following.id)}>
-                      <MKButton
-                        variant='contained'
-                        sx={{
-                          backgroundColor: 'red',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          '&:hover': {
-                            backgroundColor: '#d32f2f',
-                          },
-                        }}>
-                        unfollow
-                      </MKButton>
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      edge='end'
-                      aria-label='follow'
-                      onClick={() => handleFollow(follower)}>
-                      <MKButton
-                        variant='contained'
-                        sx={{
-                          backgroundColor: 'white',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          '&:hover': {
-                            backgroundColor: '#F5F5F5',
-                          },
-                        }}>
-                        follow
-                      </MKButton>
-                    </IconButton>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        );
-      case 'following':
-        return (
-          <Box>
-            <Typography variant='h6'>All following</Typography>
-            <List>
-              {following.map((following) => (
-                <ListItem
-                  key={following.id}
-                  sx={{display: 'flex', alignItems: 'center'}}>
-                  <Avatar
-                    alt={following.name}
-                    src={following.avatar}
-                    sx={{width: 40, height: 40, marginRight: 2}}
-                  />
-                  <ListItemText primary={following.nickname} />
-                  <IconButton
-                    edge='end'
-                    aria-label='unfollow'
-                    onClick={() => handleUnfollow(following.id)}>
-                    <MKButton
-                      variant='contained'
-                      sx={{
-                        backgroundColor: 'red',
-                        color: 'white',
-                        fontWeight: 'bold',
-                        '&:hover': {
-                          backgroundColor: '#d32f2f',
-                        },
-                      }}>
-                      unfollow
-                    </MKButton>
-                  </IconButton>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <Container sx={{display: 'flex', height: '100vh', paddingTop: 2}}>
-      {/* 左侧边栏 */}
-      <Box
-        sx={{
-          width: 250,
-          borderRight: '1px solid #ddd',
-          paddingRight: 2,
-        }}>
-        {/* 头像和名字 */}
-        <Box sx={{display: 'flex', alignItems: 'center', marginBottom: 2}}>
-          <Avatar
-            alt='User Avatar'
-            src='/path-to-avatar.jpg' // 替换成实际的头像路径
-            sx={{width: 60, height: 60, marginRight: 2}}
-          />
-          <Box>
-            <Typography variant='h6'>{user.nickname}</Typography>
-            <Typography variant='body2' color='textSecondary'>
-              {user.user_group}
-            </Typography>
-            <Typography variant='body2' color='textSecondary'>
-              {user.id}
-            </Typography>
-            <Typography
-              variant='body2'
-              color='textSecondary'
-              onClick={() => setSelectedItem('followers')}>
-              followers: {followers.length}
-            </Typography>
-            <Typography
-              variant='body2'
-              color='textSecondary'
-              onClick={() => setSelectedItem('following')}>
-              following: {following.length}
-            </Typography>
-          </Box>
+              <ListItemText primary='Personal Profile' />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => setSelectedItem('security')}
+              sx={{
+                backgroundColor:
+                  selectedItem === 'security' ? 'black' : 'inherit',
+                color: selectedItem === 'security' ? 'white' : 'inherit',
+                marginY: '10px',
+              }}>
+              <ListItemText primary='Security' />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => setSelectedItem('history')}
+              sx={{
+                backgroundColor:
+                  selectedItem === 'history' ? 'black' : 'inherit',
+                color: selectedItem === 'history' ? 'white' : 'inherit',
+                marginY: '10px',
+              }}>
+              <ListItemText primary='History' />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => setSelectedItem('reserve')}
+              sx={{
+                backgroundColor:
+                  selectedItem === 'reserve' ? 'black' : 'inherit',
+                color: selectedItem === 'reserve' ? 'white' : 'inherit',
+                marginY: '10px',
+              }}>
+              <ListItemText primary='Reserved Events' />
+            </ListItem>
+          </List>
         </Box>
-        {/* 菜单项 */}
-        <List component='nav'>
-          <ListItem
-            button
-            onClick={() => setSelectedItem('profile')}
-            sx={{
-              backgroundColor: selectedItem === 'profile' ? 'black' : 'inherit',
-              color: selectedItem === 'profile' ? 'white' : 'inherit',
-              marginY: '10px',
-            }}>
-            <ListItemText primary='Personal Profile' />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => setSelectedItem('security')}
-            sx={{
-              backgroundColor:
-                selectedItem === 'security' ? 'black' : 'inherit',
-              color: selectedItem === 'security' ? 'white' : 'inherit',
-              marginY: '10px',
-            }}>
-            <ListItemText primary='Security' />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => setSelectedItem('history')}
-            sx={{
-              backgroundColor: selectedItem === 'history' ? 'black' : 'inherit',
-              color: selectedItem === 'history' ? 'white' : 'inherit',
-              marginY: '10px',
-            }}>
-            <ListItemText primary='History' />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => setSelectedItem('reserve')}
-            sx={{
-              backgroundColor: selectedItem === 'reserve' ? 'black' : 'inherit',
-              color: selectedItem === 'reserve' ? 'white' : 'inherit',
-              marginY: '10px',
-            }}>
-            <ListItemText primary='Reserved Events' />
-          </ListItem>
-        </List>
-      </Box>
-      {/* 右侧内容区 */}
-      <Box sx={{flexGrow: 1, paddingLeft: 3}}>{renderContent()}</Box>
-    </Container>
-  );
+        {/* 右侧内容区 */}
+        <Box sx={{flexGrow: 1, paddingLeft: 3}}>{renderContent()}</Box>
+      </Container>
+    );
+  };
 }
-
 export default CrowdProfile;
