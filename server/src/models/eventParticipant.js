@@ -23,6 +23,25 @@ const sequelize = require('../config/connection');
  *           type: string
  *         avatar:
  *           type: string
+ *     EventToParticipant:
+ *       type: object
+ *       additionalProperties: false
+ *       required:
+ *         - id
+ *         - event_id
+ *         - participant_id
+ *       properties:
+ *         id:
+ *           type: integer
+ *           readOnly: true
+ *         event_id:
+ *           type: integer
+ *           readOnly: true
+ *           description: The id of the event
+ *         participant_id:
+ *           type: integer
+ *           readOnly: true
+ *           description: The id of the participant
  */
 const EventParticipant = sequelize.define(
   'event_participants',
@@ -51,20 +70,53 @@ const EventParticipant = sequelize.define(
   },
 );
 
+const EventToParticipant = sequelize.define('event_to_participant', {
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  event_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'events',
+      key: 'id',
+    },
+  },
+  participant_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'event_participants',
+      key: 'id',
+    },
+  },
+});
+
 const init = async () => {
   try {
     await EventParticipant.bulkCreate([
       {
-        id: 1,
         name: 'John Doe',
         description: 'A regular participant',
         avatar: 'https://example.com/avatar.jpg',
       },
       {
-        id: 2,
         name: 'Jane Doe',
         description: 'Another regular participant',
         avatar: 'https://example.com/avatar.jpg',
+      },
+    ]);
+    EventToParticipant.bulkCreate([
+      {
+        event_id: 1,
+        participant_id: 1,
+      },
+      {
+        event_id: 1,
+        participant_id: 2,
       },
     ]);
     console.log(
@@ -78,4 +130,4 @@ const init = async () => {
   }
 };
 
-module.exports = {EventParticipant, init};
+module.exports = {EventParticipant, EventToParticipant, init};

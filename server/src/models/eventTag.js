@@ -9,16 +9,36 @@ const sequelize = require('../config/connection');
  *       type: object
  *       additionalProperties: false
  *       required:
- *         - tag_id
- *         - tag_name
+ *         - id
+ *         - name
  *       properties:
- *         tag_id:
+ *         id:
  *           type: integer
  *           description: The auto-generated id of the tag
  *           readOnly: true
- *         tag_name:
+ *         name:
  *           type: string
  *           description: The name of the tag
+ *     EventToTag:
+ *       type: object
+ *       additionalProperties: false
+ *       required:
+ *         - id
+ *         - event_id
+ *         - tag_id
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the event-tag relationship
+ *           readOnly: true
+ *         event_id:
+ *           type: integer
+ *           description: The id of the event
+ *           readOnly: true
+ *         tag_id:
+ *           type: integer
+ *           description: The id of the tag
+ *           readOnly: true
  */
 const EventTag = sequelize.define('event_tags', {
   id: {
@@ -35,19 +55,55 @@ const EventTag = sequelize.define('event_tags', {
   },
 });
 
+const EventToTag = sequelize.define('event_to_tag', {
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+    description: 'The auto-generated id of the event-tag relationship',
+  },
+  event_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    description: 'The id of the event',
+    references: {
+      model: 'event',
+      key: 'id',
+    },
+  },
+  tag_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    description: 'The id of the tag',
+    references: {
+      model: 'event_tags',
+      key: 'id',
+    },
+  },
+});
+
 const init = async () => {
   try {
     await EventTag.bulkCreate([
-      {id: 1, name: 'Music'},
-      {id: 2, name: 'Sports'},
-      {id: 3, name: 'Food'},
-      {id: 4, name: 'Education'},
-      {id: 5, name: 'Technology'},
-      {id: 6, name: 'Health'},
-      {id: 7, name: 'Business'},
-      {id: 8, name: 'Art'},
-      {id: 9, name: 'Travel'},
-      {id: 10, name: 'Fashion'},
+      {name: 'Music'},
+      {name: 'Sports'},
+      {name: 'Food'},
+      {name: 'Education'},
+      {name: 'Technology'},
+      {name: 'Health'},
+      {name: 'Business'},
+      {name: 'Art'},
+      {name: 'Travel'},
+      {name: 'Fashion'},
+    ]);
+    await EventToTag.bulkCreate([
+      {event_id: 1, tag_id: 1},
+      {event_id: 1, tag_id: 3},
+      {event_id: 2, tag_id: 2},
+      {event_id: 2, tag_id: 3},
     ]);
     console.log(
       'Entries have been successfully inserted into the event_tags table',
@@ -57,4 +113,4 @@ const init = async () => {
   }
 };
 
-module.exports = {EventTag, init};
+module.exports = {EventTag, EventToTag, init};

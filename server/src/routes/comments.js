@@ -89,49 +89,104 @@ function getUidFromJwt(req) {
  *         $ref: '#/components/responses/500'
  */
 router.post('/comments/:event_id', async (req, res) => {
-  const uid = getUidFromJwt(req);
-  if (!uid) {
-    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
-    return;
-  }
-  const target_event = await Event.findOne({where: {id: req.params.event_id}});
-  if (!target_event) {
-    res.status(404).json(getResponse(404, {description: 'Event not found'}));
-    return;
-  }
+  try {
+    const uid = getUidFromJwt(req);
+    if (!uid) {
+      res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+      return;
+    }
+    const target_event = await Event.findOne({
+      where: {id: req.params.event_id},
+    });
+    if (!target_event) {
+      res.status(404).json(getResponse(404, {description: 'Event not found'}));
+      return;
+    }
 
-  const comment = await Comment.create({
-    content: req.body.content,
-    user: User.findOne({where: {id: uid}}),
-    event: target_event,
-    likes: 0,
-    dislikes: 0,
-    rating: req.body.rating,
-  });
+    const comment = await Comment.create({
+      content: req.body.content,
+      user: uid,
+      event: req.params.event_id,
+      likes: 0,
+      dislikes: 0,
+      rating: req.body.rating,
+    });
 
-  res.status(201).json(comment);
+    res.status(201).json(comment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(getResponse(500, {description: 'Server error'}));
+  }
 });
 router.get('/comments/:event_id', async (req, res) => {
+  try {
+    const uid = getUidFromJwt(req);
+    console.log(uid);
+    if (!uid) {
+      res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+      return;
+    }
+    const target_event = await Event.findOne({
+      where: {id: req.params.event_id},
+    });
+    if (!target_event) {
+      res.status(404).json(getResponse(404, {description: 'Event not found'}));
+      return;
+    }
+    let comments = await Comment.findAll({
+      where: {event: req.params.event_id},
+    });
+    const total = comments.length;
+    comments = comments.slice(
+      req.query.offset,
+      req.query.offset + req.query.limit,
+    );
+    res.json({comments, total});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(getResponse(500, {description: 'Server error'}));
+  }
+});
+
+/**
+ * @swagger
+ * /comments/{comment_id}:
+ *   delete:
+ *     tags:
+ *       - Comments
+ *     summary: Delete a comment - A user could delete only his/her own comment, while an admin could delete any comment
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_comment_id'
+ *     responses:
+ *     '204':
+ *       description: Comment deleted successfully
+ *     '401':
+ *       $ref: '#/components/responses/401'
+ *     '403':
+ *       $ref: '#/components/responses/403'
+ *     '404':
+ *       $ref: '#/components/responses/404'
+ *     '500':
+ *       $ref: '#/components/responses/500'
+ */
+router.delete('/comments/:comment_id', async (req, res) => {
   const uid = getUidFromJwt(req);
   if (!uid) {
     res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
     return;
   }
-  const target_event = await Event.findOne({where: {id: req.params.event_id}});
-  if (!target_event) {
-    res.status(404).json(getResponse(404, {description: 'Event not found'}));
+  const comment = await Comment.findOne({where: {id: req.params.comment_id}});
+  if (!comment) {
+    res.status(404).json(getResponse(404, {description: 'Comment not found'}));
     return;
   }
-  let comments = await Comment.findAll({
-    where: {event_id: req.params.event_id},
-  });
-  const total = comments.length;
-  comments = comments.slice(
-    req.query.offset,
-    req.query.offset + req.query.limit,
-  );
-
-  res.json({comments, total});
+  const curr_user = await User.findOne({where: {id: uid}});
+  if (curr_user.user_group !== 3 && comment.user_id !== uid) {
+    res.status(403).json(getResponse(403, {description: 'Forbidden'}));
+    return;
+  }
+  await comment.destroy();
+  res.status(204).send();
 });
 
 module.exports = router;

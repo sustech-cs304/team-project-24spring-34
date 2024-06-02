@@ -25,6 +25,7 @@ const getResponse = require('../models/response');
  *             required:
  *               - username
  *               - password
+ *               - user_email
  *             properties:
  *               username:
  *                 type: string
@@ -34,6 +35,9 @@ const getResponse = require('../models/response');
  *                 type: string
  *                 pattern: ^[a-zA-Z0-9]+$
  *                 maxLength: 32
+ *               user_email:
+ *                 type: string
+ *                 format: email
  *     responses:
  *       '200':
  *         description: User created successfully
@@ -43,7 +47,6 @@ const getResponse = require('../models/response');
  */
 router.post('/users', async (req, res) => {
   try {
-    //if exists
     let user = await User.findOne({where: {username: req.body.username}});
     if (user) {
       res
@@ -52,11 +55,11 @@ router.post('/users', async (req, res) => {
       return;
     }
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    console.log('hashedPassword:', hashedPassword);
     user = await User.create({
       username: req.body.username,
       userGroup: 1,
       password: hashedPassword,
+      user_email: req.body.user_email,
     });
     res.status(201).send();
   } catch (error) {
@@ -121,18 +124,22 @@ router.post('/users', async (req, res) => {
  *         $ref: '#/components/responses/401'
  */
 router.post('/sessions', async (req, res) => {
-  const user = await User.findOne({where: {username: req.body.username}});
-  if (!user) {
-    res.status(404).json(getResponse(404, {description: 'User not found'}));
-    return;
-  }
-  if (await bcrypt.compare(req.body.password, user.password)) {
-    const token = jwt.sign({id: user.id}, '42', {expiresIn: 86400});
-    res.json({token});
-  } else {
-    res
-      .status(400)
-      .json(getResponse(400, {description: 'Invalid username or password'}));
+  try {
+    const user = await User.findOne({where: {username: req.body.username}});
+    if (!user) {
+      res.status(404).json(getResponse(404, {description: 'User not found'}));
+      return;
+    }
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      const token = jwt.sign({id: user.id}, '42', {expiresIn: 86400});
+      res.json({token});
+    } else {
+      res
+        .status(400)
+        .json(getResponse(400, {description: 'Invalid username or password'}));
+    }
+  } catch (error) {
+    res.status(500).json(getResponse(500));
   }
 });
 router.delete('/sessions', (req, res) => {
@@ -227,9 +234,7 @@ router.put('/me', async (req, res) => {
     await User.update(req.body, {where: {id: req.userId}});
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json(getResponse(500, {description: 'Internal server error'}));
+    res.status(500).json(getResponse(500));
     return;
   }
   res.send();
