@@ -12,12 +12,20 @@ import ThemeDatePicker from './themeDatePicker';
 import ThemeTitle from './themeTitle';
 import ThemeUpload from './themeUpload';
 import ThemeNumInput from './themeNumInput';
+import ThemeButton from './themeButton';
+
+const ErrorMessage = styled.p`
+  color: red;
+  margin-top: 1rem;
+  text-align: center;
+`;
 
 function FormInput(props) {
   const [eventTitle, setEventTitle] = useState('');
   const [eventIntro, setEventIntro] = useState('');
   const [eventContent, setEventContent] = useState('');
   const [eventLocation, setEventLocation] = useState('');
+  const [eventOrganizer, setEventOrganizer] = useState('');
   const [eventCap, setEventCap] = useState('');
 
   const updateEventCap = (cap) => {
@@ -32,18 +40,23 @@ function FormInput(props) {
     if (
       eventIntro.trim() === '' ||
       eventTitle.trim() === '' ||
-      eventTitle.trim() === '' ||
+      eventContent.trim() === '' ||
       eventLocation.trim() === '' ||
+      eventOrganizer.trim() === '' ||
       eventCap === undefined
     ) {
-      setError('GG');
+      let missingFields = [];
+      if (eventTitle.trim() === '') missingFields.push('Event Title');
+      if (eventIntro.trim() === '') missingFields.push('Event Introduction');
+      if (eventContent.trim() === '') missingFields.push('Event Content');
+      if (eventLocation.trim() === '') missingFields.push('Event Location');
+      if (eventOrganizer.trim() === '') missingFields.push('Event Organizer');
+      if (eventCap === undefined) missingFields.push('Max Capacity');
+      setError(
+        `Please fill in the following fields: ${missingFields.join(', ')}`,
+      );
       return;
     }
-    // if (password !== confirmPassword) {
-    //   setError('两次密码输入不一致');
-    //   return;
-    // }
-    // 提交表单逻辑
     console.log('Form submitted');
     window.location.href = '/';
   };
@@ -65,6 +78,7 @@ function FormInput(props) {
           }}>
           <ThemeTitle name='Edit Your Event Page' />
         </div>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
       </div>
       <div style={{flex: 1}}>
         <div style={{display: 'flex'}}>
@@ -95,19 +109,14 @@ function FormInput(props) {
               height='40px'
               msg=''
             />
-            {/* <div
-              style={{
-                display: 'flex',
-                justifyContent: 'left',
-                alignItems: 'center',
-                height: '30vh',
-              }}>
-              <MKButton
-                style={{width: '300px', height: '100px',fontSize: '30px'}}
-                onClick={handleClick}>
-                SUBMIT
-              </MKButton>
-            </div> */}
+            <ThemeInput
+              name='Event Organizer'
+              id='EventOrganizer'
+              onChange={(e) => setEventOrganizer(e.target.value)}
+              width='300px'
+              height='40px'
+              msg=''
+            />
           </div>
           <div style={{flex: 1}}>
             <ThemeInput
@@ -120,10 +129,10 @@ function FormInput(props) {
             />
             <ThemeUpload />
             <ThemeNumInput cap={updateEventCap} />
+            <ThemeButton onClick={handleClick} />
           </div>
         </div>
       </div>
-      <button onClick={handleClick}>SUBMIT</button>
     </div>
   );
 }
