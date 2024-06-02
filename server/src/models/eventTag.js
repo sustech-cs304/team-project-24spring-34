@@ -88,16 +88,22 @@ const EventToTag = sequelize.define('event_to_tag', {
 const init = async () => {
   try {
     await EventTag.bulkCreate([
-      {id: 1, name: 'Music'},
-      {id: 2, name: 'Sports'},
-      {id: 3, name: 'Food'},
-      {id: 4, name: 'Education'},
-      {id: 5, name: 'Technology'},
-      {id: 6, name: 'Health'},
-      {id: 7, name: 'Business'},
-      {id: 8, name: 'Art'},
-      {id: 9, name: 'Travel'},
-      {id: 10, name: 'Fashion'},
+      {name: 'Music'},
+      {name: 'Sports'},
+      {name: 'Food'},
+      {name: 'Education'},
+      {name: 'Technology'},
+      {name: 'Health'},
+      {name: 'Business'},
+      {name: 'Art'},
+      {name: 'Travel'},
+      {name: 'Fashion'},
+    ]);
+    await EventToTag.bulkCreate([
+      {event_id: 1, tag_id: 1},
+      {event_id: 1, tag_id: 3},
+      {event_id: 2, tag_id: 2},
+      {event_id: 2, tag_id: 3},
     ]);
     await EventToTag.bulkCreate([
       {event_id: 1, tag_id: 1},

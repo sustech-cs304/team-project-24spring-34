@@ -128,8 +128,7 @@ function verifyToken(req, res, next) {
 router.use((req, res, next) => {
   if (
     (req.path === '/users' && req.method === 'POST') ||
-    (req.path === '/sessions' && req.method === 'POST') ||
-    (req.path.startsWith('/events') && req.method === 'GET')
+    (req.path === '/sessions' && req.method === 'POST')
   ) {
     next();
   } else {

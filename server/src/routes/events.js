@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   Event,
+
   EventTag,
   EventToTag,
   EventParticipant,
@@ -245,35 +246,8 @@ router.get('/events', async (req, res) => {
  */
 router.get('/events/:event_id', async (req, res) => {
   const event = await Event.findOne({where: {id: req.params.event_id}});
-  const event_to_tag = await EventToTag.findAll({
-    where: {event_id: req.params.event_id},
-  });
-  let tags = [];
-  for (let i = 0; i < event_to_tag.length; i++) {
-    const tag = await EventTag.findOne({where: {id: event_to_tag[i].tag_id}});
-    tags.push(tag);
-  }
-  const event_to_audience = await EventToAudience.findAll({
-    where: {event_id: req.params.event_id},
-  });
-  const audience_cnt = event_to_audience.length;
-  const remaining_capacity = event.capacity - audience_cnt;
-  const event_comments = await Comment.findAll({
-    where: {event_id: req.params.event_id},
-  });
-  const rating_num = event_comments.length;
-  const rating =
-    event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
-    rating_num /
-    2; // convert from 1-10 to 0.5-5
   if (event) {
-    res.json({
-      ...event.dataValues,
-      remaining_capacity,
-      tags,
-      rating_num,
-      rating,
-    });
+    res.json(event);
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }
@@ -303,6 +277,7 @@ router.get('/events/:event_id', async (req, res) => {
  *                 minLength: 1
  *                 maxLength: 50
  *                 pattern: ^[a-zA-Z]+$
+ *                 unique: true
  *                 readOnly: true
  *     responses:
  *       '201':
@@ -331,8 +306,14 @@ router.get('/events/:event_id', async (req, res) => {
  */
 router.post('/events-tags', async (req, res) => {
   try {
-    const {new_tag_name} = req.body;
-    const eventTag = await EventTag.findOne({where: {tag_name: new_tag_name}});
+    const uid = getUidFromJwt(req);
+    if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+      res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+      return;
+    }
+    const new_tag_name = req.body.tag_name;
+    console.log(new_tag_name);
+    const eventTag = await EventTag.findOne({where: {name: new_tag_name}});
     if (eventTag) {
       res
         .status(429)
