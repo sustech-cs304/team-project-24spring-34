@@ -140,8 +140,6 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/EventTag'
-                status:
-                  $ref: '#/components/schemas/EventStatus'
                 location:
                   type: string
                 capacity:
@@ -336,6 +334,7 @@ paths:
               required:
                 - username
                 - password
+                - user_email
               properties:
                 username:
                   type: string
@@ -345,6 +344,9 @@ paths:
                   type: string
                   pattern: ^[a-zA-Z0-9]+$
                   maxLength: 32
+                user_email:
+                  type: string
+                  format: email
       responses:
         '200':
           description: User created successfully
