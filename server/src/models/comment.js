@@ -76,16 +76,24 @@ const init = async () => {
     await Comment.bulkCreate([
       {
         content: 'This is a comment',
-        user_id: 1,
-        event_id: 1,
+        user: 1,
+        event: 1,
         likes: 0,
         dislikes: 0,
         rating: 5,
       },
       {
         content: 'This is another comment',
-        user_id: 1,
-        event_id: 1,
+        user: 1,
+        event: 1,
+        likes: 0,
+        dislikes: 0,
+        rating: 5,
+      },
+      {
+        content: 'This is yet another comment',
+        user: 1,
+        event: 1,
         likes: 0,
         dislikes: 0,
         rating: 5,

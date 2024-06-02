@@ -54,10 +54,20 @@ const initializeTables = async () => {
     });
 
     Event.hasMany(Comment, {
-      foreignKey: 'event_id',
+      foreignKey: 'event',
+      as: 'event_id',
+    });
+    Comment.belongsTo(Event, {
+      foreignKey: 'event',
+      as: 'event_id',
     });
     User.hasMany(Comment, {
-      foreignKey: 'user_id',
+      foreignKey: 'user',
+      as: 'user_id',
+    });
+    Comment.belongsTo(User, {
+      foreignKey: 'user',
+      as: 'user_id',
     });
 
     Event.belongsToMany(EventTag, {

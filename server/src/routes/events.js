@@ -73,7 +73,6 @@ const getResponse = require('../models/response');
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
- *     security: []
  *   get:
  *     tags:
  *       - Events
