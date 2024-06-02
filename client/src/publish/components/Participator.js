@@ -105,7 +105,7 @@ const InputBox = ({addParticipator}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !avatar) return;
+    if (!name) return;
     addParticipator({name, avatar});
     setName('');
     setAvatar('');
