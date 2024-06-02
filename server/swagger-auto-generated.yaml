@@ -93,26 +93,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/path_comment_id'
       responses: null
-  /comments/{comment_id}:
-    delete:
-      '204':
-        description: Comment deleted successfully
-      '401':
-        $ref: '#/components/responses/401'
-      '403':
-        $ref: '#/components/responses/403'
-      '404':
-        $ref: '#/components/responses/404'
-      '500':
-        $ref: '#/components/responses/500'
-      tags:
-        - Comments
-      summary: >-
-        Delete a comment - A user could delete only his/her own comment, while
-        an admin could delete any comment
-      parameters:
-        - $ref: '#/components/parameters/path_comment_id'
-      responses: null
   /events:
     post:
       tags:
@@ -160,8 +140,6 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/EventTag'
-                status:
-                  $ref: '#/components/schemas/EventStatus'
                 location:
                   type: string
                 capacity:
@@ -175,7 +153,6 @@ paths:
           description: Unauthorized
         '500':
           description: Internal server error
-      security: []
     get:
       tags:
         - Events
@@ -207,6 +184,21 @@ paths:
                 $ref: '#/components/schemas/Event'
         '404':
           $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Events
+      summary: Delete an event by id
+      parameters:
+        - $ref: '#/components/parameters/path_event_id'
+      responses:
+        '204':
+          description: Event deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/404'
   /events-tags:
     post:
       tags:
@@ -228,8 +220,7 @@ paths:
                   example: Music
                   minLength: 1
                   maxLength: 50
-                  pattern: ^[a-zA-Z]+$
-                  readOnly: true
+                  pattern: ^[a-zA-Z0-9_\-\ ]+$
       responses:
         '201':
           description: Event tag created successfully
@@ -343,6 +334,7 @@ paths:
               required:
                 - username
                 - password
+                - user_email
               properties:
                 username:
                   type: string
@@ -352,6 +344,9 @@ paths:
                   type: string
                   pattern: ^[a-zA-Z0-9]+$
                   maxLength: 32
+                user_email:
+                  type: string
+                  format: email
       responses:
         '200':
           description: User created successfully
@@ -639,7 +634,7 @@ components:
           type: string
           format: date-time
         status:
-          $ref: '#/components/schemas/EventStatus'
+          type: integer
         location:
           type: string
         capacity:
@@ -697,14 +692,14 @@ components:
       type: object
       additionalProperties: false
       required:
-        - tag_id
-        - tag_name
+        - id
+        - name
       properties:
-        tag_id:
+        id:
           type: integer
           description: The auto-generated id of the tag
           readOnly: true
-        tag_name:
+        name:
           type: string
           description: The name of the tag
     EventToTag:

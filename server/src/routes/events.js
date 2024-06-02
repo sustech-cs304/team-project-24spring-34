@@ -3,7 +3,6 @@ const router = express.Router();
 
 const {
   Event,
-
   EventTag,
   EventToTag,
   EventParticipant,
@@ -81,8 +80,6 @@ function getUidFromJwt(req) {
  *                 type: array
  *                 items:
  *                   $ref: '#/components/schemas/EventTag'
- *               status:
- *                 $ref: '#/components/schemas/EventStatus'
  *               location:
  *                 type: string
  *               capacity:
@@ -96,7 +93,6 @@ function getUidFromJwt(req) {
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
- *     security: []
  *   get:
  *     tags:
  *       - Events
@@ -115,8 +111,11 @@ function getUidFromJwt(req) {
  */
 router.post('/events', async (req, res) => {
   try {
-    const uid = getUidFromJwt(req);
-    if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+    const organizer_id = getUidFromJwt(req);
+    if (
+      !organizer_id ||
+      User.findOne({where: {id: organizer_id}}).user_group === 1
+    ) {
       res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
       return;
     }
@@ -129,18 +128,15 @@ router.post('/events', async (req, res) => {
       start_time,
       end_time,
       tags,
-      status,
       location,
       capacity,
     } = req.body;
     for (let i = 0; i < tags.length; i++) {
-      const tag = await EventTag.findOne({where: {id: tags[i]}});
+      const tag = await EventTag.findOne({where: {name: tags[i].name}});
       if (!tag) {
-        res
-          .status(400)
-          .json(getResponse(400, {description: 'Invalid tag id: ' + tags[i]}));
-        return;
+        await EventTag.bulkCreate([{name: tags[i].name}]);
       }
+      tags[i] = tag;
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
@@ -154,11 +150,12 @@ router.post('/events', async (req, res) => {
         await EventParticipant.bulkCreate([participants[i]]);
       }
     }
+    const status = 1;
     const new_event = await Event.create({
       title,
       description,
       poster,
-      uid,
+      organizer_id,
       publish_organization,
       start_time,
       end_time,
@@ -167,7 +164,7 @@ router.post('/events', async (req, res) => {
       capacity,
     });
     for (let i = 0; i < tags.length; i++) {
-      await EventToTag.create({event_id: new_event.id, tag_id: tags[i]});
+      await EventToTag.create({event_id: new_event.id, tag_id: tags[i].id});
     }
     for (let i = 0; i < participants.length; i++) {
       const participant = await EventParticipant.findOne({
@@ -214,8 +211,24 @@ router.get('/events', async (req, res) => {
       event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
       rating_num /
       2; // convert from 1-10 to 0.5-5
+    // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
+    const organizer = await User.findOne({
+      where: {id: eventList[i].organizer_id},
+    });
     eventList[i] = {
-      ...eventList[i].dataValues,
+      id: eventList[i].id,
+      title: eventList[i].title,
+      description: eventList[i].description,
+      poster: eventList[i].poster,
+      publish_organization: eventList[i].publish_organization,
+      start_time: eventList[i].start_time,
+      end_time: eventList[i].end_time,
+      status: eventList[i].status,
+      location: eventList[i].location,
+      capacity: eventList[i].capacity,
+      createdAt: eventList[i].createdAt,
+      updatedAt: eventList[i].updatedAt,
+      organizer_name: organizer.username,
       remaining_capacity,
       tags,
       rating_num,
@@ -243,14 +256,138 @@ router.get('/events', async (req, res) => {
  *               $ref: '#/components/schemas/Event'
  *       '404':
  *         $ref: '#/components/responses/404'
+ *   delete:
+ *     tags:
+ *       - Events
+ *     summary: Delete an event by id
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_event_id'
+ *     responses:
+ *       '204':
+ *         description: Event deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Event'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  */
 router.get('/events/:event_id', async (req, res) => {
   const event = await Event.findOne({where: {id: req.params.event_id}});
+  const event_to_tag = await EventToTag.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  let tags = [];
+  for (let i = 0; i < event_to_tag.length; i++) {
+    const tag = await EventTag.findOne({where: {id: event_to_tag[i].tag_id}});
+    tags.push(tag);
+  }
+  const event_to_audience = await EventToAudience.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  const audience_cnt = event_to_audience.length;
+  let already_reserved = false;
+  const uid = getUidFromJwt(req);
+  if (uid) {
+    const event_to_audience = await EventToAudience.findOne({
+      where: {event_id: req.params.event_id, audience_id: uid},
+    });
+    if (event_to_audience) {
+      already_reserved = true;
+    }
+  }
+  const event_to_participant = await EventToParticipant.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  let participants = [];
+  for (let i = 0; i < event_to_participant.length; i++) {
+    const participant = await EventParticipant.findOne({
+      where: {id: event_to_participant[i].participant_id},
+    });
+    participants.push(participant);
+  }
+  const remaining_capacity = event.capacity - audience_cnt;
+  const event_comments = await Comment.findAll({
+    where: {event_id: req.params.event_id},
+  });
+  const rating_num = event_comments.length;
+  let rating = 0;
+  if (rating_num > 0) {
+    rating =
+      event_comments.reduce((acc, comment) => acc + comment.rating, 0) /
+      rating_num /
+      2; // convert from 1-10 to 0.5-5
+  }
+  // Remove `organizer_id` in event, and add the username of the organizer, we don't want to expose the id
+  const organizer = await User.findOne({
+    where: {id: event.organizer_id},
+  });
   if (event) {
-    res.json(event);
+    res.json({
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      poster: event.poster,
+      publish_organization: event.publish_organization,
+      start_time: event.start_time,
+      end_time: event.end_time,
+      status: event.status,
+      location: event.location,
+      capacity: event.capacity,
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt,
+      organizer_name: organizer.username,
+      participants,
+      remaining_capacity,
+      tags,
+      rating_num,
+      rating,
+      already_reserved,
+    });
   } else {
     res.status(404).json(getResponse(404, {description: 'Event not found'}));
   }
+});
+router.delete('/events/:event_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const event = await Event.findOne({where: {id: req.params.event_id}});
+  if (!event) {
+    res.status(404).json(getResponse(404, {description: 'Event not found'}));
+    return;
+  }
+  if (
+    User.findOne({where: {id: uid}}).user_group === 2 &&
+    event.organizer_id !== uid
+  ) {
+    res
+      .status(401)
+      .json(getResponse(401, {description: 'Unauthorized to delete event'}));
+    return;
+  }
+  // event_participants = await EventToParticipant.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_participants.length; i++) {
+  //   await EventToParticipant.destroy({where: {id: event_participants[i].id}});
+  // }
+  // event_audiences = await EventToAudience.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_audiences.length; i++) {
+  //   await EventToAudience.destroy({where: {id: event_audiences[i].id}});
+  // }
+  // event_tags = await EventToTag.findAll({
+  //   where: {event_id: req.params.event_id},
+  // });
+  // for (let i = 0; i < event_tags.length; i++) {
+  //   await EventToTag.destroy({where: {id: event_tags[i].id}});
+  // }
+  await Event.destroy({where: {id: req.params.event_id}});
+  res.status(204).send();
 });
 
 /**
@@ -276,9 +413,7 @@ router.get('/events/:event_id', async (req, res) => {
  *                 example: Music
  *                 minLength: 1
  *                 maxLength: 50
- *                 pattern: ^[a-zA-Z]+$
- *                 unique: true
- *                 readOnly: true
+ *                 pattern: ^[a-zA-Z0-9_\-\ ]+$
  *     responses:
  *       '201':
  *         description: Event tag created successfully

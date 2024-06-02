@@ -9,14 +9,14 @@ const sequelize = require('../config/connection');
  *       type: object
  *       additionalProperties: false
  *       required:
- *         - tag_id
- *         - tag_name
+ *         - id
+ *         - name
  *       properties:
- *         tag_id:
+ *         id:
  *           type: integer
  *           description: The auto-generated id of the tag
  *           readOnly: true
- *         tag_name:
+ *         name:
  *           type: string
  *           description: The name of the tag
  *     EventToTag:
@@ -98,12 +98,6 @@ const init = async () => {
       {name: 'Art'},
       {name: 'Travel'},
       {name: 'Fashion'},
-    ]);
-    await EventToTag.bulkCreate([
-      {event_id: 1, tag_id: 1},
-      {event_id: 1, tag_id: 3},
-      {event_id: 2, tag_id: 2},
-      {event_id: 2, tag_id: 3},
     ]);
     await EventToTag.bulkCreate([
       {event_id: 1, tag_id: 1},
