@@ -1,6 +1,8 @@
 // App.js
 import React, {useState} from 'react';
 import styled, {ThemeProvider} from 'styled-components';
+import axios from 'axios';
+import {Modal} from 'antd';
 
 const theme = {
   colors: {
@@ -16,7 +18,7 @@ const theme = {
 };
 
 const Background = styled.div`
-  background-color: ${(props) => props.theme.colors.pageBackground};
+  background-color: ${(props) => props.theme.colors.background};
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -84,18 +86,48 @@ const ErrorMessage = styled.p`
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const requestBody = {
+    username: username,
+    user_email: email,
+    password: password,
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('两次密码输入不一致');
+      setError('Passwords do not match');
       return;
     }
     // 提交表单逻辑
     console.log('Form submitted', {email, password});
+    axios
+      .post(
+        'http://10.27.41.93:5000/api/users',
+        requestBody,
+        {
+          headers: {
+            Accept: '*/*',
+            'Content-Type': 'application/json',
+          },
+        },
+        {
+          withCredentials: true, // 发送请求时包括Cookie
+        },
+      )
+      .then((response) => {
+        console.log('User created successfully:', response.data);
+        Modal.success({
+          title: 'New User Created!',
+          content: 'You can login now.',
+        });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   return (
@@ -105,6 +137,16 @@ const SignUp = () => {
           <Card>
             <Title>Sign Up</Title>
             <Form onSubmit={handleSubmit}>
+              <Label htmlFor='username'>Username</Label>
+              <Input
+                type='username'
+                id='username'
+                name='username'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+
               <Label htmlFor='email'>Email Address</Label>
               <Input
                 type='email'
