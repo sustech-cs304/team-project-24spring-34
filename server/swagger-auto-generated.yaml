@@ -95,11 +95,65 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  /comments/{comment_id}/like:
+    post:
+      tags:
+        - Comments
+      summary: Like or dislike a comment
+      parameters:
+        - $ref: '#/components/parameters/path_comment_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - like
+              properties:
+                like:
+                  type: boolean
+                  description: Whether the user likes the comment
+                  example: true
+      responses:
+        '201':
+          description: Like or dislike created successfully
+        '204':
+          description: Like or dislike updated successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - Comments
+      summary: Delete a like or dislike of a comment
+      parameters:
+        - $ref: '#/components/parameters/path_comment_id'
+      responses:
+        '204':
+          description: Like or dislike deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   /events:
     post:
       tags:
         - Events
       summary: Create an event
+      parameters:
+        - $ref: '#/components/parameters/query_limit'
+        - $ref: '#/components/parameters/query_offset'
       requestBody:
         required: true
         content:
@@ -637,8 +691,6 @@ components:
           type: integer
           minimum: 1
           uniqueItems: true
-        style: form
-        explode: false
         default: []
   securitySchemes:
     bearerAuth:
@@ -654,8 +706,6 @@ components:
         - content
         - user_id
         - event_id
-        - likes
-        - dislikes
         - rating
       properties:
         id:
@@ -670,12 +720,6 @@ components:
           description: The id of the user who created the comment
         event_id:
           type: integer
-        likes:
-          type: integer
-          default: 0
-        dislikes:
-          type: integer
-          default: 0
         rating:
           type: integer
     Event:
@@ -933,6 +977,30 @@ components:
         - 3
       type: integer
       description: 1 = Audience, 2 = Organizer, 3 = Admin
+    UserToLike:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - user_id
+        - comment_id
+        - like
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: The auto-generated id of the userToLike
+        user_id:
+          type: integer
+          description: The id of the user who liked or disliked the comment
+          readOnly: true
+        comment_id:
+          type: integer
+          description: The id of the comment that the user liked or disliked
+          readOnly: true
+        like:
+          type: boolean
+          description: Whether the user liked the comment
   responses:
     '400':
       description: Bad Request
