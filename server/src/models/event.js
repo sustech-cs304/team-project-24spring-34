@@ -14,6 +14,7 @@ const sequelize = require('../config/connection');
  *         - description
  *         - poster
  *         - organizer
+ *         - publish_organization
  *         - participants
  *         - time
  *         - location
@@ -32,36 +33,22 @@ const sequelize = require('../config/connection');
  *         poster:
  *           type: string
  *           description: The URL of the event's poster
- *         organizer:
- *           $ref: '#/components/schemas/User'
- *         audience:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/User'
- *         participants:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/EventParticipant'
+ *         organizer_id:
+ *           type: integer
+ *         publish_organization:
+ *           type: string
  *         start_time:
  *           type: string
  *           format: date-time
  *         end_time:
  *           type: string
  *           format: date-time
- *         tags:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/EventTag'
  *         status:
  *           $ref: '#/components/schemas/EventStatus'
  *         location:
  *           type: string
  *         capacity:
  *           type: integer
- *         comments:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Comment'
  */
 const Event = sequelize.define(
   'event',
@@ -84,6 +71,18 @@ const Event = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       description: "The URL of the event's poster",
+    },
+    organizer_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+    },
+    publish_organization: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     start_time: {
       type: DataTypes.DATE,
@@ -111,30 +110,33 @@ const init = async () => {
   try {
     await Event.bulkCreate([
       {
-        id: 1,
         title: 'Event 1',
         description: 'This is event 1',
         poster: 'https://www.google.com',
+        organizer_id: 1,
+        publish_organization: 'organization1',
         start_time: new Date('2024-10-10T10:00:00.000Z'),
         end_time: new Date('2024-10-10T12:00:00.000Z'),
         location: 'location1',
         capacity: 100,
       },
       {
-        id: 2,
         title: 'Event 2',
         description: 'This is event 2',
         poster: 'https://www.google.com',
+        organizer_id: 1,
+        publish_organization: 'organization2',
         start_time: new Date('2024-10-11T10:00:00.000Z'),
         end_time: new Date('2024-10-11T12:00:00.000Z'),
         location: 'location2',
         capacity: 100,
       },
       {
-        id: 3,
         title: 'Event 3',
         description: 'This is event 3',
         poster: 'https://www.google.com',
+        organizer_id: 1,
+        publish_organization: 'organization3',
         start_time: new Date('2024-10-10T10:30:00.000Z'),
         end_time: new Date('2024-10-10T12:50:00.000Z'),
         location: 'location3',

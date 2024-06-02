@@ -18,7 +18,6 @@ function Mainpage() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DefaultNavbar sticky />
-      {/*<MKInput>asdsaa</MKInput>*/}
       <Box
         sx={{
           width: 100,
@@ -49,7 +48,7 @@ function Mainpage() {
           </MKTypography>
         </Grid>
       </Container>
-      {/*<DesignBlocks />*/}
+      <DesignBlocks />
     </ThemeProvider>
   );
 }

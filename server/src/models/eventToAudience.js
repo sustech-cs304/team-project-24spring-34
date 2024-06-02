@@ -54,7 +54,6 @@ const init = async () => {
   try {
     await EventToAudience.bulkCreate([
       {
-        id: 1,
         event_id: 1,
         audience_id: 2,
       },

@@ -99,16 +99,24 @@ const init = async () => {
   try {
     await EventParticipant.bulkCreate([
       {
-        id: 1,
         name: 'John Doe',
         description: 'A regular participant',
         avatar: 'https://example.com/avatar.jpg',
       },
       {
-        id: 2,
         name: 'Jane Doe',
         description: 'Another regular participant',
         avatar: 'https://example.com/avatar.jpg',
+      },
+    ]);
+    EventToParticipant.bulkCreate([
+      {
+        event_id: 1,
+        participant_id: 1,
+      },
+      {
+        event_id: 1,
+        participant_id: 2,
       },
     ]);
     console.log(

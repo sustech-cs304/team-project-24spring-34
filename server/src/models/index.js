@@ -5,6 +5,7 @@ const {Event, init: EventInit} = require('./event');
 const {EventTag, EventToTag, init: EventTagInit} = require('./eventTag');
 const {
   EventParticipant,
+  EventToParticipant,
   init: EventParticipantInit,
 } = require('./eventParticipant');
 const {
@@ -43,9 +44,7 @@ const initializeTables = async () => {
     });
 
     Event.belongsToMany(EventParticipant, {
-      foreignKey: 'event',
-      through: 'event_participant',
-      as: 'participants',
+      through: 'event_to_participant',
     });
     EventParticipant.belongsToMany(Event, {
       foreignKey: 'participant',
@@ -54,20 +53,10 @@ const initializeTables = async () => {
     });
 
     Event.hasMany(Comment, {
-      foreignKey: 'event',
-      as: 'event_id',
-    });
-    Comment.belongsTo(Event, {
-      foreignKey: 'event',
-      as: 'event_id',
+      foreignKey: 'event_id',
     });
     User.hasMany(Comment, {
-      foreignKey: 'user',
-      as: 'user_id',
-    });
-    Comment.belongsTo(User, {
-      foreignKey: 'user',
-      as: 'user_id',
+      foreignKey: 'user_id',
     });
 
     Event.belongsToMany(EventTag, {
@@ -76,6 +65,11 @@ const initializeTables = async () => {
     EventTag.belongsToMany(Event, {
       through: 'event_to_tag',
     });
+
+    Event.hasMany(Comment);
+    Comment.belongsTo(Event);
+    User.hasMany(Comment);
+    Comment.belongsTo(User);
 
     EventStatus.hasMany(Event);
     Event.belongsTo(EventStatus);
@@ -103,16 +97,12 @@ const initializeTables = async () => {
 };
 
 const initializeModels = async () => {
-  await Promise.all([
-    GenderInit(),
-    UserGroupInit(),
-    EventParticipantInit(),
-    EventStatusInit(),
-  ]);
+  await Promise.all([GenderInit(), UserGroupInit(), EventStatusInit()]);
   await Promise.all([
     UserInit(),
     EventInit(),
     EventTagInit(),
+    EventParticipantInit(),
     EventToAudienceInit(),
     MessageInit(),
     CommentInit(),
@@ -134,6 +124,7 @@ module.exports = {
   EventTag,
   EventToTag,
   EventParticipant,
+  EventToParticipant,
   EventToAudience,
   EventStatus,
   Comment,

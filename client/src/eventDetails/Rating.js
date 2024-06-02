@@ -1,3 +1,4 @@
+import {border, borderRadius} from '@mui/system';
 import React from 'react';
 import {FaStar, FaStarHalfAlt, FaRegStar} from 'react-icons/fa';
 
@@ -11,9 +12,12 @@ const Rating = ({rating, rating_num}) => {
   };
 
   const ratingShow = getRatingShow();
+  const style = {
+    fontSize: '40px',
+  };
 
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating - fullStars >= 0.5;
+  const fullStars = Math.floor(rating / 2);
+  const hasHalfStar = rating / 2 - fullStars >= 0.5;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
   return (
@@ -24,20 +28,22 @@ const Rating = ({rating, rating_num}) => {
           {Array(fullStars)
             .fill()
             .map((_, i) => (
-              <FaStar key={`full-${i}`} color='gold' />
+              <FaStar key={`full-${i}`} color='gold' style={style} />
             ))}
           {/* 渲染半颗星星 */}
-          {hasHalfStar && <FaStarHalfAlt color='gold' />}
+          {hasHalfStar && <FaStarHalfAlt color='gold' style={style} />}
           {/* 渲染空星星 */}
           {Array(emptyStars)
             .fill()
             .map((_, i) => (
-              <FaRegStar key={`empty-${i}`} color='gold' />
+              <FaRegStar key={`empty-${i}`} color='gold' style={style} />
             ))}
         </>
       )}
       {/* 显示评分数字或提示信息 */}
-      <strong style={{marginLeft: '8px'}}>{ratingShow}</strong>
+      <strong style={{marginLeft: '15px', fontSize: '40px'}}>
+        {ratingShow}
+      </strong>
     </div>
   );
 };

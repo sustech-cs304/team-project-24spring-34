@@ -21,6 +21,8 @@ const theme = {
 
 // 创建样式组件
 const Container = styled.div`
+  display: flex;
+  justify-content: flex-end;
   background-color: ${({theme}) => theme.colors.background};
   margin-bottom: 0;
   padding: 20px;
@@ -40,7 +42,7 @@ const Button = styled.button`
   color: #fff;
   border: none;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 30px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -50,55 +52,16 @@ const Button = styled.button`
   }
 `;
 
-const Heading = styled.h1`
-  color: ${({theme}) => theme.colors.primary};
-`;
-
-const Paragraph = styled.p`
-  color: ${({theme}) => theme.colors.secondaryText};
-`;
-
-const TextArea = styled.textarea`
-  width: ${({width}) => width || '100%'};
-  height: ${({height}) => height || 'auto'};
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid ${({theme}) => theme.colors.secondaryText};
-  border-radius: 4px;
-  font-size: 16px;
-  font-family: inherit;
-  background-color: ${({theme}) => theme.colors.cardBackground};
-  color: ${({theme}) => theme.colors.text};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-
-  &:focus {
-    border-color: ${({theme}) => theme.colors.primary};
-    box-shadow: 0 0 8px rgba(44, 62, 80, 0.3);
-    outline: none;
-  }
-`;
-
-function ThemeInput(props) {
+function ThemeButton(props) {
   return (
     <ThemeProvider theme={theme}>
       <Container>
-        <Card>
-          <Paragraph>{props.name}</Paragraph>
-          <TextArea
-            rows='4'
-            id={props.id}
-            placeholder={props.msg}
-            width={props.width} // 传入自定义宽度
-            height={props.height} // 传入自定义高度
-            onChange={props.onChange}
-          />
-        </Card>
+        <Button width='1000px' height='300px' onClick={props.onClick}>
+          SUBMIT
+        </Button>
       </Container>
     </ThemeProvider>
   );
 }
 
-export default ThemeInput;
+export default ThemeButton;
