@@ -517,6 +517,62 @@ paths:
                   $ref: '#/components/schemas/Message'
         '401':
           $ref: '#/components/responses/401'
+  /images:
+    post:
+      tags:
+        - Users
+      summary: Upload an image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Image uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /images/{image_id}:
+    get:
+      tags:
+        - Users
+      summary: Get an image by id
+      parameters:
+        - name: image_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Image found
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/404'
 components:
   parameters:
     path_username:

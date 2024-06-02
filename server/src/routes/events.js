@@ -303,7 +303,6 @@ router.get('/events/:event_id', async (req, res) => {
  *                 minLength: 1
  *                 maxLength: 50
  *                 pattern: ^[a-zA-Z]+$
- *                 readOnly: true
  *     responses:
  *       '201':
  *         description: Event tag created successfully
@@ -331,8 +330,14 @@ router.get('/events/:event_id', async (req, res) => {
  */
 router.post('/events-tags', async (req, res) => {
   try {
-    const {new_tag_name} = req.body;
-    const eventTag = await EventTag.findOne({where: {tag_name: new_tag_name}});
+    const uid = getUidFromJwt(req);
+    if (!uid || User.findOne({where: {id: uid}}).user_group === 1) {
+      res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+      return;
+    }
+    const new_tag_name = req.body.tag_name;
+    console.log(new_tag_name);
+    const eventTag = await EventTag.findOne({where: {name: new_tag_name}});
     if (eventTag) {
       res
         .status(429)
