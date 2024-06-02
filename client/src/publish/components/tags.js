@@ -45,11 +45,40 @@ const Tags = ({onTagsChange}) => {
   return (
     <div style={{display: 'flex', flexWrap: 'wrap', gap: '50px'}}>
       {tags.map((tag, index) => (
-        <div key={index} style={{marginBottom: '5px'}}>
+        <div
+          key={index}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            padding: '5px 10px',
+            borderRadius: '5px',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+          }}>
           <span style={{marginRight: '5px'}}>{tag}</span>
-          <Button onClick={() => handleTagRemove(index)}>x</Button>
+          <button
+            onClick={() => handleTagRemove(index)}
+            style={{
+              position: 'relative',
+              top: '-15px',
+              right: '-15px',
+              border: 'none',
+              background: 'orange',
+              borderRadius: '50%',
+              width: '20px',
+              height: '20px',
+              cursor: 'pointer',
+              color: 'white',
+              fontSize: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            x
+          </button>
         </div>
       ))}
+
       <div style={{marginTop: '0px'}}>
         <input
           type='text'

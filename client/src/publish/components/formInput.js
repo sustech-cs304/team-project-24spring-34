@@ -15,6 +15,7 @@ import ThemeUpload from './themeUpload';
 import ThemeNumInput from './themeNumInput';
 import ThemeButton from './themeButton';
 import Tags from './tags';
+import CastInput from './castInput';
 
 const ErrorMessage = styled.p`
   color: red;
@@ -67,10 +68,10 @@ function FormInput(props) {
   const [error, setError] = useState('');
 
   const requestBody = {
-    title: eventTitle.trim(),
-    description: eventIntro.trim(),
+    title: 'string',
+    description: 'string',
     poster: 'string',
-    publish_organization: eventOrganizer.trim(),
+    publish_organization: 'string',
     participants: [
       {
         name: 'string',
@@ -78,16 +79,15 @@ function FormInput(props) {
         avatar: 'string',
       },
     ],
-    start_time: '2024-06-02T12:45:41.822Z',
-    end_time: '2024-06-02T12:45:41.822Z',
+    start_time: '2024-06-02T14:36:42.084Z',
+    end_time: '2024-06-02T14:36:42.084Z',
     tags: [
       {
         name: 'string',
       },
     ],
-    status: 1,
-    location: eventLocation.trim(),
-    capacity: parseInt(eventCap),
+    location: 'string',
+    capacity: 0,
   };
   const getDateTime = ({dateProp, timeProp}) => {
     const [hours, minutes, seconds] = timeProp.split(':');
@@ -127,6 +127,11 @@ function FormInput(props) {
       getDateTime({dateProp: endDate, timeProp: endTime})
     ) {
       setError(`Event starting time must be earlier than ending time.`);
+      return;
+    }
+    const tagSet = new Set(tags);
+    if (tagSet.size !== tags.length) {
+      setError(`You have added duplicate tags for this event.`);
       return;
     }
     console.log('Form submitted');
@@ -219,6 +224,7 @@ function FormInput(props) {
             />
             <ThemeUpload />
             <ThemeNumInput cap={updateEventCap} />
+            <CastInput />
             <ThemeButton onClick={handleClick} />
           </div>
         </div>
