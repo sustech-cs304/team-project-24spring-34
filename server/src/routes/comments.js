@@ -194,6 +194,23 @@ router.get('/comments/:event_id', async (req, res) => {
 /**
  * @swagger
  * /comments/{comment_id}:
+ *   get:
+ *     tags:
+ *       - Comments
+ *     summary: Get a comment by id
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_comment_id'
+ *     responses:
+ *       '200':
+ *         description: Comment found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comment'
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  *   delete:
  *     tags:
  *       - Comments
@@ -212,6 +229,40 @@ router.get('/comments/:event_id', async (req, res) => {
  *       '500':
  *         $ref: '#/components/responses/500'
  */
+router.get('/comments/:comment_id', async (req, res) => {
+  const uid = getUidFromJwt(req);
+  if (!uid) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  let comment = await Comment.findOne({where: {id: req.params.comment_id}});
+  if (!comment) {
+    res.status(404).json(getResponse(404, {description: 'Comment not found'}));
+    return;
+  }
+  const user_to_likes = await UserToLike.findAll({
+    where: {comment_id: comment.id},
+  });
+  let this_like = 0;
+  let this_dislike = 0;
+  for (let j = 0; j < user_to_likes.length; j++) {
+    if (user_to_likes[j].like) {
+      this_like++;
+    } else {
+      this_dislike++;
+    }
+  }
+  comment.like = this_like;
+  comment.dislike = this_dislike;
+  const liked_or_disliked_by_me = await UserToLike.findOne({
+    where: {user_id: uid, comment_id: comment.id},
+  });
+  comment.liked = liked_or_disliked_by_me ? liked_or_disliked_by_me.like : null;
+  const {user_id, ...rest} = comment;
+  const user = await User.findOne({where: {id: user_id}});
+  comment = {username: user.username, ...rest};
+  res.json(comment);
+});
 router.delete('/comments/:comment_id', async (req, res) => {
   const uid = getUidFromJwt(req);
   if (!uid) {

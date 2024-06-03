@@ -18,7 +18,6 @@ const sequelize = require('../config/connection');
  *         - participants
  *         - time
  *         - location
- *         - tags
  *         - status
  *         - comments
  *         - ratings
