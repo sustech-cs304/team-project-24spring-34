@@ -372,12 +372,9 @@ router.get('/me', async (req, res) => {
     res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
     return;
   }
-  const user = await User.findOne({
-    where: {id: userId},
-    attributes: {exclude: ['password']},
-  });
+  const user = await User.findOne({where: {id: userId}});
   if (user) {
-    res.json(user);
+    res.redirect(`/api/users/${user.username}`);
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
