@@ -23,6 +23,9 @@ const Reserve = ({capacity, seats, event_id, already_reserved}) => {
     } catch (error) {
       console.error(error);
     }
+    if (!already_reserved) {
+      seats = seats - 1;
+    }
   };
 
   return (
