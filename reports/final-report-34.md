@@ -38,7 +38,21 @@ Besides the above metrics, we also calculated the following metrics:
 
 ##### 2.1.2 Main Page
 
+The navigation bar at the top includes, from left to right, "Search," "Home," "Event Release," "Messages," "Profile," "Login," and "Logout." Other pages also have similar navigation bars in similar positions. Below the notification board, various events are displayed, showing each event's title, start and end times, location, uploader, and other information. Clicking anywhere within the box will take you to the event's detail page.
+
+
+
 ##### 2.1.3 Profile Page
+
+The personal page of different user groups will have differences. In the top left corner, there will be the user's avatar, nickname, user group,. Clicking on the avatar allows the user to upload a picture to change their avatar from the local device. In the bottom left, there are several sidebars. The first column is a universal personal profile. It displays some user information, and users can click on icons next to the text to make modifications. After modification, users can choose to save or cancel the changes. The subsequent sidebars vary depending on the user group:
+
+- **Audience** : There is a history of events they've participated in.
+
+- **Organizers** : In addition to the history of events, there are also currently valid events they have published. Organizers can delete events.
+
+- **Administrators** : They have the ability to manage all events and users. They can delete all events, as well as remove or change the user group of non-administrator users
+
+  
 
 ##### 2.1.4 Event Reservation
 
@@ -50,10 +64,13 @@ Besides the above metrics, we also calculated the following metrics:
 
 The search page allows users to search for users and events, with options to filter and categorize the search results based on various criteria.
 
+
+
 - ######  Search Bar
 
-
 The search bar is located at the top of the page, where users can enter keywords to perform a search.
+
+
 
 - ######  Filters
 
@@ -67,14 +84,23 @@ The filter section is located below the search bar and offers multiple filtering
 If the "Event" filter is selected, the following search criteria can also be selected:
 
 - **All**: Selecting this option will simultaneously select or deselect the "Title," "Tag," "Description," and "Organizer" search criteria.
+
 - **Title**: Search by event title.
+
 - **Tag**: Search by event tag.
+
 - **Description**: Search by event description.
+
 - **Organizer**: Search by event organizer.
 
-###### 2.1.7.3 Search Results
+  
+
+- ######  Search Results
+
 
 Search results are displayed in a card format, including user and event information. Each user card contains the user's nickname and ID, with a link to view detailed information. Each event card contains the event's title, ID, tag, description, and organizer, with a link to view detailed information.
+
+
 
 #### 2.2 Documentation for Developers
 
