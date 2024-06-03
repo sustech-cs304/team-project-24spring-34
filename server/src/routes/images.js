@@ -58,7 +58,13 @@ router.post('/images', upload.single('image'), async (req, res) => {
       fs.mkdirSync(path.dirname(imagePath), {recursive: true});
     }
     await sharp(image.path).toFormat('webp').toFile(imagePath);
-    fs.unlinkSync(image.path);
+    fs.unlink(image.path, (err) => {
+      if (err) {
+        // console.error(err);
+        return;
+      }
+      // File deleted successfully
+    });
     res.json({url: `/images/${imageId}`});
   } catch (error) {
     console.error(error);
