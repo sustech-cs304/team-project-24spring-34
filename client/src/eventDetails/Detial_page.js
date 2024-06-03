@@ -17,6 +17,8 @@ import example_img from './example-poster.jpg';
 import sample_text from './sample-text.txt';
 import avatar from './example_org_img.jpg';
 import {useNavigate} from 'react-router-dom';
+import {MdWidthFull} from 'react-icons/md';
+import {Box} from '@mui/system';
 
 function ActivityDetails() {
   let {activeid} = useParams();
@@ -26,7 +28,7 @@ function ActivityDetails() {
     id: 1,
     title: '基窝托斯偷跑大赛',
     description: sample_text,
-    poster: example_img,
+    poster: null,
     organizer_id: 10,
     publish_organization: '格赫娜学院万魔殿',
     start_time: '2024-10-10T10:00:00.000Z',
@@ -103,6 +105,12 @@ function ActivityDetails() {
       <header className='frontLine'>
         <DefaultNavbar routes={routes} sticky />
       </header>
+      <Box
+        sx={{
+          width: 1112,
+          height: 10,
+        }}
+      />
       <Container>
         <section className='title'>
           <h1>{active.title}</h1>
@@ -124,7 +132,12 @@ function ActivityDetails() {
           activityImage={active.poster}
           activityDescription={active.description}
         />
-        <Reserve capacity={active.capacity} seats={active.remaining_capacity} />
+        <Reserve
+          capacity={active.capacity}
+          seats={active.remaining_capacity}
+          event_id={activeid}
+          already_reserved={active.already_reserved}
+        />
         <hr />
         <section
           style={{

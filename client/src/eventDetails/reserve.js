@@ -1,14 +1,30 @@
-import React from 'react';
-import {Button} from '@mui/material';
-import {FaRegHandPointRight} from 'react-icons/fa6';
-import {FaRegHandPointLeft} from 'react-icons/fa6';
-import {useState} from 'react';
-import {Typography} from '@mui/material';
+import React, {useState} from 'react';
+import {Button, Typography} from '@mui/material';
+import {FaRegHandPointRight, FaRegHandPointLeft} from 'react-icons/fa';
+import axios from 'axios';
 
-const Reserve = ({capacity, seats}) => {
-  const redirectToBookingPage = () => {
-    window.location.href = '/booking';
+const Reserve = ({capacity, seats, event_id, already_reserved}) => {
+  const authToken = localStorage.getItem('authToken');
+  const [color, setColor] = useState('#9999ff');
+
+  const handleReserve = async () => {
+    try {
+      await axios.post(
+        `http://10.27.41.93:5000/api/event-reservations/${event_id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
+          },
+        },
+      );
+      setColor('#66bb6a');
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   return (
     <div className='reserve-container'>
       <section
@@ -27,13 +43,13 @@ const Reserve = ({capacity, seats}) => {
         className='reserve-button'
         variant='contained'
         style={{
-          backgroundColor: '#9999ff',
+          backgroundColor: color,
           color: '#ffffff',
         }}
-        onClick={redirectToBookingPage}>
-        <FaRegHandPointRight />
+        onClick={handleReserve}>
+        <FaRegHandPointLeft style={{marginRight: '8px'}} />
         Click here to book
-        <FaRegHandPointLeft />
+        <FaRegHandPointRight style={{marginLeft: '8px'}} />
       </Button>
     </div>
   );
