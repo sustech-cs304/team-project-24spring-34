@@ -17,6 +17,7 @@ import example_img from './example-poster.jpg';
 import sample_text from './sample-text.txt';
 import avatar from './example_org_img.jpg';
 import {useNavigate} from 'react-router-dom';
+import {MdWidthFull} from 'react-icons/md';
 
 function ActivityDetails() {
   let {activeid} = useParams();
@@ -26,7 +27,7 @@ function ActivityDetails() {
     id: 1,
     title: '基窝托斯偷跑大赛',
     description: sample_text,
-    poster: example_img,
+    poster: null,
     organizer_id: 10,
     publish_organization: '格赫娜学院万魔殿',
     start_time: '2024-10-10T10:00:00.000Z',

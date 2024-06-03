@@ -25,18 +25,19 @@ import {
 } from 'react-icons/ai';
 import axios from 'axios';
 
-const SingleComment = ({comment, authority}) => {
+const SingleComment = ({comment, authority, fetchComments, page}) => {
   const authToken = localStorage.getItem('authToken');
   const {
     id,
     content,
     username,
     event_id,
-    likes,
-    dislikes,
+    like,
+    dislike,
     rating,
     createdAt,
     updatedAt,
+    liked,
   } = comment;
 
   const navigate = useNavigate();
@@ -46,9 +47,10 @@ const SingleComment = ({comment, authority}) => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      console.log('fetching user info:', username);
       try {
         const response = await axios.get(
-          `http://http://10.27.41.93:5000/api/users/${username}`,
+          `http://10.27.41.93:5000/api/users/${username}`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -60,6 +62,7 @@ const SingleComment = ({comment, authority}) => {
             withCredentials: true,
           },
         );
+        console.log('user info:', response.data);
         setUserName(response.data.nickname);
         setAvatar(response.data.avatar);
       } catch (error) {
@@ -73,16 +76,113 @@ const SingleComment = ({comment, authority}) => {
     navigate('/profilePage/' + username);
     // TODO
   };
-  const handleClickLike = () => {
-    console.log('like');
+  const handleClickLike = async () => {
+    console.log('click');
+    console.log(liked);
+    try {
+      if (liked === true) {
+        console.log('!!!' + liked);
+        await axios.delete(
+          `http://10.27.41.93:5000/api/comments/${id}/like`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+          {
+            withCredentials: true,
+          },
+        );
+      } else {
+        console.log('!!!' + liked);
+        await axios.post(
+          `http://10.27.41.93:5000/api/comments/${id}/like`,
+          {
+            like: true,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+          {
+            withCredentials: true,
+          },
+        );
+      }
+    } catch (error) {
+      console.error('Error liking comment:', error);
+    }
+    console.log('Comment liked:', id);
+    fetchComments(page);
   };
 
-  const handleClickDislike = () => {
-    console.log('dislike');
+  const handleClickDislike = async () => {
+    console.log('click');
+    try {
+      if (liked === false) {
+        await axios.delete(
+          `http://10.27.41.93:5000/api/comments/${id}/like`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+          {
+            withCredentials: true,
+          },
+        );
+      } else {
+        await axios.post(
+          `http://10.27.41.93:5000/api/comments/${id}/like`,
+          {
+            like: false,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+          {
+            withCredentials: true,
+          },
+        );
+      }
+    } catch (error) {
+      console.error('Error disliking comment:', error);
+    }
+    console.log('Comment disliked:', id);
+    fetchComments(page);
   };
 
-  const handleDelete = () => {
-    console.log('delete');
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://10.27.41.93:5000/api/comments/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+        {
+          withCredentials: true,
+        },
+      );
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+    console.log('Comment deleted:', id);
+    fetchComments(page);
   };
 
   return (
@@ -100,7 +200,7 @@ const SingleComment = ({comment, authority}) => {
           alignItems='center'
           sx={{cursor: 'pointer'}}>
           <Avatar src={avatar} alt={userName}>
-            {!avatar && userName[0]}
+            {!avatar && userName}
           </Avatar>
           <Typography variant='subtitle1' ml={2}>
             {userName}
@@ -154,10 +254,14 @@ const SingleComment = ({comment, authority}) => {
                   dislike: false,
                 })
               }
-              onMouseClick={() => handleClickLike()}>
-              {hovered.like ? <AiFillLike color='red' /> : <AiOutlineLike />}
+              onClick={() => handleClickLike()}>
+              {hovered.like || liked === true ? (
+                <AiFillLike color='red' />
+              ) : (
+                <AiOutlineLike />
+              )}
               <Typography variant='caption' ml={1} style={{width: '30px'}}>
-                {dislikes}
+                {like}
               </Typography>
             </Box>
             <Box
@@ -176,14 +280,14 @@ const SingleComment = ({comment, authority}) => {
                   dislike: false,
                 })
               }
-              onMouseClick={() => handleClickDislike()}>
-              {hovered.dislike ? (
+              onClick={() => handleClickDislike()}>
+              {hovered.dislike || liked === false ? (
                 <AiFillDislike color='blue' />
               ) : (
                 <AiOutlineDislike />
               )}
               <Typography variant='caption' ml={1} style={{width: '30px'}}>
-                {likes}
+                {dislike}
               </Typography>
             </Box>
           </Box>
@@ -201,6 +305,7 @@ const CommentList = ({
   onPageChange,
   currentPage,
   totalPage,
+  fetchComments,
 }) => {
   return (
     <>
@@ -209,7 +314,9 @@ const CommentList = ({
           <ListItem key={comment.id}>
             <SingleComment
               comment={comment}
-              authority={authority || comment.userId === user.id}
+              authority={authority || comment.username === user.username}
+              page={currentPage}
+              fetchComments={fetchComments}
             />
           </ListItem>
         ))}
@@ -237,6 +344,30 @@ const CommentsSection = ({active_id}) => {
   const [isLogin, setIsLogin] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+
+  const getUser = async () => {
+    try {
+      await axios
+        .get('http://10.27.41.93:5000/api/me', {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setUser(response.data);
+          setAuthority(response.data.user_group === 3);
+        });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+    console.log('User:', user);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [authToken]);
 
   const fetchComments = async (page) => {
     try {
@@ -273,15 +404,29 @@ const CommentsSection = ({active_id}) => {
     setCurrentPage(value);
   };
 
-  const handleCommentSubmit = (newComment) => {
-    setComments((prevComments) => [newComment, ...prevComments]);
+  const handleCommentSubmit = async (newComment) => {
+    try {
+      console.log('active:' + active_id);
+      await axios.post(
+        'http://10.27.41.93:5000/api/comments/' + active_id,
+        {
+          content: newComment.content,
+          rating: newComment.rating,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+    }
+    console.log('Comment submitted:', newComment);
+    fetchComments(currentPage);
     setShowForm(false);
-  };
-
-  const handleLogin = async () => {
-    setIsLogin(true);
-    setUser({id: 1, name: 'user'});
-    setAuthority(true);
   };
 
   return (
@@ -331,6 +476,7 @@ const CommentsSection = ({active_id}) => {
         onPageChange={handlePageChange}
         currentPage={currentPage}
         totalPage={totalPage}
+        fetchComments={fetchComments}
       />
     </Box>
   );
