@@ -18,7 +18,7 @@ import routes from '../publicAssets/routes';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
-const TagEnum = {
+const ImportanceEnum = {
   1: 'normal',
   2: 'important',
   3: 'urgent',
@@ -27,8 +27,17 @@ const TagEnum = {
 const NotificationBriefBlock = ({Notification}) => {
   const authToken = localStorage.getItem('authToken');
   const navigate = useNavigate();
-  const {id, activateid, senderid, reciverid, title, content, tag, time, read} =
-    Notification;
+  const {
+    id,
+    related_event_id,
+    createdAt,
+    updatedAt,
+    title,
+    content,
+    importance,
+    time,
+    read,
+  } = Notification;
   const handelClickOnNotification = async () => {
     try {
       await axios.put(
@@ -49,19 +58,19 @@ const NotificationBriefBlock = ({Notification}) => {
     } catch (error) {
       console.error(error);
     }
-    navigate(`/details/${id}`);
+    navigate(`/details/${related_event_id}`);
   };
 
   let bgColor;
-  if (read == false) {
-    switch (tag) {
-      case '1':
+  if (read === false) {
+    switch (importance) {
+      case 1:
         bgColor = '#e0f7fa'; // normal
         break;
-      case '2':
+      case 2:
         bgColor = '#fff3e0'; // important
         break;
-      case '3':
+      case 3:
         bgColor = '#ffebee'; // urgent
         break;
       default:

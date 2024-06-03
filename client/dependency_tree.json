@@ -1,0 +1,668 @@
+{
+  "App.css": [],
+  "App.js": ["App.css", "logo.svg", "mainpage/Mainpage.js"],
+  "Notification/NotificationpageComponents/DefaultNavbar.js": [
+    "Notification/NotificationpageComponents/DefaultNavbarDropdown.js",
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js",
+    "publicAssets/DefaultInfoCard.js"
+  ],
+  "Notification/NotificationpageComponents/DefaultNavbarDropdown.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "Notification/NotificationpageComponents/DesignBlocks.js": [
+    "Notification/NotificationpageComponents/designBlocksData.js",
+    "components/MKBadge/index.js",
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js",
+    "publicAssets/DefaultInfoCard.js"
+  ],
+  "Notification/NotificationpageComponents/TestForm.js": [
+    "Notification/NotificationpageComponents/DesignBlocks.js"
+  ],
+  "Notification/NotificationpageComponents/designBlocksData.js": [],
+  "Notification/Notifications.js": [
+    "Notification/NotificationpageComponents/DefaultNavbar.js",
+    "assets/theme/index.js",
+    "publicAssets/routes.js"
+  ],
+  "PasswordRecovery/PasswordRecovery.js": [],
+  "assets/theme/base/borders.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/base/boxShadows.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/boxShadow.js"
+  ],
+  "assets/theme/base/breakpoints.js": [],
+  "assets/theme/base/colors.js": [],
+  "assets/theme/base/globals.js": ["assets/theme/base/colors.js"],
+  "assets/theme/base/typography.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/appBar.js": [],
+  "assets/theme/components/avatar.js": ["assets/theme/base/borders.js"],
+  "assets/theme/components/breadcrumbs.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js"
+  ],
+  "assets/theme/components/button/contained.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/button/index.js": [
+    "assets/theme/components/button/contained.js",
+    "assets/theme/components/button/outlined.js",
+    "assets/theme/components/button/root.js",
+    "assets/theme/components/button/text.js"
+  ],
+  "assets/theme/components/button/outlined.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/button/root.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/button/text.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/buttonBase.js": [],
+  "assets/theme/components/card/cardContent.js": [
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/card/cardMedia.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/card/index.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/rgba.js"
+  ],
+  "assets/theme/components/container.js": [
+    "assets/theme/base/breakpoints.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/dialog/dialogActions.js": [
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/dialog/dialogContent.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/dialog/dialogContentText.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js"
+  ],
+  "assets/theme/components/dialog/dialogTitle.js": [
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/dialog/index.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js"
+  ],
+  "assets/theme/components/divider.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js",
+    "assets/theme/functions/rgba.js"
+  ],
+  "assets/theme/components/flatpickr.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/rgba.js"
+  ],
+  "assets/theme/components/form/autocomplete.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/checkbox.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/linearGradient.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/formControlLabel.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/formLabel.js": ["assets/theme/base/colors.js"],
+  "assets/theme/components/form/input.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js"
+  ],
+  "assets/theme/components/form/inputLabel.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js"
+  ],
+  "assets/theme/components/form/inputOutlined.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/radio.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/linearGradient.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/select.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/switchButton.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/linearGradient.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/form/textField.js": ["assets/theme/base/colors.js"],
+  "assets/theme/components/icon.js": ["assets/theme/functions/pxToRem.js"],
+  "assets/theme/components/iconButton.js": ["assets/theme/base/colors.js"],
+  "assets/theme/components/linearProgress.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/link.js": [],
+  "assets/theme/components/list/index.js": [],
+  "assets/theme/components/list/listItem.js": [],
+  "assets/theme/components/list/listItemText.js": [],
+  "assets/theme/components/menu/index.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/menu/menuItem.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/popover.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js"
+  ],
+  "assets/theme/components/slider.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/boxShadow.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/stepper/index.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/linearGradient.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/stepper/step.js": [
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/stepper/stepConnector.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js"
+  ],
+  "assets/theme/components/stepper/stepIcon.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/boxShadow.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/stepper/stepLabel.js": [
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js",
+    "assets/theme/functions/rgba.js"
+  ],
+  "assets/theme/components/svgIcon.js": ["assets/theme/functions/pxToRem.js"],
+  "assets/theme/components/table/tableCell.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/table/tableContainer.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js"
+  ],
+  "assets/theme/components/table/tableHead.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/tabs/index.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/tabs/tab.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/components/tooltip.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/functions/pxToRem.js"
+  ],
+  "assets/theme/functions/boxShadow.js": [
+    "assets/theme/functions/pxToRem.js",
+    "assets/theme/functions/rgba.js"
+  ],
+  "assets/theme/functions/gradientChartLine.js": [
+    "assets/theme/functions/rgba.js"
+  ],
+  "assets/theme/functions/hexToRgb.js": [],
+  "assets/theme/functions/linearGradient.js": [],
+  "assets/theme/functions/pxToRem.js": [],
+  "assets/theme/functions/rgba.js": ["assets/theme/functions/hexToRgb.js"],
+  "assets/theme/index.js": [
+    "assets/theme/base/borders.js",
+    "assets/theme/base/boxShadows.js",
+    "assets/theme/base/breakpoints.js",
+    "assets/theme/base/colors.js",
+    "assets/theme/base/globals.js",
+    "assets/theme/base/typography.js",
+    "assets/theme/components/appBar.js",
+    "assets/theme/components/avatar.js",
+    "assets/theme/components/breadcrumbs.js",
+    "assets/theme/components/button/index.js",
+    "assets/theme/components/buttonBase.js",
+    "assets/theme/components/card/cardContent.js",
+    "assets/theme/components/card/cardMedia.js",
+    "assets/theme/components/card/index.js",
+    "assets/theme/components/container.js",
+    "assets/theme/components/dialog/dialogActions.js",
+    "assets/theme/components/dialog/dialogContent.js",
+    "assets/theme/components/dialog/dialogContentText.js",
+    "assets/theme/components/dialog/dialogTitle.js",
+    "assets/theme/components/dialog/index.js",
+    "assets/theme/components/divider.js",
+    "assets/theme/components/flatpickr.js",
+    "assets/theme/components/form/autocomplete.js",
+    "assets/theme/components/form/checkbox.js",
+    "assets/theme/components/form/formControlLabel.js",
+    "assets/theme/components/form/formLabel.js",
+    "assets/theme/components/form/input.js",
+    "assets/theme/components/form/inputLabel.js",
+    "assets/theme/components/form/inputOutlined.js",
+    "assets/theme/components/form/radio.js",
+    "assets/theme/components/form/select.js",
+    "assets/theme/components/form/switchButton.js",
+    "assets/theme/components/form/textField.js",
+    "assets/theme/components/icon.js",
+    "assets/theme/components/iconButton.js",
+    "assets/theme/components/linearProgress.js",
+    "assets/theme/components/link.js",
+    "assets/theme/components/list/index.js",
+    "assets/theme/components/list/listItem.js",
+    "assets/theme/components/list/listItemText.js",
+    "assets/theme/components/menu/index.js",
+    "assets/theme/components/menu/menuItem.js",
+    "assets/theme/components/popover.js",
+    "assets/theme/components/slider.js",
+    "assets/theme/components/stepper/index.js",
+    "assets/theme/components/stepper/step.js",
+    "assets/theme/components/stepper/stepConnector.js",
+    "assets/theme/components/stepper/stepIcon.js",
+    "assets/theme/components/stepper/stepLabel.js",
+    "assets/theme/components/svgIcon.js",
+    "assets/theme/components/table/tableCell.js",
+    "assets/theme/components/table/tableContainer.js",
+    "assets/theme/components/table/tableHead.js",
+    "assets/theme/components/tabs/index.js",
+    "assets/theme/components/tabs/tab.js",
+    "assets/theme/components/tooltip.js",
+    "assets/theme/functions/boxShadow.js",
+    "assets/theme/functions/hexToRgb.js",
+    "assets/theme/functions/linearGradient.js",
+    "assets/theme/functions/pxToRem.js",
+    "assets/theme/functions/rgba.js"
+  ],
+  "booking/Booking_page.js": [],
+  "components/MKAlert/MKAlertCloseIcon.js": [],
+  "components/MKAlert/MKAlertRoot.js": [],
+  "components/MKAlert/index.js": [
+    "components/MKAlert/MKAlertCloseIcon.js",
+    "components/MKAlert/MKAlertRoot.js",
+    "components/MKBox/index.js"
+  ],
+  "components/MKAvatar/MKAvatarRoot.js": [],
+  "components/MKAvatar/index.js": ["components/MKAvatar/MKAvatarRoot.js"],
+  "components/MKBadge/MKBadgeRoot.js": [],
+  "components/MKBadge/index.js": ["components/MKBadge/MKBadgeRoot.js"],
+  "components/MKBox/MKBoxRoot.js": [],
+  "components/MKBox/index.js": ["components/MKBox/MKBoxRoot.js"],
+  "components/MKButton/MKButtonRoot.js": [],
+  "components/MKButton/index.js": ["components/MKButton/MKButtonRoot.js"],
+  "components/MKDatePicker/index.js": ["components/MKInput/index.js"],
+  "components/MKInput/MKInputRoot.js": [],
+  "components/MKInput/index.js": ["components/MKInput/MKInputRoot.js"],
+  "components/MKPagination/MKPaginationItemRoot.js": [
+    "components/MKButton/index.js"
+  ],
+  "components/MKPagination/index.js": [
+    "components/MKBox/index.js",
+    "components/MKPagination/MKPaginationItemRoot.js"
+  ],
+  "components/MKProgress/MKProgressRoot.js": [],
+  "components/MKProgress/index.js": [
+    "components/MKProgress/MKProgressRoot.js",
+    "components/MKTypography/index.js"
+  ],
+  "components/MKSocialButton/MKSocialButtonRoot.js": [],
+  "components/MKSocialButton/index.js": [
+    "components/MKSocialButton/MKSocialButtonRoot.js"
+  ],
+  "components/MKTypography/MKTypographyRoot.js": [],
+  "components/MKTypography/index.js": [
+    "components/MKTypography/MKTypographyRoot.js"
+  ],
+  "eventDetails/DetailPageComponents/DefaultNavbar.js": [
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js",
+    "eventDetails/DetailPageComponents/DefaultNavbarDropdown.js",
+    "publicAssets/DefaultInfoCard.js"
+  ],
+  "eventDetails/DetailPageComponents/DefaultNavbarDropdown.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "eventDetails/DetailPageComponents/DesignBlocks.js": [
+    "components/MKBadge/index.js",
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js",
+    "eventDetails/DetailPageComponents/designBlocksData.js",
+    "publicAssets/DefaultInfoCard.js"
+  ],
+  "eventDetails/DetailPageComponents/TestForm.js": [
+    "eventDetails/DetailPageComponents/DesignBlocks.js"
+  ],
+  "eventDetails/DetailPageComponents/designBlocksData.js": [],
+  "eventDetails/Detail_page.css": [],
+  "eventDetails/Detial_page.js": [
+    "assets/theme/index.js",
+    "eventDetails/DetailPageComponents/DefaultNavbar.js",
+    "eventDetails/Detail_page.css",
+    "eventDetails/Participator.js",
+    "eventDetails/comment/comment.js",
+    "eventDetails/event_detail.js",
+    "eventDetails/example-poster.jpg",
+    "eventDetails/example_org_img.jpg",
+    "eventDetails/introduction.js",
+    "eventDetails/reserve.js",
+    "eventDetails/sample-text.txt",
+    "publicAssets/detailPageRoutes.js"
+  ],
+  "eventDetails/Participator.js": [],
+  "eventDetails/Rating.js": [],
+  "eventDetails/comment/CommentForm.js": [],
+  "eventDetails/comment/RatingMini.js": [],
+  "eventDetails/comment/comment.js": [
+    "eventDetails/comment/CommentForm.js",
+    "eventDetails/comment/RatingMini.js"
+  ],
+  "eventDetails/event_detail.js": ["eventDetails/Rating.js"],
+  "eventDetails/example-poster.jpg": [],
+  "eventDetails/example_org_img.jpg": [],
+  "eventDetails/introduction.js": [],
+  "eventDetails/reserve.js": [],
+  "eventDetails/sample-text.txt": [],
+  "examples/Breadcrumbs/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/BlogCards/BackgroundBlogCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/BlogCards/CenteredBlogCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/BlogCards/TransparentBlogCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/CounterCards/DefaultCounterCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/InfoCards/DefaultInfoCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/InfoCards/FilledInfoCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/ReviewCards/DefaultReviewCard/index.js": [
+    "components/MKAvatar/index.js",
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/RotatingCard/RotatingCardBack.js": [
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/RotatingCard/RotatingCardFront.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Cards/RotatingCard/index.js": ["components/MKBox/index.js"],
+  "examples/Cards/TeamCards/HorizontalTeamCard/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Footers/CenteredFooter/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Footers/DefaultFooter/index.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Footers/SimpleFooter/index.js": [
+    "assets/theme/base/typography.js",
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Navbars/DefaultNavbar/DefaultNavbarDropdown.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "examples/Navbars/DefaultNavbar/DefaultNavbarMobile.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js",
+    "examples/Navbars/DefaultNavbar/DefaultNavbarDropdown.js"
+  ],
+  "examples/Navbars/DefaultNavbar/index.js": [
+    "assets/theme/base/breakpoints.js",
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js",
+    "examples/Navbars/DefaultNavbar/DefaultNavbarDropdown.js",
+    "examples/Navbars/DefaultNavbar/DefaultNavbarMobile.js"
+  ],
+  "index.css": [],
+  "index.js": [
+    "App.js",
+    "Notification/Notifications.js",
+    "PasswordRecovery/PasswordRecovery.js",
+    "booking/Booking_page.js",
+    "eventDetails/Detial_page.js",
+    "index.css",
+    "logIn/Login.js",
+    "logIn/changePassword.js",
+    "mainpage/Mainpage.js",
+    "profile/historyPage.js",
+    "profile/otherProfile.js",
+    "profile/profile.js",
+    "publish/publish.js",
+    "reportWebVitals.js",
+    "search/search.js",
+    "signUp/signUp.js"
+  ],
+  "index.test.js": ["mainpage/Mainpage.js"],
+  "logIn/Login.js": ["PasswordRecovery/PasswordRecovery.js"],
+  "logIn/changePassword.js": [
+    "assets/theme/index.js",
+    "components/MKButton/index.js",
+    "mainpage/mainpageComponents/DefaultNavbar.js",
+    "mainpage/mainpageComponents/DefaultNavbar_1.js"
+  ],
+  "logIn/logIn.test.js": ["logIn/Login.js"],
+  "logo.svg": [],
+  "mainpage/Mainpage.js": [
+    "assets/theme/index.js",
+    "components/MKBadge/index.js",
+    "components/MKInput/index.js",
+    "components/MKTypography/index.js",
+    "mainpage/mainpageComponents/DefaultNavbar.js",
+    "mainpage/mainpageComponents/DesignBlocks.js",
+    "mainpage/mainpageComponents/TestForm.js",
+    "publicAssets/routes.js"
+  ],
+  "mainpage/mainpageComponents/DefaultNavbar.js": [
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js",
+    "mainpage/mainpageComponents/DefaultNavbarDropdown.js",
+    "publicAssets/DefaultInfoCard.js"
+  ],
+  "mainpage/mainpageComponents/DefaultNavbarDropdown.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "mainpage/mainpageComponents/DefaultNavbar_1.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "mainpage/mainpageComponents/DesignBlocks.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js",
+    "publicAssets/DefaultInfoCard.js"
+  ],
+  "mainpage/mainpageComponents/TestForm.js": [
+    "mainpage/mainpageComponents/DesignBlocks.js"
+  ],
+  "mainpage/mainpageComponents/designBlocksData.js": [],
+  "profile/AvatarUpload.js": ["components/MKButton/index.js"],
+  "profile/adminProfile.js": [
+    "components/MKButton/index.js",
+    "profile/AvatarUpload.js"
+  ],
+  "profile/crowdProfile.js": [
+    "components/MKButton/index.js",
+    "profile/AvatarUpload.js"
+  ],
+  "profile/historyPage.js": [],
+  "profile/hostProfile.js": [
+    "components/MKButton/index.js",
+    "profile/AvatarUpload.js"
+  ],
+  "profile/otherProfile.js": [
+    "assets/theme/index.js",
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKTypography/index.js",
+    "mainpage/mainpageComponents/DefaultNavbar_1.js"
+  ],
+  "profile/profile.js": [
+    "assets/theme/index.js",
+    "components/MKTypography/index.js",
+    "mainpage/mainpageComponents/DefaultNavbar_1.js",
+    "profile/adminProfile.js",
+    "profile/crowdProfile.js",
+    "profile/hostProfile.js"
+  ],
+  "publicAssets/DefaultInfoCard.js": [
+    "components/MKBox/index.js",
+    "components/MKTypography/index.js"
+  ],
+  "publicAssets/appContext.js": [],
+  "publicAssets/detailPageRoutes.js": [],
+  "publicAssets/routes.js": [],
+  "publish/components/Participator.js": [],
+  "publish/components/addPics.js": [],
+  "publish/components/avatarInput.js": [],
+  "publish/components/cast.js": [],
+  "publish/components/formInput.js": [
+    "components/MKButton/index.js",
+    "publish/components/Participator.js",
+    "publish/components/numInput.js",
+    "publish/components/tags.js",
+    "publish/components/textInput.js",
+    "publish/components/themeBox.js",
+    "publish/components/themeButton.js",
+    "publish/components/themeDatePicker.js",
+    "publish/components/themeInput.js",
+    "publish/components/themeNumInput.js",
+    "publish/components/themeTimePicker.js",
+    "publish/components/themeTitle.js",
+    "publish/components/themeUpload.js"
+  ],
+  "publish/components/numInput.js": [],
+  "publish/components/tags.js": [],
+  "publish/components/textInput.js": [
+    "components/MKAvatar/index.js",
+    "components/MKBadge/index.js",
+    "components/MKBox/index.js",
+    "components/MKButton/index.js",
+    "components/MKInput/index.js",
+    "components/MKProgress/index.js",
+    "components/MKSocialButton/index.js",
+    "publish/components/themeBox.js"
+  ],
+  "publish/components/themeBox.js": [],
+  "publish/components/themeButton.js": [],
+  "publish/components/themeDatePicker.js": [],
+  "publish/components/themeInput.js": [],
+  "publish/components/themeNumInput.js": [],
+  "publish/components/themeTimePicker.js": [],
+  "publish/components/themeTitle.js": ["components/MKButton/index.js"],
+  "publish/components/themeUpload.js": ["publish/components/addPics.js"],
+  "publish/publish.js": [
+    "assets/theme/index.js",
+    "components/MKTypography/index.js",
+    "mainpage/mainpageComponents/DefaultNavbar.js",
+    "mainpage/mainpageComponents/DesignBlocks.js",
+    "publicAssets/routes.js",
+    "publish/components/formInput.js"
+  ],
+  "reportWebVitals.js": [],
+  "search/search.js": [
+    "assets/theme/index.js",
+    "mainpage/mainpageComponents/DefaultNavbar.js"
+  ],
+  "setupTests.js": [],
+  "signUp/signUp.js": []
+}

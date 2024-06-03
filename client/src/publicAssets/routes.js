@@ -59,11 +59,11 @@ const routes = [
   },
   {
     name: 'Message',
-    route: '/message',
+    route: '/notifications',
   },
   {
     name: 'Profile',
-    route: '/profile',
+    route: '/profilePage',
   },
 ];
 
