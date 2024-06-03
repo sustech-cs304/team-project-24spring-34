@@ -20,6 +20,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache super-linter
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/super-linter
+          key: ${{ runner.os }}-super-linter-${{ hashFiles('.github/linters/**') }}
+          restore-keys: |
+            ${{ runner.os }}-super-linter-
+
       - name: Super-linter
         uses: super-linter/super-linter@v6.3.0
         env:
