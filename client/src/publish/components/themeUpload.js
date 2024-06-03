@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import TimePicker from 'react-time-picker';
-import AddPics from './addPics';
+import ImageUploader from './ImageUploader';
 
 // 定义主题
 const theme = {
@@ -108,22 +108,18 @@ const StyledDatePicker = styled(DatePicker)`
   }
 `;
 
-function ThemeBox({onPicsChange}) {
+function ThemeBox({handelPoseterchange}) {
   const [pics, setPics] = useState('');
   const HandlePicsChange = (changePics) => {
     setPics(changePics);
   };
-
-  useEffect(() => {
-    onPicsChange(pics);
-  }, [pics, onPicsChange]);
 
   return (
     <ThemeProvider theme={theme}>
       <Container>
         <Card>
           <Paragraph>Upload Pictures Here.</Paragraph>
-          <AddPics onPicsChange={HandlePicsChange} />
+          <ImageUploader addPoster={handelPoseterchange} />
         </Card>
       </Container>
     </ThemeProvider>

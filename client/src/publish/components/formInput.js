@@ -3,6 +3,7 @@ import styled, {ThemeProvider} from 'styled-components';
 import {Modal} from 'antd';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import ImageUploader from './ImageUploader';
 
 import TextInput from './textInput';
 import NumInput from './numInput';
@@ -92,10 +93,14 @@ function FormInput(props) {
     return dateTime;
   };
 
+  const handelPoseterchange = (url) => {
+    setPics(url);
+  };
+
   const requestBody = {
     title: eventTitle.trim(),
     description: eventIntro.trim(),
-    poster: pics.length === 1 && typeof pics[0] === 'object' ? pics[0].uid : '',
+    poster: pics.avatarUrl,
     publish_organization: eventOrganizer.trim(),
     participants: cast,
     start_time: getDateTime({dateProp: startDate, timeProp: startTime}),
@@ -261,7 +266,7 @@ function FormInput(props) {
               height='600px'
               msg='Type your detailed event description here...'
             />
-            <ThemeUpload onPicsChange={updatePicsChange} />
+            <ThemeUpload handelPoseterchange={handelPoseterchange} />
             <ThemeNumInput cap={updateEventCap} />
             <ThemeButton onClick={handleClick} />
           </div>
