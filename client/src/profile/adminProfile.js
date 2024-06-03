@@ -13,7 +13,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import MKButton from '../components/MKButton';
-import AvatarUpload from './AvatarUpload'; // 引入头像上传组件
+import AvatarUpload from './AvatarUpload';
 import {
   Delete as DeleteIcon,
   PersonOutline as PersonIcon,
@@ -98,10 +98,6 @@ function AdminProfile() {
   const handleSaveClick = async (field) => {
     // 对字段进行保存操作
     setEditMode((prev) => ({...prev, [field]: false}));
-    // setUser(prevFormData => ({
-    //   ...prevFormData,
-    //   gender: tempGender
-    // }));
     try {
       // const updatedUser = { ...user, ...formData };
       await axios.put(`${process.env.REACT_APP_API_URL}/me`, user, {
@@ -110,8 +106,7 @@ function AdminProfile() {
             'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
         },
       });
-      // 更新用户数据状态
-      // setUser(updatedUser);
+
       fetchData();
     } catch (error) {
       console.error('Error saving user data:', error);
@@ -128,10 +123,8 @@ function AdminProfile() {
     if (name === 'gender') {
       if (value === 'null1') {
         setUser((prev) => ({...prev, [name]: null}));
-        // setTempGender(null);
       } else {
         setUser((prev) => ({...prev, [name]: value}));
-        // setTempGender(value);
       }
     } else {
       setUser((prev) => ({...prev, [name]: value}));
@@ -480,26 +473,6 @@ function AdminProfile() {
             )}
           </Box>
         );
-      case 'security':
-        return (
-          <Box>
-            <Typography variant='h6'>Security</Typography>
-            <MKButton
-              component={Link}
-              to='/changePassword'
-              variant='contained'
-              sx={{
-                backgroundColor: 'red',
-                color: 'white',
-                fontWeight: 'bold',
-                '&:hover': {
-                  backgroundColor: '#d32f2f',
-                },
-              }}>
-              Password Modification
-            </MKButton>
-          </Box>
-        );
       case 'manageUsers':
         return (
           <Box p={3}>
@@ -691,17 +664,6 @@ function AdminProfile() {
               marginY: '10px',
             }}>
             <ListItemText primary='Personal Profile' />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => setSelectedItem('security')}
-            sx={{
-              backgroundColor:
-                selectedItem === 'security' ? 'black' : 'inherit',
-              color: selectedItem === 'security' ? 'white' : 'inherit',
-              marginY: '10px',
-            }}>
-            <ListItemText primary='Security' />
           </ListItem>
           <ListItem
             button

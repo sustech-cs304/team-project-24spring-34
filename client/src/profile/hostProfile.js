@@ -33,19 +33,7 @@ function HostProfile() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
-  // const [formData, setFormData] = useState({
-  //   username: user.username,
-  //   nickname: user.nickname,
-  //   user_group: user.user_group,
-  //   avatar: user.avatar,
-  //   user_intro: user.user_intro,
-  //   user_email: user.user_email,
-  //   password: user.password,
-  //   gender: user.gender,
-  //   birthday: user.birthday,
-  //   following: user.following || [],
-  //   followers: user.followers || [],
-  // });
+
   const fetchData = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
@@ -106,20 +94,13 @@ function HostProfile() {
   const handleSaveClick = async (field) => {
     // 对字段进行保存操作
     setEditMode((prev) => ({...prev, [field]: false}));
-    // setUser(prevFormData => ({
-    //   ...prevFormData,
-    //   gender: tempGender
-    // }));
     try {
-      // const updatedUser = { ...user, ...formData };
       await axios.put(`${process.env.REACT_APP_API_URL}/me`, user, {
         headers: {
           Authorization:
             'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
         },
       });
-      // 更新用户数据状态
-      // setUser(updatedUser);
       fetchData();
     } catch (error) {
       console.error('Error saving user data:', error);
@@ -136,19 +117,13 @@ function HostProfile() {
     if (name === 'gender') {
       if (value === 'null1') {
         setUser((prev) => ({...prev, [name]: null}));
-        // setTempGender(null);
       } else {
         setUser((prev) => ({...prev, [name]: value}));
-        // setTempGender(value);
       }
     } else {
       setUser((prev) => ({...prev, [name]: value}));
     }
   };
-
-  // function handleChangeGender(e) {
-  //   setTempGender(e.target.value === 'null' ? null : e.target.value);
-  // }
 
   const handleFollow = (userToFollow) => {
     setUser((prev) => ({
@@ -166,27 +141,6 @@ function HostProfile() {
 
   const isFollowing = (followerId, followingList) => {
     return followingList.includes(followerId);
-  };
-
-  // 定义更改用户类别函数
-  const handleChangeUserType = (userId, user_type) => {};
-
-  // 定义删除用户函数
-  const handleDeleteUser = async (username) => {
-    try {
-      // 发起删除请求
-      await axios.delete(`${process.env.REACT_APP_API_URL}/users/${username}`, {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
-        },
-      });
-
-      // 删除成功后重新获取数据
-      fetchDataAll();
-    } catch (error) {
-      setError(`Failed to delete event with username ${username}:`);
-    }
   };
 
   const handleDelete = async (id) => {
@@ -464,26 +418,6 @@ function HostProfile() {
               )}
             </Box>
           );
-        case 'security':
-          return (
-            <Box>
-              <Typography variant='h6'>Security</Typography>
-              <MKButton
-                component={Link}
-                to='/changePassword'
-                variant='contained'
-                sx={{
-                  backgroundColor: 'red',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    backgroundColor: '#d32f2f',
-                  },
-                }}>
-                Password Modification
-              </MKButton>
-            </Box>
-          );
         case 'history':
           return (
             <Box>
@@ -634,17 +568,6 @@ function HostProfile() {
                 marginY: '10px',
               }}>
               <ListItemText primary='Personal Profile' />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => setSelectedItem('security')}
-              sx={{
-                backgroundColor:
-                  selectedItem === 'security' ? 'black' : 'inherit',
-                color: selectedItem === 'security' ? 'white' : 'inherit',
-                marginY: '10px',
-              }}>
-              <ListItemText primary='Security' />
             </ListItem>
             <ListItem
               button
