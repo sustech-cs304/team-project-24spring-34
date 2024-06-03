@@ -48,6 +48,10 @@ export default function SignInSide() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleSignUP = () => {
+    navigate('/signUP');
+  };
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -182,7 +186,7 @@ export default function SignInSide() {
                   </DialogContent>
                 </Dialog>
                 <Grid item>
-                  <Link href='#' variant='body2'>
+                  <Link href='#' variant='body2' onClick={handleSignUP}>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
