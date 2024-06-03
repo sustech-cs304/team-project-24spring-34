@@ -10,11 +10,13 @@ import {
   Typography,
   Card,
   CardContent,
+  stepButtonClasses,
 } from '@mui/material';
 import DefaultNavbar from './NotificationpageComponents/DefaultNavbar';
 import theme from '../assets/theme';
 import routes from '../publicAssets/routes';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 const TagEnum = {
   1: 'normal',
@@ -23,11 +25,30 @@ const TagEnum = {
 };
 
 const NotificationBriefBlock = ({Notification}) => {
+  const authToken = localStorage.getItem('authToken');
   const navigate = useNavigate();
   const {id, activateid, senderid, reciverid, title, content, tag, time, read} =
     Notification;
-  const handelClickOnNotification = () => {
-    console.log('Notification id:', id);
+  const handelClickOnNotification = async () => {
+    try {
+      await axios.put(
+        `http://10.27.41.93:5000/api/messages/${id}`,
+        {
+          read: true,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
+          },
+        },
+        {
+          withCredentials: true,
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
     navigate(`/details/${id}`);
   };
 
@@ -73,226 +94,58 @@ const NotificationBriefBlock = ({Notification}) => {
 };
 
 const Notifications = () => {
+  const authToken = localStorage.getItem('authToken');
   const [notifications, setNotifications] = useState([]);
-  const [userid, setUserid] = useState('');
+  const [lastPage, setLastPage] = useState(-1);
+  const [userName, setUserName] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const getUserid = async () => {
-    // const response = await fetch('/api/userid');
-    // const data = await response.json();
-    // setUserid(data.userid);
-
-    // test data
-    fetch('http://10.27.41.93:5000/api/me')
-      .then((response) => response.json())
-      .then((data) => {
-        const userId = data.id; // 获取用户ID
-        setUserid(userId);
-        // 然后您可以使用这个用户ID进行后续操作
-      })
-      .catch((error) => console.error('请求错误:', error));
-    setUserid('88');
-  };
-
-  const getNotifications = async (userid, page) => {
+  const getNotifications = async (page) => {
     setLoading(true);
-    // const response = await fetch(`/api/Notifications/${userid}?page=${page}&limit=15`);
-    // const data = await response.json();
+    try {
+      const response = await axios.get(
+        `http://10.27.41.93:5000/api/messages?limit=${15 * page}&offset=${0}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: 'application/json',
+          },
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
-    // For now, using test data
-
-    const testData = [
-      {
-        id: '1',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: false,
-      },
-      {
-        id: '2',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-11 10:10:10',
-        read: false,
-      },
-      {
-        id: '3',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '4',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: false,
-      },
-      {
-        id: '5',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-12-11 10:10:10',
-        read: false,
-      },
-      {
-        id: '6',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '7',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: false,
-      },
-      {
-        id: '8',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-12 10:10:10',
-        read: false,
-      },
-      {
-        id: '9',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '10',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-10 10:10:10',
-        read: false,
-      },
-      {
-        id: '11',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-11 10:10:10',
-        read: false,
-      },
-      {
-        id: '12',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '13',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'New activate relased',
-        content: 'hello',
-        tag: '0',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-      {
-        id: '14',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'Activate detail changed',
-        content: 'world!!',
-        tag: '1',
-        time: '2021-10-11 10:10:10',
-        read: false,
-      },
-      {
-        id: '15',
-        activateid: '1',
-        senderid: '99',
-        reciverid: '88',
-        title: 'DDL!!!!!',
-        content: 'hello',
-        tag: '2',
-        time: '2021-10-13 10:10:10',
-        read: false,
-      },
-    ];
-    setNotifications((prevNotifications) => [
-      ...prevNotifications,
-      ...testData,
-    ]);
-    setLoading(false);
+      setNotifications(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getUserid().then(() => {
-      setCurrentPage(1);
+    if (currentPage === 1) {
       setNotifications([]);
-      getNotifications(userid, currentPage);
-    });
-  }, [userid]);
+    }
+    getNotifications(currentPage);
+  }, [currentPage]);
 
   const handleLoadMore = () => {
     setCurrentPage((prevPage) => prevPage + 1);
-    getNotifications(userid, currentPage + 1);
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DefaultNavbar routes={routes} sticky />
+      <Box
+        sx={{
+          width: 1112,
+          height: 10,
+        }}
+      />
       <Container>
         <main
           style={{

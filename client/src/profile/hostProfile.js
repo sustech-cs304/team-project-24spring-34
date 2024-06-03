@@ -33,6 +33,8 @@ function HostProfile() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -43,8 +45,10 @@ function HostProfile() {
         },
       });
       console.log('Fetched data:', response.data); // Add a log statement
-      setUser(response.data);
-      setUserHard(response.data);
+      setUser(response.data.user);
+      setUserHard(response.data.user);
+      setFollowers(user.followers);
+      setFollowing(user.following);
     } catch (error) {
       console.error('Error fetching data:', error); // Add error log
       setError(error);
@@ -125,22 +129,33 @@ function HostProfile() {
     }
   };
 
-  const handleFollow = (userToFollow) => {
-    setUser((prev) => ({
-      ...prev,
-      following: [...prev.following, userToFollow],
-    }));
+  const handleFollow = async (username) => {
+    const Response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/users/${username}/follow`,
+      {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      },
+    );
   };
 
-  const handleUnfollow = (id) => {
-    setUser((prev) => ({
-      ...prev,
-      following: prev.following.filter((userId) => userId !== id),
-    }));
+  const handleUnfollow = async (username) => {
+    const Response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/users/${username}/follow`,
+      {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      },
+    );
+    fetchData();
   };
 
-  const isFollowing = (followerId, followingList) => {
-    return followingList.includes(followerId);
+  const isFollowing = (follower) => {
+    return followers.includes(follower);
   };
 
   const handleDelete = async (id) => {
@@ -429,7 +444,7 @@ function HostProfile() {
                     sx={{borderBottom: '1px solid #ddd'}}>
                     <ListItemText
                       primary={event.title}
-                      secondary={`${event.time} | ${event.location} | ${event.organizer}`}
+                      secondary={`${event.location} | ${event.organizer}`}
                     />
                   </ListItem>
                 ))}
@@ -443,13 +458,13 @@ function HostProfile() {
                 Event Management
               </Typography>
               <List>
-                {user.publish_events.map((event) => (
+                {user.published_events.map((event) => (
                   <ListItem
                     key={event.id}
                     sx={{borderBottom: '1px solid #ddd'}}>
                     <ListItemText
                       primary={event.title}
-                      secondary={`${event.time} | ${event.location} | ${event.organizer}`}
+                      secondary={`${event.location} | ${event.organizer}`}
                     />
                     <IconButton
                       edge='end'
@@ -469,20 +484,20 @@ function HostProfile() {
                 Followers
               </Typography>
               <List>
-                {user.followers.map((follower) => (
+                {(followers || []).map((follower) => (
                   <ListItem key={follower.id}>
                     {/* 根据followingId获取用户信息 */}
                     {/* 显示用户信息，包括头像、昵称、邮箱 */}
-                    {isFollowing(follower, user.followers) ? (
+                    {isFollowing(follower) ? (
                       <IconButton
                         edge='end'
-                        onClick={() => handleUnfollow(follower.id)}>
+                        onClick={() => handleUnfollow(follower.username)}>
                         <DeleteOutlineIcon />
                       </IconButton>
                     ) : (
                       <IconButton
                         edge='end'
-                        onClick={() => handleFollow(follower.id)}>
+                        onClick={() => handleFollow(follower.username)}>
                         <PersonIcon />
                       </IconButton>
                     )}
@@ -498,16 +513,13 @@ function HostProfile() {
                 Following
               </Typography>
               <List>
-                {user.following.map((following) => (
+                {(following || []).map((following) => (
                   <ListItem key={following.id}>
                     <Avatar alt={following.nickname} src={following.avatar} />
-                    <ListItemText
-                      primary={following.nickname}
-                      secondary={following.user_email}
-                    />
+                    <ListItemText primary={following.nickname} />
                     <IconButton
                       edge='end'
-                      onClick={() => handleUnfollow(following.id)}>
+                      onClick={() => handleUnfollow(following.username)}>
                       <DeleteIcon />
                     </IconButton>
                   </ListItem>
@@ -594,7 +606,18 @@ function HostProfile() {
           </List>
         </Box>
         {/* 右侧内容区 */}
-        <Box sx={{flexGrow: 1, paddingLeft: 3}}>{renderContent()}</Box>
+        <Box sx={{flexGrow: 1, paddingLeft: 3}}>
+          {showAvatarUpload ? (
+            <AvatarUpload
+              onClose={() => setShowAvatarUpload(false)}
+              onUploadSuccess={(avatarUrl) =>
+                setUser((prev) => ({...prev, avatar: avatarUrl}))
+              }
+            />
+          ) : (
+            renderContent()
+          )}
+        </Box>
       </Container>
     );
   };
