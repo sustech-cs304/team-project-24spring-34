@@ -9,6 +9,8 @@ test('renders Mainpage component', () => {
       <Mainpage />
     </Router>,
   );
-  const helloElement = screen.getByText(/Material Kit 2 React/i);
-  expect(helloElement).toBeInTheDocument();
+  const element = screen.getByText(
+    /Welcome to Campus Events and Entertainment Center!/i,
+  );
+  expect(element).toBeInTheDocument();
 });
