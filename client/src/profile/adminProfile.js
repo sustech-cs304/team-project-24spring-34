@@ -49,8 +49,8 @@ function AdminProfile() {
         },
       });
       console.log('Fetched data:', response.data); // Add a log statement
-      setUser(response.data.user);
-      setUserHard(response.data.user);
+      setUser(response.data);
+      setUserHard(response.data);
       setFollowers(user.followers);
       setFollowing(user.following);
     } catch (error) {
@@ -335,7 +335,7 @@ function AdminProfile() {
                       name='gender'
                       value={user.gender}
                       onChange={handleChange}
-                      style={{width: '100px'}}>
+                      style={{width: '100px', height: '30px'}}>
                       <option value='null1'></option>
                       <option value='1'>Male</option>
                       <option value='2'>Female</option>
@@ -649,7 +649,7 @@ function AdminProfile() {
           <Box>
             <Typography variant='h6'>{userHard.nickname}</Typography>
             <Typography variant='body2' color='textSecondary'>
-              {getUserGroupText(userHard.user_group)}
+              Admin
             </Typography>
             <Typography
               variant='body2'

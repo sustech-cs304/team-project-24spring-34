@@ -267,7 +267,7 @@ function SearchPage() {
                       <ListItem
                         button
                         component={Link}
-                        to={`/user/${user.username}`}>
+                        to={`/users/${user.username}`}>
                         Go to details <IoIosArrowForward />
                       </ListItem>
                     </CardContent>
@@ -299,7 +299,7 @@ function SearchPage() {
                       <ListItem
                         button
                         component={Link}
-                        to={`/event/${event.id}`}>
+                        to={`/details/${event.id}`}>
                         Go to details <IoIosArrowForward />
                       </ListItem>
                     </CardContent>

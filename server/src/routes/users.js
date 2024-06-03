@@ -267,7 +267,20 @@ router.get('/users/:username', async (req, res) => {
       where: {organizer_id: user.id},
       attributes: {exclude: ['organizer_id']},
     });
-    res.json({user, event_history, published_events});
+
+    const followers = (await user.getFollowers({attributes: ['username']})).map(
+      (user) => user.dataValues.username,
+    );
+    const following = (await user.getFollowing({attributes: ['username']})).map(
+      (user) => user.dataValues.username,
+    );
+    res.json({
+      ...user.dataValues,
+      event_history,
+      published_events,
+      followers,
+      following,
+    });
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
@@ -364,12 +377,9 @@ router.get('/me', async (req, res) => {
     res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
     return;
   }
-  const user = await User.findOne({
-    where: {id: userId},
-    attributes: {exclude: ['password']},
-  });
+  const user = await User.findOne({where: {id: userId}});
   if (user) {
-    res.json(user);
+    res.redirect(`/api/users/${user.username}`);
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
@@ -430,12 +440,10 @@ router.get('/messages', async (req, res) => {
   );
   // The frontend should not see the `receiver_id` in messages
   messages = messages.map((message) => {
+    // eslint-disable-next-line no-unused-vars
     const {dataValues, ...useless_data} = message;
+    // eslint-disable-next-line no-unused-vars
     const {receiver_id, ...rest} = dataValues;
-    // I have to use `receiver_id` and `useless_data`
-    // Otherwise I cannot commit the changes
-    console.log(receiver_id);
-    console.log(useless_data);
     return rest;
   });
   res.json(messages);
@@ -600,6 +608,65 @@ router.post('/resetPassword', async (req, res) => {
     console.error(error);
     res.status(500).json(getResponse(500));
   }
+});
+
+/**
+ * @swagger
+ * /users/{username}/follow:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Follow a user
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     responses:
+ *       '200':
+ *         description: User followed successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ *   delete:
+ *     tags:
+ *       - Users
+ *     summary: Unfollow a user
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     responses:
+ *       '200':
+ *         description: User unfollowed successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ */
+router.post('/users/:username/follow', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  if (!userId) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const user = await User.findOne({where: {username: req.params.username}});
+  if (!user) {
+    res.status(404).json(getResponse(404, {description: 'User not found'}));
+    return;
+  }
+  await user.addFollower(userId);
+  res.send();
+});
+router.delete('/users/:username/follow', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  if (!userId) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const user = await User.findOne({where: {username: req.params.username}});
+  if (!user) {
+    res.status(404).json(getResponse(404, {description: 'User not found'}));
+    return;
+  }
+  await user.removeFollower(userId);
+  res.send();
 });
 
 function getUidFromJwt(req) {
