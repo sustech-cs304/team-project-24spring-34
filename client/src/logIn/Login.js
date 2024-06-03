@@ -126,7 +126,7 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component='h1' variant='h5'>
-              Sign In
+              SIGN IN
             </Typography>
             <Box
               component='form'
