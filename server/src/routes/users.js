@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const uuid = require('uuid');
 const {Op} = require('sequelize');
 const saltRounds = 10;
-const {User, Message} = require('../models');
+const {User, Event, Message, EventToAudience} = require('../models');
 const getResponse = require('../models/response');
 
 /**
@@ -251,7 +251,23 @@ router.get('/users/:username', async (req, res) => {
     attributes: {exclude: ['password']},
   });
   if (user) {
-    res.json(user);
+    let event_history_id_list = EventToAudience.findAll({
+      where: {audience_id: user.id},
+    });
+    let event_history = [];
+    for (let i = 0; i < event_history_id_list.length; i++) {
+      event_history.push(
+        await Event.findOne({
+          where: {id: event_history_id_list[i].event_id},
+          attributes: {exclude: ['organizer_id']},
+        }),
+      );
+    }
+    const published_events = await Event.findAll({
+      where: {organizer_id: user.id},
+      attributes: {exclude: ['organizer_id']},
+    });
+    res.json({user, event_history, published_events});
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }

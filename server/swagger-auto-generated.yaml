@@ -814,7 +814,6 @@ components:
         - participants
         - time
         - location
-        - tags
         - status
         - comments
         - ratings
