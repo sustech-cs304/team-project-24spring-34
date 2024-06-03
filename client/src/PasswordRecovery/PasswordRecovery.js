@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Button, TextField, Typography, Alert} from '@mui/material';
+import axios from 'axios';
 
 const PasswordRecovery = () => {
   const [email, setEmail] = useState('');
@@ -8,14 +9,30 @@ const PasswordRecovery = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleEmailSubmit = async () => {
-    // 模拟后端响应
-    const registeredEmails = ['test@example.com'];
-    if (!registeredEmails.includes(email)) {
-      setError('Email is not registered');
-      return;
+    try {
+      const response = await axios.post(
+        'http://10.27.41.93:5000/api/requestReset',
+        {
+          email: email,
+        },
+      );
+      console.log(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // 处理 400 错误（电子邮件未找到）
+        setError('Email not found. Please enter a registered email address.');
+        console.error('Error 400: Email not found');
+        return;
+      } else {
+        // 处理其他错误
+        setError('An unexpected error occurred. Please try again later.');
+        console.error(error);
+      }
     }
+
     setError('');
     setStep(2);
     // 假设发送邮件
@@ -23,18 +40,34 @@ const PasswordRecovery = () => {
   };
 
   const handlePasswordReset = async () => {
-    // 模拟后端响应
-    const correctCode = '123456';
-    if (code !== correctCode) {
-      setError('Incorrect verification code');
-      return;
-    }
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
+    try {
+      const response = await axios.post(
+        'http://10.27.41.93:5000/api/resetPassword',
+        {
+          email: email,
+          token: code,
+          password: newPassword,
+        },
+      );
+      console.log(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        setError('Invalid token or token expired.');
+        console.error('Error 400: Invalid token or token expired');
+        return;
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+        console.error(error);
+      }
+    }
+
     setError('');
     console.log('Password has been reset successfully');
+    setSuccessMessage('Password has been reset successfully');
   };
 
   return (
@@ -120,6 +153,7 @@ const PasswordRecovery = () => {
           )}
         </Box>
       )}
+      {successMessage && <div style={{color: 'green'}}>{successMessage}</div>}
     </Box>
   );
 };
