@@ -17,11 +17,14 @@ function DesignBlocks() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://10.27.41.93:5000/api/events', {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/events`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
           },
-        });
+        );
         console.log(response);
         setData(response.data);
       } catch (error) {
