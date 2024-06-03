@@ -134,16 +134,203 @@ Note that since the unit tests involve login, directly running `npm test` may re
 
 ```bash
 cd server
-npm test src/test/user.test.js
-npm test src/test/event.test.js
-npm test src/test/comments.test.js
+npm test src/tests/user.test.js
+npm test src/tests/event.test.js
+npm test src/tests/comments.test.js
 ```
+
+##### User test
+
+Firstly test the create new user API with a username `user1`, which already exists in the database. In this case, it should response with `429`.
+
+```javascript
+  it('should report an exist username', async () => {
+    const res = await request(app).post('/api/users').send({
+      username: 'user1',
+      password: 'testpassword',
+      user_email: 'testemail@test.mail.com',
+    });
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(429);
+  });
+```
+
+Then we test the login API with the user `admin`. Then we save the token for the upcoming test cases.
+
+```javascript
+  // eslint-disable-next-line no-undef
+  it('should get all users', async () => {
+    const res = await request(app)
+      .get('/api/users')
+      // eslint-disable-next-line no-undef
+      .set('Authorization', `Bearer ${token}`);
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(200);
+  });
+```
+
+Finally, we try to test the get single user API.
+
+```javascript
+  // eslint-disable-next-line no-undef
+  it('should get a user by username', async () => {
+    const res = await request(app)
+      .get('/api/users/user1')
+      // eslint-disable-next-line no-undef
+      .set('Authorization', `Bearer ${token}`);
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(200);
+  });
+```
+
+##### Event test
+
+Firstly, login
+
+```javascript
+// After this test, you should add the token into the header of the following tests
+  // eslint-disable-next-line no-undef
+  it('should login', async () => {
+    const res = await request(app).post('/api/sessions').send({
+      username: 'admin',
+      password: 'admin',
+    });
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(200);
+    // eslint-disable-next-line no-undef
+    expect(res.body).toHaveProperty('token');
+    token = res.body.token;
+  });
+```
+
+Then try to get all events, and one single event:
+
+```javascript
+  // eslint-disable-next-line no-undef
+  it('should get all events', async () => {
+    const res = await request(app)
+      .get('/api/events')
+      // eslint-disable-next-line no-undef
+      .set('Authorization', `Bearer ${token}`);
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(200);
+  });
+
+  // eslint-disable-next-line no-undef
+  it('should get an event by id', async () => {
+    const res = await request(app)
+      .get('/api/events/1')
+      // eslint-disable-next-line no-undef
+      .set('Authorization', `Bearer ${token}`);
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(200);
+  });
+```
+
+Finally, try to get all event tags.
+
+```javascript
+// eslint-disable-next-line no-undef
+it('should get all events tags', async () => {
+  const res = await request(app)
+    .get('/api/events-tags')
+    // eslint-disable-next-line no-undef
+    .set('Authorization', `Bearer ${token}`);
+  // eslint-disable-next-line no-undef
+  expect(res.statusCode).toEqual(200);
+});
+```
+
+##### Comment test
+
+Firstly, login
+
+```javascript
+// After this test, you should add the token into the header of the following tests
+  // eslint-disable-next-line no-undef
+  it('should login', async () => {
+    const res = await request(app).post('/api/sessions').send({
+      username: 'admin',
+      password: 'admin',
+    });
+    // eslint-disable-next-line no-undef
+    expect(res.statusCode).toEqual(200);
+    // eslint-disable-next-line no-undef
+    expect(res.body).toHaveProperty('token');
+    token = res.body.token;
+  });
+```
+
+Then try to get all comments of a single event:
+
+```javascript
+// eslint-disable-next-line no-undef
+it('should get all comments for event 1', async () => {
+  const res = await request(app)
+    .get('/api/comments/1')
+    // eslint-disable-next-line no-undef
+    .set('Authorization', `Bearer ${token}`);
+  // eslint-disable-next-line no-undef
+  expect(res.statusCode).toEqual(200);
+});
+```
+
+Finally, try to like, dislike and delete dislike a comment:
+
+```javascript
+// eslint-disable-next-line no-undef
+it('should like a comment by id', async () => {
+  //Remember to pass `like` to signal like or dislike
+  //In this case, `like` should be true
+  const res = await request(app)
+    .post('/api/comments/3/like')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      like: true,
+    });
+  // eslint-disable-next-line no-undef
+  expect(res.statusCode).toEqual(201);
+});
+
+// eslint-disable-next-line no-undef
+it('should dislike a comment by id', async () => {
+  //Remember to pass `like` to signal like or dislike
+  //In this case, `like` should be false
+  const res = await request(app)
+    .post('/api/comments/3/like')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      like: false,
+    });
+  // eslint-disable-next-line no-undef
+  expect(res.statusCode).toEqual(204);
+});
+
+// eslint-disable-next-line no-undef
+it('should cancel the dislike to a comment by id', async () => {
+  //Remember to pass `like` to signal like or dislike
+  //In this case, `like` should be false
+  const res = await request(app)
+    .delete('/api/comments/3/like')
+    .set('Authorization', `Bearer ${token}`);
+  // eslint-disable-next-line no-undef
+  expect(res.statusCode).toEqual(204);
+});
+```
+
+The result of running `npm test`:
+![image](./image/final-report34/5.png)
+
+The result of running separately:
+![image](./image/final-report34/6.png)
+![image](./image/final-report34/7.png)
+![image](./image/final-report34/8.png)
 
 The cover rate of `user.test.js` is 38%, `event.test.js` is 42%, and `comments.test.js` is 41%.
 
 The unit tests only check the basic functionality of the backend, and most of the tested functions are `GET` or `DELETE`. To fully ensure the correctness of the backend, we also conducted manual tests.
 
-Our manual tests used the api-doc that were automatically generated by `swagger`. We firstly login as admin or an ordinary user, then we manually fill in the parameters and click the `Try it out` button to test the correctness of the backend. We tested all the APIs in the api-doc, including `GET`, `POST`, `PUT`, and `DELETE`. We also tested the APIs with invalid parameters to check the error handling of the backend.
+Our manual tests used the api-doc that were automatically generated by `swagger`, which was shown in **section 2.2**. We firstly login as admin or an ordinary user, then we manually fill in the parameters and click the `Try it out` button to test the correctness of the backend. We tested all the APIs in the api-doc, including `GET`, `POST`, `PUT`, and `DELETE`. We also tested the APIs with invalid parameters to check the error handling of the backend.
 
 ### 4. Build
 
