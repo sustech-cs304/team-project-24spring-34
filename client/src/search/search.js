@@ -76,14 +76,29 @@ function SearchPage() {
       setFilterAll(newValue);
       setFilterUsers(newValue);
       setFilterEvents(newValue);
+      setSearchByAll(newValue);
+      setSearchByTitle(newValue);
+      setSearchByTag(newValue);
+      setSearchByDescription(newValue);
+      setSearchByPoster(newValue);
     } else if (filter === 'users') {
       const newValue = !filterUsers;
       setFilterUsers(newValue);
-      setFilterAll(newValue && filterEvents); // Update "All" based on the new state of "users" and current state of "events"
+      setFilterAll(newValue && filterEvents);
+      setSearchByAll(newValue && filterEvents);
+      setSearchByTitle(newValue && filterEvents);
+      setSearchByTag(newValue && filterEvents);
+      setSearchByDescription(newValue && filterEvents);
+      setSearchByPoster(newValue && filterEvents);
     } else if (filter === 'events') {
       const newValue = !filterEvents;
       setFilterEvents(newValue);
-      setFilterAll(newValue && filterUsers); // Update "All" based on the new state of "events" and current state of "users"
+      setFilterAll(newValue && filterUsers);
+      setSearchByAll(newValue && filterEvents);
+      setSearchByTitle(newValue && filterEvents);
+      setSearchByTag(newValue && filterEvents);
+      setSearchByDescription(newValue && filterEvents);
+      setSearchByPoster(newValue && filterEvents);
     }
   };
 
@@ -240,12 +255,20 @@ function SearchPage() {
             {filterUsers &&
               filteredUsers.map((user) => (
                 <Grid item xs={12} sm={6} md={4} key={user.id}>
-                  <Card>
-                    <CardContent>
+                  <Card style={{height: '100%'}}>
+                    <CardContent
+                      style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}>
                       <Typography variant='h6'>{user.nickname}</Typography>
-                      <Typography variant='body2'>ID: {user.id}</Typography>
-                      <ListItem button component={Link} to={`/user/${user.id}`}>
-                        Detail
+                      <ListItem
+                        button
+                        component={Link}
+                        to={`/user/${user.username}`}>
+                        Go to details <IoIosArrowForward />
                       </ListItem>
                     </CardContent>
                   </Card>
@@ -254,8 +277,14 @@ function SearchPage() {
             {filterEvents &&
               filteredEvents.map((event) => (
                 <Grid item xs={12} sm={6} md={4} key={event.id}>
-                  <Card>
-                    <CardContent>
+                  <Card style={{height: '100%'}}>
+                    <CardContent
+                      style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}>
                       <Typography variant='h6'>{event.title}</Typography>
                       <Typography variant='body2'>
                         <strong>Tags:</strong>{' '}

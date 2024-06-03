@@ -53,43 +53,53 @@ function OtherProfilePage(user) {
       setData(response.data);
     };
 
+    const fetchMe = async () => {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      });
+      setFollowers(response.data.followers);
+      setFollowing(response.data.following);
+    };
+
     fetchUser();
+    fetchMe();
   });
 
-  //显示粉丝
-  const handleUserClick = (user) => {
-    setSelectedUser(user); // 将选中的用户信息存储在 selectedUser 状态中
-  };
-
   // 关注用户
-  const handleFollow = () => {
-    // setFollowing([...following, user]);
+  const handleFollow = async () => {
+    const Response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/users/${user.username}/follow`,
+      {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      },
+    );
   };
 
   // 取消关注用户
-  const handleUnfollow = (id) => {
-    setFollowing(following.filter((user) => user.id !== id));
-  };
-
-  // 显示粉丝
-  const handleFollowersClick = () => {
-    setSelectedItem('followers');
-  };
-
-  //显示关注的用户
-  const handleFollowingClick = () => {
-    setSelectedItem('following');
+  const handleUnfollow = async () => {
+    const Response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/users/${user.username}/follow`,
+      {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      },
+    );
   };
 
   const isFollowing = () => {
-    // 遍历关注列表
-    // for (const followedUser of followingList) {
-    //   // 如果当前用户的 id 与被检查用户的 id 匹配，则返回 true
-    //   if (followedUser.id === follower.id) {
-    //     return true;
-    //   }
-    // }
-    // 如果未找到匹配项，则返回 false
+    for (const followedUser of followers) {
+      if (followedUser.username === data.username) {
+        return true;
+      }
+    }
     return false;
   };
 
@@ -144,19 +154,13 @@ function OtherProfilePage(user) {
                 <Typography variant='body2' color='textSecondary'>
                   {getUserGroupText(user.user_group)}
                 </Typography>
-                <Typography variant='body2' color='textSecondary'>
-                  followers: {followers.length}
-                </Typography>
-                <Typography variant='body2' color='textSecondary'>
-                  following: {following.length}
-                </Typography>
               </Box>
             </Box>
             {isFollowing() ? (
               <IconButton
                 edge='end'
                 aria-label='unfollow'
-                onClick={() => handleUnfollow(following.id)}>
+                onClick={() => handleUnfollow()}>
                 <MKButton
                   variant='contained'
                   sx={{
