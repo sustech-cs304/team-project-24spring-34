@@ -28,7 +28,7 @@ function ActivityDetails() {
     id: 1,
     title: '基窝托斯偷跑大赛',
     description: sample_text,
-    poster: null,
+    poster: 'https://i.pravatar.cc/150?img=1',
     organizer_id: 10,
     publish_organization: '格赫娜学院万魔殿',
     start_time: '2024-10-10T10:00:00.000Z',
@@ -88,6 +88,7 @@ function ActivityDetails() {
           .catch((error) => {
             console.error('Error fetching activity details:', error);
           });
+        console.log(response);
         setActive(response);
       } catch (error) {
         console.error('Error fetching activity details:', error);
@@ -96,6 +97,8 @@ function ActivityDetails() {
 
     if (activeid) {
       fetchActivityDetails();
+      console.log('active');
+      console.log(active);
     }
   }, [activeid]);
 
