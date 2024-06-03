@@ -274,8 +274,13 @@ router.get('/users/:username', async (req, res) => {
     const following = (await user.getFollowing({attributes: ['username']})).map(
       (user) => user.dataValues.username,
     );
-
-    res.json({user, event_history, published_events, followers, following});
+    res.json({
+      ...user.dataValues,
+      event_history,
+      published_events,
+      followers,
+      following,
+    });
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
