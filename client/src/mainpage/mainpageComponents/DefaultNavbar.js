@@ -153,7 +153,7 @@ function DefaultNavbar({
             </MKBox>
             <MKBox
               component={Link}
-              to='/'
+              to='/notifications'
               sx={{
                 display: 'flex',
                 alignItems: 'center',

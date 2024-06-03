@@ -79,12 +79,17 @@ function FormInput(props) {
   const [error, setError] = useState('');
 
   const getDateTime = ({dateProp, timeProp}) => {
-    const [hours, minutes, seconds] = timeProp.split(':');
-    const combinedDateTime = new Date(dateProp);
-    combinedDateTime.setHours(parseInt(hours, 10));
-    combinedDateTime.setMinutes(parseInt(minutes, 10));
-    combinedDateTime.setSeconds(parseInt(seconds, 10));
-    return combinedDateTime;
+    const year = dateProp.getFullYear();
+    const month = String(dateProp.getMonth() + 1).padStart(2, '0'); // 月份从0开始，因此需要加1
+    const day = String(dateProp.getDate()).padStart(2, '0');
+
+    // 组合日期和时间
+    const dateTimeString = `${year}-${month}-${day}T${timeProp}`;
+
+    // 将字符串转换为日期对象
+    const dateTime = new Date(dateTimeString);
+    console.log(dateTime);
+    return dateTime;
   };
 
   const requestBody = {
@@ -146,6 +151,7 @@ function FormInput(props) {
       return;
     }
     console.log('Form submitted');
+    console.log(requestBody);
     axios
       .post(
         'http://10.27.41.93:5000/api/events',
