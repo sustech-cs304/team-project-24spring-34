@@ -22,11 +22,13 @@
 
 The search page allows users to search for users and events, with options to filter and categorize the search results based on various criteria.
 
-###### 2.1.7.1 Search Bar
+- ######  Search Bar
+
 
 The search bar is located at the top of the page, where users can enter keywords to perform a search.
 
-###### 2.1.7.2 Filters
+- ######  Filters
+
 
 The filter section is located below the search bar and offers multiple filtering options:
 

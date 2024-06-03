@@ -63,7 +63,7 @@ function ProfilePage() {
     if (!data) {
       return <MKTypography variant='h6'>No user data available.</MKTypography>;
     }
-    switch (data.user.user_group) {
+    switch (data.user_group) {
       case 1:
         return <CrowdProfile />;
       case 2:

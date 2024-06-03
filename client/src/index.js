@@ -30,9 +30,8 @@ root.render(
         <Route path='/booking' element={<BookingPage />} />
         <Route path='/publish' element={<Publish />} />
         <Route path='/profilePage' element={<ProfilePage />} />
-        <Route path='/user/:userId' element={<OtherProfilePage />} />
         <Route path='/search' element={<SearchPage />} />
-        <Route path='/others' element={<OtherProfilePage />} />
+        <Route path='/users/:username' element={<OtherProfilePage />} />
         <Route path='/changePassword' element={<ChangePasswordPage />} />
         <Route path='/history' element={<HistoryPage />} />
         <Route path='/signUp' element={<SignUp />} />

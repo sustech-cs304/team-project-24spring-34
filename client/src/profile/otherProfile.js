@@ -29,7 +29,9 @@ import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import DefaultNavbar_1 from '../mainpage/mainpageComponents/DefaultNavbar_1';
 import axios from 'axios';
 
-function OtherProfilePage(user) {
+const authToken = localStorage.getItem('authToken');
+function OtherProfilePage() {
+  let {username} = useParams();
   const [selectedItem, setSelectedItem] = useState('profile');
   const [events, setEvents] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null); // 用于存储选中的用户
@@ -37,71 +39,78 @@ function OtherProfilePage(user) {
   const [following, setFollowing] = useState([]);
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
   const [users, setUsers] = useState([]); // 定义用户数据状态
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/${user.username}`,
-        {
-          headers: {
-            Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
-          },
-        },
-      );
-      setData(response.data);
-    };
-
-    const fetchMe = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
-        },
-      });
-      setFollowers(response.data.followers);
-      setFollowing(response.data.following);
-    };
-
-    fetchUser();
-    fetchMe();
-  });
-
-  // 关注用户
-  const handleFollow = async () => {
-    const Response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/users/${user.username}/follow`,
+  const [data, setData] = useState([]);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const fetchUser = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/users/${username}`,
       {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3Mzk3OTg5LCJleHAiOjE3MTc0ODQzODl9.9F-O9zfHZad_wnsF40dht9mYK7lV9AFAQjwMgh8Vpss',
         },
       },
     );
+    setData(response.data);
+  };
+
+  const fetchMe = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    setFollowers(response.data.followers);
+    setFollowing(response.data.following);
+  };
+
+  useEffect(() => {
+    fetchUser();
+    fetchMe();
+  }, [username]);
+
+  // 关注用户
+  const handleFollow = async () => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/users/${username}/follow`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3Mzk3OTg5LCJleHAiOjE3MTc0ODQzODl9.9F-O9zfHZad_wnsF40dht9mYK7lV9AFAQjwMgh8Vpss`,
+        },
+      },
+    );
+    fetchUser();
+    fetchMe();
   };
 
   // 取消关注用户
   const handleUnfollow = async () => {
     const Response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/users/${user.username}/follow`,
+      `${process.env.REACT_APP_API_URL}/users/${username}/follow`,
       {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3Mzk3OTg5LCJleHAiOjE3MTc0ODQzODl9.9F-O9zfHZad_wnsF40dht9mYK7lV9AFAQjwMgh8Vpss',
         },
       },
     );
+    fetchUser();
+    fetchMe();
   };
 
-  const isFollowing = () => {
-    for (const followedUser of followers) {
-      if (followedUser.username === data.username) {
-        return true;
+  useEffect(() => {
+    const checkIsFollowing = () => {
+      for (const followedUser of followers) {
+        if (followedUser.username === data.username) {
+          return true;
+        }
       }
-    }
-    return false;
-  };
+      return false;
+    };
+
+    setIsFollowing(checkIsFollowing());
+  }, [followers, data.username]);
 
   const getUserGenderText = (gender) => {
     switch (gender) {
@@ -146,17 +155,17 @@ function OtherProfilePage(user) {
             <Box sx={{display: 'flex', alignItems: 'center', marginBottom: 2}}>
               <Avatar
                 alt='User Avatar'
-                src={user.avatar}
+                src={data.avatar}
                 sx={{width: 60, height: 60, marginRight: 2}}
               />
               <Box>
-                <Typography variant='h6'>{user.username}</Typography>
+                <Typography variant='h6'>{data.username}</Typography>
                 <Typography variant='body2' color='textSecondary'>
-                  {getUserGroupText(user.user_group)}
+                  {getUserGroupText(data.user_group)}
                 </Typography>
               </Box>
             </Box>
-            {isFollowing() ? (
+            {isFollowing ? (
               <IconButton
                 edge='end'
                 aria-label='unfollow'
@@ -202,32 +211,32 @@ function OtherProfilePage(user) {
               </Typography>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Username:</strong> {user.username}
+                  <strong>Username:</strong> {data.username}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Nickname:</strong> {user.nickname}
+                  <strong>Nickname:</strong> {data.nickname}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Gender:</strong> getUserGenderText(user.gender)
+                  <strong>Gender:</strong> {getUserGenderText(data.gender)}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Birthday:</strong> {user.birthday}
+                  <strong>Birthday:</strong> {data.birthday}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Email:</strong> {user.user_email}
+                  <strong>Email:</strong> {data.user_email}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Introduction:</strong> {user.user_intro}
+                  <strong>Introduction:</strong> {data.user_intro}
                 </Typography>
               </Box>
             </Box>
