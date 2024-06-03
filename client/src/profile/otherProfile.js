@@ -27,54 +27,9 @@ import {PiEnvelopeSimpleLight} from 'react-icons/pi';
 import {RxPerson} from 'react-icons/rx';
 import {VscSignIn, VscSignOut} from 'react-icons/vsc';
 import DefaultNavbar_1 from '../mainpage/mainpageComponents/DefaultNavbar_1';
+import axios from 'axios';
 
-const mockEvents = [
-  {
-    id: 1,
-    title: 'Event 1',
-    time: '2024-06-01 10:00',
-    location: 'Location 1',
-    organizer: 'Organizer 1',
-  },
-  {
-    id: 2,
-    title: 'Event 2',
-    time: '2024-06-02 11:00',
-    location: 'Location 2',
-    organizer: 'Organizer 2',
-  },
-  {
-    id: 3,
-    title: 'Event 3',
-    time: '2024-06-03 12:00',
-    location: 'Location 3',
-    organizer: 'Organizer 3',
-  },
-  // 添加更多模拟事件数据
-];
-
-const mockFollowers = [
-  {id: 1, name: '粉丝1', avatar: '/path-to-avatar1.jpg'},
-  {id: 2, name: '粉丝2', avatar: '/path-to-avatar2.jpg'},
-  {id: 3, name: '粉丝3', avatar: '/path-to-avatar3.jpg'},
-  // 更多粉丝数据
-];
-
-const mockFollowing = [
-  {id: 1, name: '关注1', avatar: '/path-to-avatar4.jpg'},
-  {id: 2, name: '关注2', avatar: '/path-to-avatar5.jpg'},
-  {id: 3, name: '关注3', avatar: '/path-to-avatar6.jpg'},
-  // 更多关注数据
-];
-
-const mockUsers = [
-  {id: 1, name: '关注1', avatar: '/path-to-avatar4.jpg'},
-  {id: 2, name: '关注2', avatar: '/path-to-avatar5.jpg'},
-  {id: 3, name: '关注3', avatar: '/path-to-avatar6.jpg'},
-  // 更多关注数据
-];
-
-function OtherProfilePage() {
+function OtherProfilePage(user) {
   const [selectedItem, setSelectedItem] = useState('profile');
   const [events, setEvents] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null); // 用于存储选中的用户
@@ -82,35 +37,24 @@ function OtherProfilePage() {
   const [following, setFollowing] = useState([]);
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
   const [users, setUsers] = useState([]); // 定义用户数据状态
-  const {userId} = useParams();
-  const [user, setUser] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch(`/api/users/${userId}`);
-      const data = await response.json();
-      setUser(data);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/users/${user.username}`,
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+          },
+        },
+      );
+      setData(response.data);
     };
 
     fetchUser();
-  }, [userId]);
-
-  // if (!user) {
-  //   return <div>Loading...</div>;
-  // }
-
-  useEffect(() => {
-    // 使用模拟数据
-    setEvents(mockEvents);
-    setFollowers(mockFollowers);
-    setFollowing(mockFollowing);
-    setUsers(mockUsers);
-  }, []);
-
-  const handleDelete = (id) => {
-    // 模拟删除事件
-    setEvents(events.filter((event) => event.id !== id));
-  };
+  });
 
   //显示粉丝
   const handleUserClick = (user) => {
@@ -168,15 +112,11 @@ function OtherProfilePage() {
                 alt='User Avatar'
                 src='/path-to-avatar.jpg' // 替换成实际的头像路径
                 sx={{width: 60, height: 60, marginRight: 2}}
-                onClick={() => setShowAvatarUpload(true)} // 添加点击事件
               />
               <Box>
                 <Typography variant='h6'>{user.username}</Typography>
                 <Typography variant='body2' color='textSecondary'>
                   {user.user_group}
-                </Typography>
-                <Typography variant='body2' color='textSecondary'>
-                  {user.id}
                 </Typography>
                 <Typography variant='body2' color='textSecondary'>
                   followers: {followers.length}
@@ -232,12 +172,12 @@ function OtherProfilePage() {
               </Typography>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>ID:</strong> {user.id}
+                  <strong>Username:</strong> {user.username}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Username:</strong> {user.nickname}
+                  <strong>Nickname:</strong> {user.nickname}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
@@ -247,26 +187,18 @@ function OtherProfilePage() {
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Age:</strong> {user.age || 23}
+                  <strong>Birthday:</strong> {user.birthday}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Phone:</strong> {user.phone}
+                  <strong>Email:</strong> {user.user_email}
                 </Typography>
               </Box>
               <Box display='flex' alignItems='center' mb={2}>
                 <Typography variant='body1'>
-                  <strong>Email:</strong> {user.email}
+                  <strong>Introduction:</strong> {user.user_intro}
                 </Typography>
-              </Box>
-              <Box display='flex' alignItems='center' mb={2}>
-                <Typography variant='body1'>
-                  <strong>Introduction:</strong>
-                </Typography>
-              </Box>
-              <Box ml={4}>
-                <Typography variant='body1'>{user.intro}</Typography>
               </Box>
             </Box>
           </Box>
