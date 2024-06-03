@@ -87,6 +87,25 @@ const initializeTables = async () => {
     Comment.belongsToMany(User, {
       through: 'user_to_like',
     });
+
+    User.belongsToMany(User, {
+      as: 'following',
+      through: {
+        model: 'follow',
+        unique: false,
+      },
+      foreignKey: 'followerId',
+      otherKey: 'followingId',
+    });
+    User.belongsToMany(User, {
+      as: 'followers',
+      through: {
+        model: 'follow',
+        unique: false,
+      },
+      foreignKey: 'followingId',
+      otherKey: 'followerId',
+    });
   } catch (error) {
     console.error('Error initializing tables:', error);
   }
