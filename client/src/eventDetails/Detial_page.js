@@ -18,6 +18,7 @@ import sample_text from './sample-text.txt';
 import avatar from './example_org_img.jpg';
 import {useNavigate} from 'react-router-dom';
 import {MdWidthFull} from 'react-icons/md';
+import {Box} from '@mui/system';
 
 function ActivityDetails() {
   let {activeid} = useParams();
@@ -104,6 +105,12 @@ function ActivityDetails() {
       <header className='frontLine'>
         <DefaultNavbar routes={routes} sticky />
       </header>
+      <Box
+        sx={{
+          width: 1112,
+          height: 10,
+        }}
+      />
       <Container>
         <section className='title'>
           <h1>{active.title}</h1>
