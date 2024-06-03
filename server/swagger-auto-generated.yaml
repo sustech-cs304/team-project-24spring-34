@@ -76,6 +76,23 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   /comments/{comment_id}:
+    get:
+      tags:
+        - Comments
+      summary: Get a comment by id
+      parameters:
+        - $ref: '#/components/parameters/path_comment_id'
+      responses:
+        '200':
+          description: Comment found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
     delete:
       tags:
         - Comments
@@ -494,6 +511,38 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           $ref: '#/components/responses/404'
+    put:
+      tags:
+        - Users
+      summary: Edit a user by username
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User info updated successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Users
+      summary: Delete a user by username
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      responses:
+        '200':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
   /me:
     get:
       tags:
@@ -765,7 +814,6 @@ components:
         - participants
         - time
         - location
-        - tags
         - status
         - comments
         - ratings

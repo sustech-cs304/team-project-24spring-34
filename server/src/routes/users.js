@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const uuid = require('uuid');
 const {Op} = require('sequelize');
 const saltRounds = 10;
-const {User, Message} = require('../models');
+const {User, Event, Message, EventToAudience} = require('../models');
 const getResponse = require('../models/response');
 
 /**
@@ -101,9 +101,7 @@ router.get('/users', async (req, res) => {
       res.status(403).json(getResponse(403, {description: 'Forbidden'}));
       return;
     }
-    let users = await User.findAll({
-      attributes: ['id', 'username', 'nickname', 'avatar', 'user_intro'],
-    });
+    let users = await User.findAll({attributes: {exclude: ['password']}});
     const total = await users.length;
     const offset = req.query.offset || 0;
     const limit = req.query.limit || 10;
@@ -214,14 +212,109 @@ router.delete('/sessions', (req, res) => {
  *               $ref: '#/components/schemas/User'
  *       '404':
  *         $ref: '#/components/responses/404'
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: Edit a user by username
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       '200':
+ *         description: User info updated successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ *   delete:
+ *     tags:
+ *       - Users
+ *     summary: Delete a user by username
+ *     parameters:
+ *       - $ref: '#/components/parameters/path_username'
+ *     responses:
+ *       '200':
+ *         description: User deleted successfully
+ *       '401':
+ *         $ref: '#/components/responses/401'
+ *       '404':
+ *         $ref: '#/components/responses/404'
  */
 router.get('/users/:username', async (req, res) => {
-  const user = await User.findOne({where: {username: req.params.username}});
+  const user = await User.findOne({
+    where: {username: req.params.username},
+    attributes: {exclude: ['password']},
+  });
   if (user) {
-    res.json(user);
+    let event_history_id_list = EventToAudience.findAll({
+      where: {audience_id: user.id},
+    });
+    let event_history = [];
+    for (let i = 0; i < event_history_id_list.length; i++) {
+      event_history.push(
+        await Event.findOne({
+          where: {id: event_history_id_list[i].event_id},
+          attributes: {exclude: ['organizer_id']},
+        }),
+      );
+    }
+    const published_events = await Event.findAll({
+      where: {organizer_id: user.id},
+      attributes: {exclude: ['organizer_id']},
+    });
+    res.json({user, event_history, published_events});
   } else {
     res.status(404).json(getResponse(404, {description: 'User not found'}));
   }
+});
+router.put('/users/:username', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  const op = await User.findOne({where: {id: userId}});
+  if (!op.user_group === 3) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const user = await User.findOne({where: {username: req.params.username}});
+  if (!user) {
+    res.status(404).json(getResponse(404, {description: 'User not found'}));
+    return;
+  }
+  if (req.body.password) {
+    res
+      .status(400)
+      .json(getResponse(400, {description: 'Cannot change password'}));
+    return;
+  }
+  if (req.body.user_group && op.user_group !== 3) {
+    res
+      .status(401)
+      .json(
+        getResponse(401, {description: 'Only admin can change user group'}),
+      );
+    return;
+  }
+  await user.update(req.body);
+  res.send();
+});
+router.delete('/users/:username', async (req, res) => {
+  const userId = getUidFromJwt(req);
+  const op = await User.findOne({where: {id: userId}});
+  if (!op.user_group === 3) {
+    res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
+    return;
+  }
+  const user = await User.findOne({where: {username: req.params.username}});
+  if (!user) {
+    res.status(404).json(getResponse(404, {description: 'User not found'}));
+    return;
+  }
+  await user.destroy();
+  res.send();
 });
 
 /**
@@ -271,7 +364,10 @@ router.get('/me', async (req, res) => {
     res.status(401).json(getResponse(401, {description: 'Unauthorized'}));
     return;
   }
-  const user = await User.findOne({where: {id: userId}});
+  const user = await User.findOne({
+    where: {id: userId},
+    attributes: {exclude: ['password']},
+  });
   if (user) {
     res.json(user);
   } else {

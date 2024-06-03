@@ -96,6 +96,9 @@ const SignUp = () => {
     password: password,
   };
 
+  const onOk = (e) => {
+    window.location.href = '/login';
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -123,8 +126,8 @@ const SignUp = () => {
         Modal.success({
           title: 'New User Created!',
           content: 'You can login now.',
+          onOk: onOk,
         });
-        window.location.href = '/login';
       })
       .catch((error) => {
         console.error('Error:', error);

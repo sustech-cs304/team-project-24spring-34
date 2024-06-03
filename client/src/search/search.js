@@ -15,14 +15,14 @@ import {
 import theme from '../assets/theme';
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {IoIosSearch} from 'react-icons/io';
+import {IoIosArrowForward, IoIosSearch} from 'react-icons/io';
 import axios from 'axios';
 import DefaultNavbar from '../mainpage/mainpageComponents/DefaultNavbar';
 
 function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [users, setUsers] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [allUsers, setUsers] = useState([]);
+  const [allEvents, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [filterAll, setFilterAll] = useState(false);
@@ -33,14 +33,28 @@ function SearchPage() {
   const [searchByTitle, setSearchByTitle] = useState(false);
   const [searchByTag, setSearchByTag] = useState(false);
   const [searchByDescription, setSearchByDescription] = useState(false);
-  const [searchByOrganizer, setSearchByOrganizer] = useState(false);
+  const [searchByPoster, setSearchByPoster] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const usersResponse = await axios.get('/users.json');
-        const eventsResponse = await axios.get('/events.json');
+        const usersResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/users`,
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMxODQ1LCJleHAiOjE3MTc0MTgyNDV9.Cp30IBolsYEIoslPH-UBBk_EWKJEbMAGil118Hltt0A`,
+            },
+          },
+        );
+        const eventsResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/events`,
+          {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMxODQ1LCJleHAiOjE3MTc0MTgyNDV9.Cp30IBolsYEIoslPH-UBBk_EWKJEbMAGil118Hltt0A`,
+            },
+          },
+        );
 
         setUsers(usersResponse.data);
         setEvents(eventsResponse.data);
@@ -80,45 +94,46 @@ function SearchPage() {
       setSearchByTitle(newValue);
       setSearchByTag(newValue);
       setSearchByDescription(newValue);
-      setSearchByOrganizer(newValue);
+      setSearchByPoster(newValue);
     } else if (type === 'title') {
       const newValue = !searchByTitle;
       setSearchByTitle(newValue);
       setSearchByAll(
-        newValue && searchByTag && searchByDescription && searchByOrganizer,
+        newValue && searchByTag && searchByDescription && searchByPoster,
       );
     } else if (type === 'tag') {
       const newValue = !searchByTag;
       setSearchByTag(newValue);
       setSearchByAll(
-        newValue && searchByTitle && searchByDescription && searchByOrganizer,
+        newValue && searchByTitle && searchByDescription && searchByPoster,
       );
     } else if (type === 'description') {
       const newValue = !searchByDescription;
       setSearchByDescription(newValue);
       setSearchByAll(
-        newValue && searchByTitle && searchByTag && searchByOrganizer,
+        newValue && searchByTitle && searchByTag && searchByPoster,
       );
-    } else if (type === 'organizer') {
-      const newValue = !searchByOrganizer;
-      setSearchByOrganizer(newValue);
+    } else if (type === 'poster') {
+      const newValue = !searchByPoster;
+      setSearchByPoster(newValue);
       setSearchByAll(
         newValue && searchByTitle && searchByTag && searchByDescription,
       );
     }
   };
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredUsers = (allUsers.users || []).filter((user) =>
+    user.nickname.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const filteredEvents = events.filter((event) => {
+  const filteredEvents = (allEvents.events || []).filter((event) => {
     const term = searchTerm.toLowerCase();
     return (
       (searchByTitle && event.title.toLowerCase().includes(term)) ||
-      (searchByTag && event.tag.toLowerCase().includes(term)) ||
+      (searchByTag &&
+        event.tags.some((tag) => tag.name.toLowerCase().includes(term))) ||
       (searchByDescription && event.description.toLowerCase().includes(term)) ||
-      (searchByOrganizer && event.organizer.toLowerCase().includes(term))
+      (searchByPoster && event.poster.toLowerCase().includes(term))
     );
   });
 
@@ -128,7 +143,7 @@ function SearchPage() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DefaultNavbar sticky />
-      <Box sx={{width: 100, height: 100}} />
+      <Box sx={{width: 1000, height: 100}} />
       <Box p={3}>
         <Typography variant='h4' gutterBottom>
           <IoIosSearch />
@@ -212,11 +227,11 @@ function SearchPage() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={searchByOrganizer}
-                  onChange={() => handleSearchByChange('organizer')}
+                  checked={searchByPoster}
+                  onChange={() => handleSearchByChange('poster')}
                 />
               }
-              label='Organizer'
+              label='Poster'
             />
           </Box>
         )}
@@ -242,19 +257,21 @@ function SearchPage() {
                   <Card>
                     <CardContent>
                       <Typography variant='h6'>{event.title}</Typography>
-                      <Typography variant='body2'>ID: {event.id}</Typography>
-                      <Typography variant='body2'>Tag: {event.tag}</Typography>
                       <Typography variant='body2'>
-                        Description: {event.description}
+                        <strong>Tags:</strong>{' '}
+                        {event.tags.map((tag) => tag.name).join(', ')}
                       </Typography>
                       <Typography variant='body2'>
-                        Organizer: {event.organizer}
+                        <strong>Description:</strong> {event.description}
+                      </Typography>
+                      <Typography variant='body2'>
+                        <strong>Poster:</strong> {event.poster}
                       </Typography>
                       <ListItem
                         button
                         component={Link}
                         to={`/event/${event.id}`}>
-                        Detail
+                        Go to details <IoIosArrowForward />
                       </ListItem>
                     </CardContent>
                   </Card>

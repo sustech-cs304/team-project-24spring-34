@@ -84,6 +84,14 @@ const Notifications = () => {
     // setUserid(data.userid);
 
     // test data
+    fetch('http://10.27.41.93:5000/api/me')
+      .then((response) => response.json())
+      .then((data) => {
+        const userId = data.id; // 获取用户ID
+        setUserid(userId);
+        // 然后您可以使用这个用户ID进行后续操作
+      })
+      .catch((error) => console.error('请求错误:', error));
     setUserid('88');
   };
 

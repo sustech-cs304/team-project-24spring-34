@@ -2,6 +2,7 @@ import React, {useState, useRef} from 'react';
 import styled, {ThemeProvider} from 'styled-components';
 import {Modal} from 'antd';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 import TextInput from './textInput';
 import NumInput from './numInput';
@@ -89,16 +90,19 @@ function FormInput(props) {
   const requestBody = {
     title: eventTitle.trim(),
     description: eventIntro.trim(),
-    poster: pics,
+    poster: pics.length === 1 && typeof pics[0] === 'object' ? pics[0].uid : '',
     publish_organization: eventOrganizer.trim(),
     participants: cast,
     start_time: getDateTime({dateProp: startDate, timeProp: startTime}),
     end_time: getDateTime({dateProp: endDate, timeProp: endTime}),
-    tags: tags,
+    tags: tags.map((tag) => {
+      return {name: tag};
+    }),
     location: eventLocation,
     capacity: eventCap,
   };
-
+  const navigate = useNavigate();
+  const authToken = localStorage.getItem('authToken');
   const handleClick = (e) => {
     console.log(eventCap);
     console.log(startDate);
@@ -106,6 +110,9 @@ function FormInput(props) {
     console.log(pics);
     console.log(cast);
     e.preventDefault();
+    if (!authToken) {
+      navigate('/login');
+    }
     if (
       eventIntro.trim() === '' ||
       eventTitle.trim() === '' ||
@@ -147,6 +154,7 @@ function FormInput(props) {
           headers: {
             Accept: '*/*',
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
           },
         },
         {

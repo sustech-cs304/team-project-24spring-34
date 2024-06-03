@@ -144,7 +144,6 @@ router.post('/events', async (req, res) => {
       const participant = await EventParticipant.findOne({
         where: {
           name: participants[i].name,
-          description: participants[i].description,
           avatar: participants[i].avatar,
         },
       });
@@ -173,7 +172,6 @@ router.post('/events', async (req, res) => {
       const participant = await EventParticipant.findOne({
         where: {
           name: participants[i].name,
-          description: participants[i].description,
           avatar: participants[i].avatar,
         },
       });
