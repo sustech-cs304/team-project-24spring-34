@@ -132,7 +132,12 @@ function ActivityDetails() {
           activityImage={active.poster}
           activityDescription={active.description}
         />
-        <Reserve capacity={active.capacity} seats={active.remaining_capacity} />
+        <Reserve
+          capacity={active.capacity}
+          seats={active.remaining_capacity}
+          event_id={activeid}
+          already_reserved={active.already_reserved}
+        />
         <hr />
         <section
           style={{
