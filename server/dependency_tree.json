@@ -1,0 +1,41 @@
+{
+  "config/connection.js": ["models/index.js"],
+  "models/comment.js": ["config/connection.js"],
+  "models/event.js": ["config/connection.js"],
+  "models/eventParticipant.js": ["config/connection.js"],
+  "models/eventStatus.js": ["config/connection.js"],
+  "models/eventTag.js": ["config/connection.js"],
+  "models/eventToAudience.js": ["config/connection.js"],
+  "models/gender.js": ["config/connection.js"],
+  "models/index.js": [
+    "models/comment.js",
+    "models/event.js",
+    "models/eventParticipant.js",
+    "models/eventStatus.js",
+    "models/eventTag.js",
+    "models/eventToAudience.js",
+    "models/gender.js",
+    "models/message.js",
+    "models/user.js",
+    "models/userGroup.js",
+    "models/userToLike.js"
+  ],
+  "models/message.js": ["config/connection.js"],
+  "models/response.js": [],
+  "models/user.js": ["config/connection.js"],
+  "models/userGroup.js": ["config/connection.js"],
+  "models/userToLike.js": ["config/connection.js"],
+  "routes/comments.js": ["models/index.js", "models/response.js"],
+  "routes/events.js": ["models/index.js", "models/response.js"],
+  "routes/images.js": ["models/response.js"],
+  "routes/index.js": [
+    "models/response.js",
+    "routes/comments.js",
+    "routes/events.js",
+    "routes/images.js",
+    "routes/users.js"
+  ],
+  "routes/users.js": ["models/index.js", "models/response.js"],
+  "server.js": ["routes/index.js", "swagger.js"],
+  "swagger.js": []
+}
