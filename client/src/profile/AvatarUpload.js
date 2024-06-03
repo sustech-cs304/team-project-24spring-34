@@ -1,128 +1,96 @@
-import React, {useState} from 'react';
-import {Box, Typography, Button, IconButton} from '@mui/material';
-import {
-  ArrowBack as ArrowBackIcon,
-  ArrowUpward as ArrowUpIcon,
-  ArrowDownward as ArrowDownIcon,
-  ArrowForward as ArrowForwardIcon,
-} from '@mui/icons-material';
+// AvatarUpload.js
+import React, {useEffect, useState} from 'react';
+import {Box, Button, IconButton, Avatar} from '@mui/material';
+import {Save as SaveIcon, Cancel as CancelIcon} from '@mui/icons-material';
+import axios from 'axios';
 import MKButton from '../components/MKButton';
 
-function AvatarUpload({onBack}) {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [cropArea, setCropArea] = useState({
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-  });
+function AvatarUpload({onClose, onUploadSuccess}) {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState();
+  const [user, setUser] = useState();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    const allowedTypes = ['image/png', 'image/jpeg']; // 允许的文件类型
-    if (file && allowedTypes.includes(file.type)) {
-      setSelectedImage(URL.createObjectURL(file));
-      setErrorMessage('');
-    } else {
-      setErrorMessage('只允许上传PNG和JPEG格式的图片');
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/me`, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzMzNDkzLCJleHAiOjE3MTc0MTk4OTN9.gdlRLzY-ameUBM9TFptGYx_pFCbBzgmbF5BOt6YScUk',
+        },
+      });
+      console.log('Fetched data:', response.data); // Add a log statement
+      setUser(response.data);
+      setPreview(user.avatar);
+    } catch (error) {
+      console.error('Error fetching data:', error); // Add error log
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleUpload = () => {
-    // 处理图片上传逻辑
-    console.log('Image uploaded');
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
-  // const handleResize = (direction) => {
-  //   switch (direction) {
-  //     case 'up':
-  //       setCropArea((prev) => ({
-  //         ...prev,
-  //         y: prev.y - 10,
-  //         height: prev.height + 10,
-  //       }));
-  //       break;
-  //     case 'down':
-  //       setCropArea((prev) => ({...prev, height: prev.height + 10}));
-  //       break;
-  //     case 'left':
-  //       setCropArea((prev) => ({
-  //         ...prev,
-  //         x: prev.x - 10,
-  //         width: prev.width + 10,
-  //       }));
-  //       break;
-  //     case 'right':
-  //       setCropArea((prev) => ({...prev, width: prev.width + 10}));
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+
+    // 将 user 对象的属性添加到 formData 中
+    for (const key in user) {
+      if (user.hasOwnProperty(key)) {
+        formData.append(key, key === 'avatar' ? selectedFile : user[key]);
+      }
+    }
+
+    try {
+      await axios.put(`${process.env.REACT_APP_API_URL}/me`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE3MzcxNDYxLCJleHAiOjE3MTc0NTc4NjF9.pUArgG8Go2-ip7j9fJEQcsaf291AWzCKGdu6J_ULSmw`,
+        },
+      });
+      onUploadSuccess(preview);
+      fetchData();
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+    } finally {
+      onClose();
+    }
+  };
 
   return (
-    <Box p={3}>
-      <IconButton onClick={onBack}>
-        <ArrowBackIcon />
-      </IconButton>
-      <Typography variant='h6'>Upload Avatar</Typography>
-      <Box my={2} position='relative' width='300px' height='300px'>
-        {selectedImage && (
-          <img
-            src={selectedImage}
-            alt='Selected'
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              clipPath: `rect(${cropArea.y}px, ${cropArea.x + cropArea.width}px, ${cropArea.y + cropArea.height}px, ${cropArea.x}px)`,
-            }}
-          />
-        )}
-        <Box
-          position='absolute'
-          border='1px dashed #ccc'
-          pointerEvents='none'
-          width={`${cropArea.width}px`}
-          height={`${cropArea.height}px`}
-          top={`${cropArea.y}px`}
-          left={`${cropArea.x}px`}
-        />
+    <Box display='flex' flexDirection='column' alignItems='center'>
+      <Avatar alt='User Avatar' src={preview} sx={{width: 100, height: 100}} />
+      <input
+        accept='image/*'
+        style={{display: 'none'}}
+        id='avatar-upload'
+        type='file'
+        onChange={handleFileChange}
+      />
+      <label htmlFor='avatar-upload'>
+        <MKButton variant='contained' component='span'>
+          Choose File
+        </MKButton>
+      </label>
+      <Box mt={2}>
+        <IconButton color='primary' onClick={handleUpload}>
+          <SaveIcon />
+        </IconButton>
+        <IconButton color='secondary' onClick={onClose}>
+          <CancelIcon />
+        </IconButton>
       </Box>
-      {errorMessage && (
-        <Typography variant='body2' color='error'>
-          {errorMessage}
-        </Typography>
-      )}
-      <MKButton variant='contained' component='label' sx={{color: 'white'}}>
-        Select image
-        <input
-          type='file'
-          hidden
-          onChange={handleImageChange}
-          accept='image/png, image/jpeg'
-        />
-      </MKButton>
-      {selectedImage && (
-        <Box mt={2}>
-          <MKButton variant='contained' color='primary' onClick={handleUpload}>
-            Upload
-          </MKButton>
-          {/*<IconButton onClick={() => handleResize('up')}>*/}
-          {/*  <ArrowUpIcon />*/}
-          {/*</IconButton>*/}
-          {/*<IconButton onClick={() => handleResize('down')}>*/}
-          {/*  <ArrowDownIcon />*/}
-          {/*</IconButton>*/}
-          {/*<IconButton onClick={() => handleResize('left')}>*/}
-          {/*  <ArrowBackIcon />*/}
-          {/*</IconButton>*/}
-          {/*<IconButton onClick={() => handleResize('right')}>*/}
-          {/*  <ArrowForwardIcon />*/}
-          {/*</IconButton>*/}
-        </Box>
-      )}
     </Box>
   );
 }

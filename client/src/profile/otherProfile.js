@@ -166,9 +166,8 @@ function OtherProfilePage() {
             <Box sx={{display: 'flex', alignItems: 'center', marginBottom: 2}}>
               <Avatar
                 alt='User Avatar'
-                src='/path-to-avatar.jpg' // 替换成实际的头像路径
+                src={user.avatar}
                 sx={{width: 60, height: 60, marginRight: 2}}
-                onClick={() => setShowAvatarUpload(true)} // 添加点击事件
               />
               <Box>
                 <Typography variant='h6'>{user.username}</Typography>
