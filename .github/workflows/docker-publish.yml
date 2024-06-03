@@ -39,8 +39,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker stop cs304-server || true
-            docker rm cs304-server || true
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/cs304-server:0.0.1
+            sudo docker stop cs304-server || true
+            sudo docker rm cs304-server || true
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/cs304-server:0.0.1
             sudo docker run -d --name cs304-server -v  /home/ubuntu/server/.env:/usr/src/app/.env -p 80:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/cs304-server:0.0.1
   
