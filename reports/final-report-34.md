@@ -115,8 +115,9 @@ Search results are displayed in a card format, including user and event informat
 
 
 #### 2.2 Documentation for Developers
-
-#### 2.2.1 Users
+![image](./image/final-report34/1.png)
+![image](./image/final-report34/2.png)
+![image](./image/final-report34/3.png)
 
 
 
