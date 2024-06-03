@@ -682,6 +682,33 @@ paths:
         '400':
           $ref: '#/components/responses/400'
       security: []
+  /users/{username}/follow:
+    post:
+      tags:
+        - Users
+      summary: Follow a user
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      responses:
+        '200':
+          description: User followed successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Users
+      summary: Unfollow a user
+      parameters:
+        - $ref: '#/components/parameters/path_username'
+      responses:
+        '200':
+          description: User unfollowed successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
 components:
   parameters:
     path_username:

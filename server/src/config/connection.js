@@ -31,7 +31,7 @@ const initializeDatabase = async () => {
 
   try {
     if (process.env.NODE_ENV === 'development') {
-      await sequelize.query('DROP SCHEMA public CASCADE;');
+      await sequelize.query('DROP SCHEMA IF EXISTS public CASCADE;');
       await sequelize.query('CREATE SCHEMA public;');
       console.log('Database reset successfully');
     }
