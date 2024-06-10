@@ -99,8 +99,8 @@ dependencies:
     specifier: ^9.0.1
     version: 9.0.1
   web-vitals:
-    specifier: ^3.5.2
-    version: 3.5.2
+    specifier: ^4.1.0
+    version: 4.1.0
 
 packages:
 
@@ -11829,8 +11829,8 @@ packages:
       minimalistic-assert: 1.0.1
     dev: false
 
-  /web-vitals@3.5.2:
-    resolution: {integrity: sha512-c0rhqNcHXRkY/ogGDJQxZ9Im9D19hDihbzSQJrsioex+KnFgmMzBiy57Z1EjkhX/+OjyBpclDCzz2ITtjokFmg==}
+  /web-vitals@4.1.0:
+    resolution: {integrity: sha512-wz5ubPZK7DSKrlQvjsaCqdfa+9AjAYoUzj9GDzUmBTdfyfyl1fOIjfTh46DGKM8MdN+lcbNY8ObXo6TmHqRzVw==}
     dev: false
 
   /webidl-conversions@4.0.2:
