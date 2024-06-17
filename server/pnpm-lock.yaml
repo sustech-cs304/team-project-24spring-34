@@ -36,8 +36,8 @@ dependencies:
     specifier: 1.4.5-lts.1
     version: 1.4.5-lts.1
   mysql2:
-    specifier: ^3.9.7
-    version: 3.10.0
+    specifier: ^3.10.1
+    version: 3.10.1
   nodemailer:
     specifier: ^6.9.13
     version: 6.9.13
@@ -49,7 +49,7 @@ dependencies:
     version: 2.3.4
   sequelize:
     specifier: ^6.37.3
-    version: 6.37.3(mysql2@3.10.0)(pg-hstore@2.3.4)(pg@8.11.5)
+    version: 6.37.3(mysql2@3.10.1)(pg-hstore@2.3.4)(pg@8.11.5)
   sharp:
     specifier: ^0.33.4
     version: 0.33.4
@@ -1176,8 +1176,8 @@ packages:
       xtend: 4.0.2
     dev: false
 
-  /mysql2@3.10.0:
-    resolution: {integrity: sha512-qx0mfWYt1DpTPkw8mAcHW/OwqqyNqBLBHvY5IjN8+icIYTjt6znrgYJ+gxqNNRpVknb5Wc/gcCM4XjbCR0j5tw==}
+  /mysql2@3.10.1:
+    resolution: {integrity: sha512-6zo1T3GILsXMCex3YEu7hCz2OXLUarxFsxvFcUHWMpkPtmZLeTTWgRdc1gWyNJiYt6AxITmIf9bZDRy/jAfWew==}
     engines: {node: '>= 8.0'}
     dependencies:
       denque: 2.1.0
@@ -1492,7 +1492,7 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: false
 
-  /sequelize@6.37.3(mysql2@3.10.0)(pg-hstore@2.3.4)(pg@8.11.5):
+  /sequelize@6.37.3(mysql2@3.10.1)(pg-hstore@2.3.4)(pg@8.11.5):
     resolution: {integrity: sha512-V2FTqYpdZjPy3VQrZvjTPnOoLm0KudCRXfGWp48QwhyPPp2yW8z0p0sCYZd/em847Tl2dVxJJ1DR+hF+O77T7A==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -1533,7 +1533,7 @@ packages:
       lodash: 4.17.21
       moment: 2.30.1
       moment-timezone: 0.5.45
-      mysql2: 3.10.0
+      mysql2: 3.10.1
       pg: 8.11.5
       pg-connection-string: 2.6.4
       pg-hstore: 2.3.4
