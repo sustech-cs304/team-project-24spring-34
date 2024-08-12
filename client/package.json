@@ -34,7 +34,7 @@
     "sort-by": "^1.2.0",
     "styled-components": "^6.1.11",
     "uuid": "^9.0.1",
-    "web-vitals": "^3.5.2"
+    "web-vitals": "^4.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
